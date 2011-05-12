@@ -1,0 +1,78 @@
+Funny you should ask....
+
+ 
+
+Here's the commands from the earlier NetRemote app (circa FW2.20), but as Seagate are still directing non-US users to that version even for FW 2.23, I imagine the commands are the same. Still anxiously awaiting the newer Seagate branded app to see if there's more fun to be had.
+
+ 
+
+Commands are 4 bytes sent to TCP port 9999 of the format
+
+48 12 XX 00
+
+(HEXADECIMAL!)
+
+ 
+
+where XX varies for each command thus:
+
+ 
+
+07: left
+06: right
+40: up
+41: down
+1B: back
+30: end >>|
+51: ff >>
+39: home
+47: info
+1A: menu
+59: mute
+0E: ok
+54: stop
+4F: play/pause
+38: power
+52: rew <<
+31: start |<<
+33: voldown
+32: volup
+35: zoomin
+08: zoomout
+
+06: right
+07: left
+08: zoomout
+0E: ok
+1A: menu
+1B: back
+30: end >>|
+31: start |<<
+32: volup
+33: voldown
+35: zoomin
+38: power
+39: home
+40: up
+41: down
+47: info
+4F: play/pause
+51: ff >>
+52: rew <<
+54: stop
+59: mute
+
+ 
+Hope the names make sense. This was culled from a batch file I quickly wrote a few weeks ago to test out the theory and I just made up names for the keys on the remote. Couldn't be bothered looking up the manual to find out if Seagate actually named the keys. Given the accuracy of the rest of the manual, it probably refers to them as QWERTY ;-)
+
+---
+
+Couple of questions for people who own the Iphone version ...
+1) Does anybody know how the search feature works?
+2) Has/Can anyone with an iphone find out what command it sends to get the movie list?
+3) Also what it sends for key presses on the keyboard would also be nice. 
+to1) No idea. Haven't been able to test this.
+to2) 48 12 fe 00 -> SQLite Database(though no idea what gets sent back as all my testing was with 2.20 which doesn't support this feature)
+to3) 48 12 f9 41 is 'A' - replace the last byte with the ASCII code for the character you want. My tests with sending Japanese Unicode characters have been a total failure. So far I have successfully tested only the characters in the Anglo-centric 7-bit ASCII set, though the Euro-centric 8-bit Latin character set, probably works. Es tut mir leid.
+
+ 

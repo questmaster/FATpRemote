@@ -1,13 +1,12 @@
 package de.questmaster.fatremote;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.net.ConnectException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -23,11 +22,14 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import de.questmaster.fatremote.FatRemoteSettings.Settings;
@@ -53,13 +55,13 @@ public class RemoteActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+		setContentView(R.layout.remote);
 
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		audioManager.loadSoundEffects();
 
 		readFATip();
-		
+
 		if (mSettings.m_sFatIP.equals("")) {
 			AlertDialog.Builder notification = new Builder(this);
 			notification.setIcon(android.R.drawable.ic_menu_manage);
@@ -132,15 +134,15 @@ public class RemoteActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case INTENT_SELECT_FAT: {
-			if (resultCode == Activity.RESULT_OK) {
-				try {
-					mFATip = InetAddress.getByName(data.getStringExtra(INTENT_ALLFATS));
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
-			} else {
-				mFATip = null;
-			}
+//			if (resultCode == Activity.RESULT_OK) {
+//				try {
+//					mFATip = InetAddress.getByName(data.getStringExtra(INTENT_ALLFATS));
+//				} catch (UnknownHostException e) {
+//					e.printStackTrace();
+//				}
+//			} else {
+//				mFATip = null;
+//			}
 
 			break;
 		}
@@ -157,6 +159,11 @@ public class RemoteActivity extends Activity {
 	private void readFATip() {
 		mSettings.ReadSettings(this);
 
+		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
+		if (!wifiManager.isWifiEnabled()) {
+			Toast.makeText(this, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
+		}
+		
 		try {
 			mFATip = InetAddress.getByName(mSettings.m_sFatIP);
 		} catch (UnknownHostException e) {
@@ -164,12 +171,7 @@ public class RemoteActivity extends Activity {
 			mFATip = null;
 			Toast.makeText(this, R.string.app_err_wrongip, Toast.LENGTH_LONG).show();
 		}
-		
-		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-		if (!wifiManager.isWifiEnabled()) {
-			Toast.makeText(this, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
-			mFATip = null;
-		}
+
 	}
 
 	private byte[] getLocalWifiIp() throws ConnectException {
@@ -182,60 +184,51 @@ public class RemoteActivity extends Activity {
 		ip2 = (byte) ((ipAddress & 0x0000FF00) >> 8);
 		ip3 = (byte) ((ipAddress & 0x00FF0000) >> 16);
 		ip4 = (byte) ((ipAddress & 0xFF000000) >> 24);
-		
-		if (onEmulator) {
-			ip1 = 10;
-			ip2 = (byte) 169;
-			ip3 = 2;
-			ip4 = 26;
-		}
+
+//		if (onEmulator) {
+//			ip1 = 10;
+//			ip2 = (byte) 169;
+//			ip3 = 2;
+//			ip4 = 26;
+//		}
 
 		if (ip1 == 0 && ip2 == 0 && ip3 == 0 && ip4 == 0 || !wifiManager.isWifiEnabled())
-			throw new ConnectException(getResources().getString(R.string.app_err_wifioff));
+//			throw new ConnectException(getResources().getString(R.string.app_err_wifioff));
+			return null;
 		else
 			return new byte[] { ip1, ip2, ip3, ip4 };
-
 	}
 
-	/*
-	 * private String[] discoverFAT() { Vector<String> adr = new
-	 * Vector<String>(); byte[] testIp;
-	 * 
-	 * try { testIp = getLocalWifiIp(); } catch (ConnectException e1) {
-	 * Toast.makeText(this, e1.getMessage(), Toast.LENGTH_SHORT).show();
-	 * e1.printStackTrace();
-	 * 
-	 * if (onEmulator) { testIp = new byte[] { 10, (byte) 169, 2, 26 }; } else
-	 * return null; }
-	 * 
-	 * for (int i = 1; i < 255; i++) { testIp[3] = (byte) i;
-	 * 
-	 * try { // connect to IP InetAddress ip = InetAddress.getByAddress(testIp);
-	 * 
-	 * // TODO: How to check for FAT??? if (ip.isReachable(5)) {
-	 * adr.add(ip.getHostAddress()); }
-	 * 
-	 * } catch (UnknownHostException e) { e.printStackTrace(); } catch
-	 * (IOException e) { e.printStackTrace(); } }
-	 * 
-	 * return (String[]) adr.toArray(); }
-	 */
-
 	public void onDebugButton(View v) {
-		short in1 = Short.decode((String) ((TextView) findViewById(R.id.pos1)).getText());
-		short in2 = Short.decode((String) ((TextView) findViewById(R.id.pos2)).getText());
-		short in3 = Short.decode((String) ((TextView) findViewById(R.id.pos3)).getText());
-		short in4 = Short.decode((String) ((TextView) findViewById(R.id.pos4)).getText());
+		short in1 = Short.decode(((TextView) findViewById(R.id.pos1)).getText().toString());
+		short in2 = Short.decode(((TextView) findViewById(R.id.pos2)).getText().toString());
+		short in3 = Short.decode(((TextView) findViewById(R.id.pos3)).getText().toString());
+		short in4 = Short.decode(((TextView) findViewById(R.id.pos4)).getText().toString());
 
 		sendCode(new short[] { in1, in2, in3, in4 });
 	}
 
+	public boolean onKeyDown (int keyCode, KeyEvent event) {
+		short key = 0;
+		int unicode = 0;
+		
+		unicode = event.getUnicodeChar();
+		key = (short) unicode;
+		Log.i("FATremote", "KeyEvent: "+key+", unicode: "+unicode);
+		
+		// Send Character
+		if (key != 0) {
+			sendCode(new short[] { 0x48, 0x12, 0xf9, key });
+			return true;
+		} else
+			return super.onKeyDown(keyCode, event);
+	}
+	
 	public void getKeyCode(View v) {
-		byte keyCode = -1;
+		short keyCode = -1;
 
 		// ring / vibrate
-		if ((!mSettings.m_bOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) ||
-				mSettings.m_bOverride && mSettings.m_bTone) {
+		if ((!mSettings.m_bOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) || (mSettings.m_bOverride && mSettings.m_bTone)) {
 			audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 		}
 
@@ -244,9 +237,11 @@ public class RemoteActivity extends Activity {
 			vibrator.vibrate(25);
 		}
 
+		// TODO: set send image
+
 		// solve to code
-		if (v instanceof Button) {
-			Button bv = (Button) v;
+		if (v instanceof ImageView) {
+			ImageView bv = (ImageView) v;
 			String t = (String) bv.getTag();
 
 			if (t.equals("power"))
@@ -267,10 +262,10 @@ public class RemoteActivity extends Activity {
 				keyCode = 0x41;
 			else if (t.equals("info"))
 				keyCode = 0x47;
-			else if (t.equals("text"))
-				Toast.makeText(this, R.string.app_err_buttonoffline, Toast.LENGTH_SHORT);
-				//keyCode = 0x;
-			else if (t.equals("rew"))
+			else if (t.equals("text")) {
+				showKeyboard();
+				return;
+			} else if (t.equals("rew"))
 				keyCode = 0x52;
 			else if (t.equals("menu"))
 				keyCode = 0x1A;
@@ -296,46 +291,61 @@ public class RemoteActivity extends Activity {
 				keyCode = 0x08;
 		}
 
-		sendCode(keyCode);
+		sendCode(new short[] { 0x48, 0x12, keyCode, 0x00 });
 	}
 
-	private void sendCode(short keyCode) {
-		sendCode(new short[] { 0x48, 0x12, keyCode, 0x00 });
+	private void showKeyboard() {
+		 InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		 mgr.toggleSoftInput(0, 0);
 	}
 
 	private void sendCode(short[] keyCode) {
 		try {
-//			NetworkInterface netInterface = NetworkInterface.getByInetAddress(InetAddress.getByAddress(getLocalWifiIp()));
-			if (mFATip != null
-					&& getLocalWifiIp() != null // this makes sure wifi is up and running
-					/*&& mFATip.isReachable(netInterface, 5, 200)*/) {
+			// this makes sure wifi is up and running
+			if ( mFATip != null && (getLocalWifiIp() != null || onEmulator) ) {
 				// Open Socket
 				cnx = new Socket(mFATip, mPort);
 
 				// Open Streams
-				BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(cnx.getOutputStream()));
-				BufferedReader br = new BufferedReader(new InputStreamReader(cnx.getInputStream()));
+				BufferedOutputStream bos = new BufferedOutputStream(cnx.getOutputStream(), 20);
+				BufferedInputStream bis = new BufferedInputStream(cnx.getInputStream(), 4096);
 
 				// send command
-				char[] command = new char[keyCode.length];
-
 				for (int i = 0; i < keyCode.length; i++) {
-					command[i] = (char) keyCode[i];
+					bos.write(keyCode[i]);
 				}
-
-				bw.write(command);
-				bw.flush();
+				bos.flush();
 
 				if (onEmulator) {
-					char[] buf = new char[100];
-					int read = br.read(buf);
-					if (read > 0)
-						Toast.makeText(this, "Recived data from FAT: \"" + String.copyValueOf(buf) + "\"", Toast.LENGTH_LONG);
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
+					int read = 0, in;
+					byte[] buf = new byte[4000];
+					FileOutputStream fout = null;
+					while((in = bis.read(buf)) > 0) {
+						read += in;
+						if (fout == null) {
+							File f = new File("/mnt/sdcard/fatremote.out");
+							f.createNewFile();
+							fout = new FileOutputStream(f);
+						}
+						fout.write(buf);
+						
+					}
+					if (read > 0) {
+						fout.flush();
+						fout.close();
+						Toast.makeText(this, "Recived data from FAT: " + read + ".", Toast.LENGTH_LONG);
+					}
 				}
 
 				// close streams
-				bw.close();
-				br.close();
+				bos.close();
+				bis.close();
 				cnx.close();
 			} else
 				Toast.makeText(this, R.string.app_err_fatoffline, Toast.LENGTH_LONG).show();

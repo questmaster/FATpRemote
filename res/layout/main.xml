@@ -3,50 +3,5 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:layout_width="fill_parent" android:id="@+id/linearLayout1">
-        <TextView android:layout_height="wrap_content" android:text="TextView" android:id="@+id/textView1" android:layout_width="wrap_content" android:visibility="invisible" android:layout_weight="0.7"></TextView>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout2">
-            <Button android:layout_height="fill_parent" android:tag="power" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button1" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="up" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button2" android:layout_weight="66" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="home" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button3" android:layout_weight="22" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout3">
-            <Button android:layout_height="wrap_content" android:tag="invis" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button4" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="left" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button11" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="ok" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button12" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="right" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button13" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button14" android:layout_weight="22" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout4">
-            <Button android:layout_height="fill_parent" android:tag="back" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button5" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="down" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button15" android:layout_weight="66" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="info" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button16" android:layout_weight="22" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout5">
-            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button10" android:layout_weight="44" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="text" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button25" android:layout_weight="22" android:text="Button"></Button>
-            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button26" android:layout_weight="44" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout6">
-            <Button android:layout_height="fill_parent" android:tag="rew" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button9" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="menu" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button23" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="ff" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button24" android:layout_weight="33" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout7">
-            <Button android:layout_height="fill_parent" android:tag="prev" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button8" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="playpause" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button21" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="next" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button22" android:layout_weight="33" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout8">
-            <Button android:layout_height="fill_parent" android:tag="volup" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button7" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="stop" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button19" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:tag="zoomin" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button20" android:layout_weight="33" android:text="Button"></Button>
-        </LinearLayout>
-        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout9">
-            <Button android:layout_height="fill_parent" android:tag="voldown" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button6" android:layout_weight="33" android:text="Button"></Button>
-            <Button android:layout_height="fill_parent" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button17" android:layout_weight="33" android:text="Button" android:tag="mute"></Button>
-            <Button android:layout_height="fill_parent" android:tag="zoomout" android:layout_width="wrap_content" android:onClick="getKeyCode" android:id="@+id/button18" android:layout_weight="33" android:text="Button"></Button>
-        </LinearLayout>
-    </LinearLayout>
-    <ImageView android:src="@drawable/remote_320x480" android:scaleType="fitXY" android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/remotePic"></ImageView>
+    <ImageView android:scaleType="fitXY" android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/remotePic" android:src="@drawable/splash"></ImageView>
 </FrameLayout>
