@@ -1,12 +1,8 @@
 package de.questmaster.fatremote;
 
-import java.net.ConnectException;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import de.questmaster.fatremote.FatRemoteSettings.Settings;
@@ -108,24 +104,24 @@ public class StartActivity extends Activity {
 	}
 
 
-	private byte[] getLocalWifiIp() throws ConnectException {
-		WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);;
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		int ipAddress = wifiInfo.getIpAddress();
-
-		// ip is encoded -> decode
-		byte ip1, ip2, ip3, ip4;
-		ip1 = (byte) (ipAddress & 0x000000FF);
-		ip2 = (byte) ((ipAddress & 0x0000FF00) >> 8);
-		ip3 = (byte) ((ipAddress & 0x00FF0000) >> 16);
-		ip4 = (byte) ((ipAddress & 0xFF000000) >> 24);
-
-		if (ip1 == 0 && ip2 == 0 && ip3 == 0 && ip4 == 0 || !wifiManager.isWifiEnabled())
-			throw new ConnectException(getResources().getString(R.string.app_err_wifioff));
-		else
-			return new byte[] { ip1, ip2, ip3, ip4 };
-
-	}
+//	private byte[] getLocalWifiIp() throws ConnectException {
+//		WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);;
+//		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+//		int ipAddress = wifiInfo.getIpAddress();
+//
+//		// ip is encoded -> decode
+//		byte ip1, ip2, ip3, ip4;
+//		ip1 = (byte) (ipAddress & 0x000000FF);
+//		ip2 = (byte) ((ipAddress & 0x0000FF00) >> 8);
+//		ip3 = (byte) ((ipAddress & 0x00FF0000) >> 16);
+//		ip4 = (byte) ((ipAddress & 0xFF000000) >> 24);
+//
+//		if (ip1 == 0 && ip2 == 0 && ip3 == 0 && ip4 == 0 || !wifiManager.isWifiEnabled())
+//			throw new ConnectException(getResources().getString(R.string.app_err_wifioff));
+//		else
+//			return new byte[] { ip1, ip2, ip3, ip4 };
+//
+//	}
 
 //	private boolean pingIp(InetAddress ip) {
 //		int exit = 1;

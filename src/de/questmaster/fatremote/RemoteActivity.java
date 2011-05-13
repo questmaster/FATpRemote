@@ -15,7 +15,6 @@ import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -57,9 +56,11 @@ public class RemoteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.remote);
 
+		/* start audio */
 		audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		audioManager.loadSoundEffects();
 
+		/* read IP */
 		readFATip();
 
 		if (mSettings.m_sFatIP.equals("")) {
@@ -128,7 +129,7 @@ public class RemoteActivity extends Activity {
 	public void onResume() {
 		super.onResume();
 
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -354,4 +355,5 @@ public class RemoteActivity extends Activity {
 			e.printStackTrace();
 		}
 	}
+
 }
