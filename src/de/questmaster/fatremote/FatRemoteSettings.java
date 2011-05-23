@@ -18,6 +18,7 @@ package de.questmaster.fatremote;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
@@ -59,5 +60,16 @@ public class FatRemoteSettings extends PreferenceActivity {
 
 			}
 		}
+		
+		public void setFatIp(Context p_oContext, String fat_ip) {
+			Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(p_oContext).edit();
+			Resources res = p_oContext.getResources();
+			
+			m_sFatIP = fat_ip;
+			sharedPref.putString(res.getString(R.string.PREF_KEY_FAT_IP), m_sFatIP);
+			
+			sharedPref.commit();
+		}
+
 	}
 }

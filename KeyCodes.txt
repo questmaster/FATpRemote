@@ -74,6 +74,12 @@ Couple of questions for people who own the Iphone version ...
 to1) No idea. Haven't been able to test this.
 to2) 48 12 fe 00 -> SQLite Database(though no idea what gets sent back as all my testing was with 2.20 which doesn't support this feature)
 		-> static SQLiteDatabase openDatabase(String path, SQLiteDatabase.CursorFactory factory, int flags)
+		-> returns 00 00 00 00 if no files, 00 78 14 00 + sqliteDB if files available
 to3) 48 12 f9 41 is 'A' - replace the last byte with the ASCII code for the character you want. My tests with sending Japanese Unicode characters have been a total failure. So far I have successfully tested only the characters in the Anglo-centric 7-bit ASCII set, though the Euro-centric 8-bit Latin character set, probably works. Es tut mir leid.
 
- 
+---
+
+48 12 fd 00 - waits for input
+48 12 fc 00 - returns "Venus" on FAT+ 2.30
+48 12 fa 00 - waits for input, aft connection closed returns 8byte 03 00 00 00 00 00 00 00
+

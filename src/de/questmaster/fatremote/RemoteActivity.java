@@ -1,14 +1,6 @@
 package de.questmaster.fatremote;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.ConnectException;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,9 +8,6 @@ import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -41,14 +30,12 @@ public class RemoteActivity extends Activity {
 	public static final int ON_SETTINGS_CHANGE = 1;
 
 	private Settings mSettings = new FatRemoteSettings.Settings();
-	private InetAddress mFATip = null;
-	private int mPort = 9999;
-	private Socket cnx = null;
 	private AudioManager audioManager;
-	private WifiManager wifiManager;
 
-	private boolean onEmulator = Build.PRODUCT.contains("sdk");
 	private boolean showDebugView = false;
+	private Activity c = this;
+	private short keyCode;
+	private short keyModifier;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -61,7 +48,12 @@ public class RemoteActivity extends Activity {
 		audioManager.loadSoundEffects();
 
 		/* read IP */
-		readFATip();
+		mSettings.ReadSettings(this);
+
+		// check if WIFI available
+		if (!NetworkUtil.getInstance(this).isWifiEnabled()) {
+			Toast.makeText(this, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
+		}
 
 		if (mSettings.m_sFatIP.equals("")) {
 			AlertDialog.Builder notification = new Builder(this);
@@ -82,7 +74,7 @@ public class RemoteActivity extends Activity {
 		inflater.inflate(R.menu.options_menu, menu);
 
 		// For testing purpose
-		if (onEmulator) {
+		if (StartActivity.onEmulator) {
 			MenuItem mi = menu.findItem(R.id.MENU_ITEM_DEBUG);
 			mi.setVisible(true);
 		}
@@ -120,125 +112,84 @@ public class RemoteActivity extends Activity {
 			} else
 				setContentView(R.layout.debug);
 			break;
+		case R.id.MENU_ITEM_EXIT:
+			// FIXME: exit is not working
+			System.exit(0);
+			break;
 		default:
 			// should not happen
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onResume() {
-		super.onResume();
-
-//		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-	}
-
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case INTENT_SELECT_FAT: {
-//			if (resultCode == Activity.RESULT_OK) {
-//				try {
-//					mFATip = InetAddress.getByName(data.getStringExtra(INTENT_ALLFATS));
-//				} catch (UnknownHostException e) {
-//					e.printStackTrace();
-//				}
-//			} else {
-//				mFATip = null;
-//			}
+			// if (resultCode == Activity.RESULT_OK) {
+			// try {
+			// mFATip =
+			// InetAddress.getByName(data.getStringExtra(INTENT_ALLFATS));
+			// } catch (UnknownHostException e) {
+			// e.printStackTrace();
+			// }
+			// } else {
+			// mFATip = null;
+			// }
 
 			break;
 		}
 		case ON_SETTINGS_CHANGE: {
-			readFATip();
+			mSettings.ReadSettings(this);
 			break;
 		}
 		}
 	}
 
-	/**
-	 * 
-	 */
-	private void readFATip() {
-		mSettings.ReadSettings(this);
-
-		wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
-		if (!wifiManager.isWifiEnabled()) {
-			Toast.makeText(this, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
-		}
-		
-		try {
-			mFATip = InetAddress.getByName(mSettings.m_sFatIP);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-			mFATip = null;
-			Toast.makeText(this, R.string.app_err_wrongip, Toast.LENGTH_LONG).show();
-		}
-
-	}
-
-	private byte[] getLocalWifiIp() throws ConnectException {
-		WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-		int ipAddress = wifiInfo.getIpAddress();
-
-		// ip is encoded -> decode
-		byte ip1, ip2, ip3, ip4;
-		ip1 = (byte) (ipAddress & 0x000000FF);
-		ip2 = (byte) ((ipAddress & 0x0000FF00) >> 8);
-		ip3 = (byte) ((ipAddress & 0x00FF0000) >> 16);
-		ip4 = (byte) ((ipAddress & 0xFF000000) >> 24);
-
-//		if (onEmulator) {
-//			ip1 = 10;
-//			ip2 = (byte) 169;
-//			ip3 = 2;
-//			ip4 = 26;
-//		}
-
-		if (ip1 == 0 && ip2 == 0 && ip3 == 0 && ip4 == 0 || !wifiManager.isWifiEnabled())
-//			throw new ConnectException(getResources().getString(R.string.app_err_wifioff));
-			return null;
-		else
-			return new byte[] { ip1, ip2, ip3, ip4 };
-	}
-
 	public void onDebugButton(View v) {
-		short in1 = Short.decode(((TextView) findViewById(R.id.pos1)).getText().toString());
-		short in2 = Short.decode(((TextView) findViewById(R.id.pos2)).getText().toString());
+//		short in1 = Short.decode(((TextView) findViewById(R.id.pos1)).getText().toString());
+//		short in2 = Short.decode(((TextView) findViewById(R.id.pos2)).getText().toString());
 		short in3 = Short.decode(((TextView) findViewById(R.id.pos3)).getText().toString());
 		short in4 = Short.decode(((TextView) findViewById(R.id.pos4)).getText().toString());
 
-		sendCode(new short[] { in1, in2, in3, in4 });
+		keyCode = in3;
+		keyModifier = in4;
+
+		// send keyCode
+		invokeSend();
 	}
 
-	public boolean onKeyDown (int keyCode, KeyEvent event) {
+	public boolean onKeyDown(int keyId, KeyEvent event) {
 		short key = 0;
 		int unicode = 0;
-		
+
+		// set send image
+		ImageView sending = (ImageView) findViewById(R.id.sendLED);
+		sending.setImageResource(R.drawable.light_highlight);
+
+		// get key
 		unicode = event.getUnicodeChar();
 		key = (short) unicode;
-		Log.i("FATremote", "KeyEvent: "+key+", unicode: "+unicode);
-		
-		// Send Character
+		Log.i(StartActivity.LOG_TAG, "KeyEvent: " + key + ", unicode: " + unicode);
+
+		// FIXME: Some key are not working, e.g. öäü backspace...
+		// Send Character // FIXME: back key also lights 'send led'. Bad!
 		if (key != 0) {
-			sendCode(new short[] { 0x48, 0x12, 0xf9, key });
+			keyCode = 0xf9;
+			keyModifier = key;
+
+			// send keyCode
+			invokeSend();
 			return true;
 		} else
-			return super.onKeyDown(keyCode, event);
+			return super.onKeyDown(keyId, event);
 	}
-	
+
+	private void showKeyboard() {
+		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+		mgr.toggleSoftInput(0, 0);
+	}
+
 	public void getKeyCode(View v) {
-		short keyCode = -1;
-
-		// ring / vibrate
-		if ((!mSettings.m_bOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) || (mSettings.m_bOverride && mSettings.m_bTone)) {
-			audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
-		}
-
-		if (mSettings.m_bVibrate) {
-			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-			vibrator.vibrate(25);
-		}
-
-		// TODO: set send image
 
 		// solve to code
 		if (v instanceof ImageView) {
@@ -291,69 +242,49 @@ public class RemoteActivity extends Activity {
 			else if (t.equals("zoomout"))
 				keyCode = 0x08;
 		}
+		keyModifier = 0x00;
 
-		sendCode(new short[] { 0x48, 0x12, keyCode, 0x00 });
+		// send keyCode
+		invokeSend();
 	}
 
-	private void showKeyboard() {
-		 InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		 mgr.toggleSoftInput(0, 0);
-	}
-
-	private void sendCode(short[] keyCode) {
-		try {
-			// this makes sure wifi is up and running
-			if ( mFATip != null && (getLocalWifiIp() != null || onEmulator) ) {
-				// Open Socket
-				cnx = new Socket(mFATip, mPort);
-
-				// Open Streams
-				BufferedOutputStream bos = new BufferedOutputStream(cnx.getOutputStream(), 20);
-				BufferedInputStream bis = new BufferedInputStream(cnx.getInputStream(), 4096);
-
-				// send command
-				for (int i = 0; i < keyCode.length; i++) {
-					bos.write(keyCode[i]);
-				}
-				bos.flush();
-
-				if (onEmulator) {
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					
-					int read = 0, in;
-					byte[] buf = new byte[4000];
-					FileOutputStream fout = null;
-					while((in = bis.read(buf)) > 0) {
-						read += in;
-						if (fout == null) {
-							File f = new File("/mnt/sdcard/fatremote.out");
-							f.createNewFile();
-							fout = new FileOutputStream(f);
-						}
-						fout.write(buf);
-						
-					}
-					if (read > 0) {
-						fout.flush();
-						fout.close();
-						Toast.makeText(this, "Recived data from FAT: " + read + ".", Toast.LENGTH_LONG);
-					}
-				}
-
-				// close streams
-				bos.close();
-				bis.close();
-				cnx.close();
-			} else
-				Toast.makeText(this, R.string.app_err_fatoffline, Toast.LENGTH_LONG).show();
-		} catch (IOException e) {
-			Toast.makeText(this, R.string.app_err_noconnection, Toast.LENGTH_LONG).show();
-			e.printStackTrace();
+	private void invokeSend() {
+		// ring / vibrate
+		if ((!mSettings.m_bOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) || (mSettings.m_bOverride && mSettings.m_bTone)) {
+			audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 		}
-	}
 
+		if (mSettings.m_bVibrate) {
+			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+			vibrator.vibrate(25);
+		}
+
+		// set send image
+		ImageView sending = (ImageView) findViewById(R.id.sendLED);
+		sending.setImageResource(R.drawable.light_highlight);
+		sending.invalidate();
+
+		// start sending in new thread
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					NetworkUtil.getInstance(c).sendCode(mSettings.m_sFatIP, new short[] { 0x48, 0x12, keyCode, keyModifier });
+				} catch (final ConnectException e) {
+					c.runOnUiThread(new Runnable() {
+						public void run() {
+							Toast.makeText(c, e.getMessage(), Toast.LENGTH_LONG).show();
+						}
+					});
+				}
+
+				c.runOnUiThread(new Runnable() {
+					public void run() {
+						// reset send image
+						ImageView sending = (ImageView) findViewById(R.id.sendLED);
+						sending.setImageResource(R.drawable.light_normal);
+					}
+				});
+			}
+		}).start();
+	}
 }
