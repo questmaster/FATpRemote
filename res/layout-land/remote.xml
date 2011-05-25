@@ -7,7 +7,7 @@
     <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:orientation="horizontal">
 	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:layout_weight="1">
 	        <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout10" android:layout_height="wrap_content" android:layout_weight="0.5">
-	            <ImageView android:id="@+id/imageView23" android:src="@drawable/light_normal" android:layout_width="fill_parent" android:scaleType="centerInside" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:id="@+id/sendLED" android:src="@drawable/light_normal" android:layout_width="fill_parent" android:scaleType="centerInside" android:layout_height="match_parent"></ImageView>
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout2">
 	            <ImageView android:id="@+id/imageView17" android:onClick="getKeyCode" android:tag="power" android:src="@drawable/power" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>

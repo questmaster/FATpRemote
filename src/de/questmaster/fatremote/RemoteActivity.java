@@ -261,7 +261,7 @@ public class RemoteActivity extends Activity {
 			vibrator.vibrate(25);
 		}
 
-		// FIXME: findbyid returns null, why?!
+		// Set sending image
 		ImageView sending = (ImageView) this.findViewById(R.id.sendLED);
 		sending.setImageResource(R.drawable.light_highlight);
 		sending.invalidate();
