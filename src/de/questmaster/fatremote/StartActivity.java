@@ -20,6 +20,7 @@ public class StartActivity extends Activity {
 	protected static final boolean onEmulator = Build.PRODUCT.contains("sdk");
 
 	private Settings mSettings = new FatRemoteSettings.Settings();
+	private static boolean discoveryFailed = false;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -36,20 +37,21 @@ public class StartActivity extends Activity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 	
-	public void onPostResume() {
-		super.onPostResume();
+	public void onStart() {
+		super.onStart();
 		
 		mSettings.ReadSettings(this);
 
 		// check if ip is known
 		if (mSettings.m_sFatIP.equals("")) {
+			if (!discoveryFailed) {
 			// show selectFAT activity
 			Intent selectFAT = new Intent(Intent.ACTION_PICK);
 //			selectFAT.putExtra(INTENT_ALLFATS, ips);
 
 			selectFAT.setClass(this, SelectFATActivity.class);
 			startActivityForResult(selectFAT, INTENT_SELECT_FAT);
-			
+			}
 		} else {
 			// show remote
 			Intent operateFAT = new Intent(Intent.ACTION_VIEW);
@@ -60,20 +62,13 @@ public class StartActivity extends Activity {
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// FIXME: activity order/calls are not worink properly
+		mSettings.ReadSettings(this);
+
 		switch (requestCode) {
 		case INTENT_SELECT_FAT: {
-			mSettings.ReadSettings(this);
-
-			if (resultCode == Activity.RESULT_OK) {
-					
-				// get data
-				String fat_ip = data.getStringExtra(StartActivity.INTENT_FAT_IP);
-
-				// save ip in settings FIXME: saving works but starting remote doesn't recognize it
-				mSettings.setFatIp(this, fat_ip);
-
-			} else if (mSettings.m_sFatIP.equals("")) {
+			if (resultCode == Activity.RESULT_CANCELED && mSettings.m_sFatIP.equals("")) {
+				discoveryFailed = true;
+				
 				//Show Settings
 				Intent iSettings = new Intent();
 				iSettings.setClass(this, FatRemoteSettings.class);
@@ -85,15 +80,17 @@ public class StartActivity extends Activity {
 			//break; // this is commented by intent!
 		}
 		case INTENT_SETTINGS_CHANGE: {
-			mSettings.ReadSettings(this);
+			discoveryFailed = false;
 
 			// TODO: check IP reachable?
 			
+			if (!mSettings.m_sFatIP.equals("")) {
 			Intent operateFAT = new Intent(Intent.ACTION_VIEW);
 			operateFAT.setClass(this, RemoteActivity.class);
 			operateFAT.putExtra(INTENT_FAT_IP, mSettings.m_sFatIP);
 			this.startActivity(operateFAT);
-
+			}
+			
 			break;
 		}
 		}

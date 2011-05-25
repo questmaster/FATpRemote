@@ -162,17 +162,19 @@ public class RemoteActivity extends Activity {
 		short key = 0;
 		int unicode = 0;
 
-		// set send image
-		ImageView sending = (ImageView) findViewById(R.id.sendLED);
-		sending.setImageResource(R.drawable.light_highlight);
-
 		// get key
 		unicode = event.getUnicodeChar();
 		key = (short) unicode;
-		Log.i(StartActivity.LOG_TAG, "KeyEvent: " + key + ", unicode: " + unicode);
+		Log.i(StartActivity.LOG_TAG, "KeyEvent: " + keyId + ", unicode: " + unicode);
 
-		// FIXME: Some key are not working, e.g. öäü backspace...
-		// Send Character // FIXME: back key also lights 'send led'. Bad!
+		// WORKAROUND for some keys
+		if (key == 0) {
+			if (keyId == 67 ) key = 8; // Backspace
+			
+		}
+		
+		// FIXME: Some key are not working, e.g. öäü (extended ASCII)...
+		// Send Character
 		if (key != 0) {
 			keyCode = 0xf9;
 			keyModifier = key;
@@ -259,8 +261,8 @@ public class RemoteActivity extends Activity {
 			vibrator.vibrate(25);
 		}
 
-		// set send image
-		ImageView sending = (ImageView) findViewById(R.id.sendLED);
+		// FIXME: findbyid returns null, why?!
+		ImageView sending = (ImageView) this.findViewById(R.id.sendLED);
 		sending.setImageResource(R.drawable.light_highlight);
 		sending.invalidate();
 

@@ -22,4 +22,6 @@
     <string name="app_err_fatoffline">FreeAgent Theater+ not configured or offline.</string>
     <string name="app_err_noconnection">Could not connect to FreeAgent Theater+. Either Wifi or FAT+ are offline.</string>
     <string name="menu_exit">Exit</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="dialog_wait_searching">Please wait. Searching for devices...</string>
 </resources>

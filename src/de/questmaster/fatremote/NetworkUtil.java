@@ -109,7 +109,7 @@ public class NetworkUtil {
 			// get computers
 			adr = pingBroadcast();
 		
-	//		// TODO: check for FAT+ or others availability
+	//		// TODO: check for FAT+ or other device
 	//		for (String testIp : adr) {
 	//	
 	//			try {
@@ -143,7 +143,7 @@ public class NetworkUtil {
 			// this makes sure wifi is up and running
 			if ( mFATip != null && (isWifiEnabled() || StartActivity.onEmulator) ) {
 				// Open Socket
-				cnx = new Socket(mFATip, mPort);
+				cnx = new Socket(mFATip, mPort); // FIXME: hangs here on emulator if device down -> check if device alive before connecting
 
 				// Open Streams
 				BufferedOutputStream bos = new BufferedOutputStream(cnx.getOutputStream(), 20);
