@@ -90,9 +90,9 @@ public final class R {
         public static final int zoomup_normal=0x7f02004c;
     }
     public static final class id {
-        public static final int MENU_ITEM_DEBUG=0x7f070031;
-        public static final int MENU_ITEM_EXIT=0x7f070032;
+        public static final int MENU_ITEM_DEBUG=0x7f070032;
         public static final int MENU_ITEM_SELECTFAT=0x7f070030;
+        public static final int MENU_ITEM_SETTINGS=0x7f070031;
         public static final int MENU_REFRESH=0x7f07002f;
         public static final int button1=0x7f070005;
         public static final int button10=0x7f070019;
@@ -167,12 +167,12 @@ public final class R {
         public static final int app_name=0x7f050000;
         public static final int dialog_noip_text=0x7f05000e;
         public static final int dialog_noip_title=0x7f05000d;
-        public static final int dialog_wait_searching=0x7f050017;
+        public static final int dialog_wait_searching=0x7f050016;
         public static final int layout_debug_send=0x7f05000a;
         public static final int menu_debug=0x7f050006;
-        public static final int menu_exit=0x7f050015;
-        public static final int menu_refresh=0x7f050016;
+        public static final int menu_refresh=0x7f050015;
         public static final int menu_select_fat=0x7f050005;
+        public static final int menu_settings=0x7f050017;
         public static final int pref_default_behavior_title=0x7f050007;
         public static final int pref_fat_ip_summary=0x7f05000c;
         public static final int pref_fat_ip_title=0x7f05000b;

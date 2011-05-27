@@ -109,22 +109,22 @@ public class NetworkUtil {
 			// get computers
 			adr = pingBroadcast();
 		
-	//		// TODO: check for FAT+ or other device
-	//		for (String testIp : adr) {
-	//	
-	//			try {
-	//				InetAddress ip = InetAddress.getByName(testIp);
-	//	
-	//				// TODO: send command 48 12 fc 00
-	//				
-	//				if (!"Venus") {
-	//					adr.remove(testIp);
-	//				}
-	//	
-	//			} catch (UnknownHostException e) {
-	//				e.printStackTrace();
-	//			}
-	//		}
+//		// TODO: check for FAT+ or other device
+//		for (String testIp : adr) {
+//	
+//			try {
+//				InetAddress ip = InetAddress.getByName(testIp);
+//	
+//				// TODO: send command 48 12 fc 00
+//				
+//				if (!"Venus") {
+//					adr.remove(testIp);
+//				}
+//	
+//			} catch (UnknownHostException e) {
+//				e.printStackTrace();
+//			}
+//		}
 		}
 		
 		return adr.toArray(new String[] {});
@@ -156,7 +156,7 @@ public class NetworkUtil {
 				}
 				bos.flush();
 
-				if (StartActivity.onEmulator) {
+				if (StartActivity.onEmulator) { // FIXME: include output of incoming data in regular release!
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException e) {

@@ -5,7 +5,7 @@
     <string name="PREF_KEY_DEFAULT_BEHAVIOR">key_def_beh</string>
     <string name="PREF_KEY_TONE">key_tone</string>
     <string name="PREF_KEY_VIBRATE">key_vibrate</string>
-    <string name="menu_select_fat">Settings</string>
+    <string name="menu_select_fat">Select device</string>
     <string name="menu_debug">Debug mode</string>
     <string name="pref_default_behavior_title">Override System Default</string>
     <string name="pref_tone_title">Tone on button press</string>
@@ -21,7 +21,7 @@
     <string name="app_err_buttonoffline">Button is not functional, yet.</string>
     <string name="app_err_fatoffline">FreeAgent Theater+ not configured or offline.</string>
     <string name="app_err_noconnection">Could not connect to FreeAgent Theater+. Either Wifi or FAT+ are offline.</string>
-    <string name="menu_exit">Exit</string>
     <string name="menu_refresh">Refresh</string>
-    <string name="dialog_wait_searching">Please wait. Searching for devices...</string>
+    <string name="dialog_wait_searching">Please wait. Searching for devices.</string>
+    <string name="menu_settings">Settings</string>
 </resources>

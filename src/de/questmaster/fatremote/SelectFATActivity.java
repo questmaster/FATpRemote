@@ -1,5 +1,8 @@
 package de.questmaster.fatremote;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import de.questmaster.fatremote.FatRemoteSettings.Settings;
 import android.app.Activity;
 import android.app.ListActivity;
@@ -18,8 +21,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class SelectFATActivity extends ListActivity {
-	
+
 	private String[] ips = null;
+	private String[] ipnames = null;
 	private Activity c = this;
 	private Settings mSettings = new FatRemoteSettings.Settings();
 	private ProgressDialog mDialog;
@@ -42,7 +46,7 @@ public class SelectFATActivity extends ListActivity {
 
 				// save ip in settings
 				mSettings.setFatIp(c, ips[(int) id]);
-				
+
 				// When clicked, show a toast with the TextView text
 				setResult(Activity.RESULT_OK, new Intent().putExtra(StartActivity.INTENT_FAT_IP, ips[(int) id]));
 				finish();
@@ -57,13 +61,24 @@ public class SelectFATActivity extends ListActivity {
 	 */
 	private void getAvailableIps() {
 		// show progress dialog
-		mDialog = ProgressDialog.show(this, "", 
-                getResources().getString(R.string.dialog_wait_searching), true);
-		
+		mDialog = ProgressDialog.show(this, "", getResources().getString(R.string.dialog_wait_searching), true);
+
 		// get data
 		new Thread(new Runnable() {
 			public void run() {
+				// grab available ip's
 				ips = NetworkUtil.getInstance(c).discoverFAT();
+				ipnames = new String[ips.length];
+
+				// resolve host names
+				try {
+					for (int i = 0; i < ips.length; i++) {
+						ipnames[i] = InetAddress.getByName(ips[i]).getHostName() + " (" + ips[i] + ")";
+					}
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
+
 				if (ips.length == 0) {
 					c.runOnUiThread(new Runnable() {
 						public void run() {
@@ -75,11 +90,11 @@ public class SelectFATActivity extends ListActivity {
 				} else {
 					c.runOnUiThread(new Runnable() {
 						public void run() {
-							setListAdapter(new ArrayAdapter<String>(c, R.layout.fatlist_item, R.id.textIP, ips));
+							setListAdapter(new ArrayAdapter<String>(c, R.layout.fatlist_item, R.id.textIP, ipnames));
 						}
 					});
 				}
-				
+
 				// close progress dialog
 				mDialog.dismiss();
 			}

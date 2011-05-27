@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/MENU_ITEM_SELECTFAT" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/menu_select_fat"></item>
-    <item android:id="@+id/MENU_ITEM_DEBUG" android:icon="@android:drawable/ic_menu_manage" android:visible="false" android:title="@string/menu_debug"></item>
-    <item android:id="@+id/MENU_ITEM_EXIT" android:title="@string/menu_exit" android:icon="@android:drawable/ic_menu_close_clear_cancel"></item>
+    <item android:id="@+id/MENU_ITEM_SELECTFAT" android:title="@string/menu_select_fat" android:icon="@android:drawable/ic_menu_manage"></item><item android:id="@+id/MENU_ITEM_SETTINGS" android:icon="@android:drawable/ic_menu_preferences" android:title="@string/menu_settings"></item>
+    <item android:id="@+id/MENU_ITEM_DEBUG" android:visible="false" android:title="@string/menu_debug" android:icon="@android:drawable/ic_menu_set_as"></item>
+    
 </menu>

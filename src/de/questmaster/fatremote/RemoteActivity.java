@@ -90,17 +90,12 @@ public class RemoteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.MENU_ITEM_SELECTFAT:
-			// // TODO: show FAT selection
-			// String ips[] = discoverFAT();
-			//
-			// if (ips != null) {
-			// Intent selectFAT = new Intent(Intent.ACTION_PICK);
-			// selectFAT.putExtra(INTENT_ALLFATS, ips);
-			//
-			// new SelectFAT().startActivityForResult(selectFAT,
-			// INTENT_SELECT_FAT);
-			// }
+			Intent selectFAT = new Intent(Intent.ACTION_PICK);
+			selectFAT.setClass(this, SelectFATActivity.class);
+			startActivityForResult(selectFAT, INTENT_SELECT_FAT);
 
+			break;
+		case R.id.MENU_ITEM_SETTINGS:
 			Intent iSettings = new Intent();
 			iSettings.setClass(this, FatRemoteSettings.class);
 			startActivityForResult(iSettings, ON_SETTINGS_CHANGE);
@@ -112,10 +107,6 @@ public class RemoteActivity extends Activity {
 			} else
 				setContentView(R.layout.debug);
 			break;
-		case R.id.MENU_ITEM_EXIT:
-			// FIXME: exit is not working
-			System.exit(0);
-			break;
 		default:
 			// should not happen
 		}
@@ -125,17 +116,9 @@ public class RemoteActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case INTENT_SELECT_FAT: {
-			// if (resultCode == Activity.RESULT_OK) {
-			// try {
-			// mFATip =
-			// InetAddress.getByName(data.getStringExtra(INTENT_ALLFATS));
-			// } catch (UnknownHostException e) {
-			// e.printStackTrace();
-			// }
-			// } else {
-			// mFATip = null;
-			// }
-
+//			if (resultCode == Activity.RESULT_OK) {
+				mSettings.ReadSettings(this);
+//			}
 			break;
 		}
 		case ON_SETTINGS_CHANGE: {
@@ -146,8 +129,8 @@ public class RemoteActivity extends Activity {
 	}
 
 	public void onDebugButton(View v) {
-//		short in1 = Short.decode(((TextView) findViewById(R.id.pos1)).getText().toString());
-//		short in2 = Short.decode(((TextView) findViewById(R.id.pos2)).getText().toString());
+		// short in1 = Short.decode(((TextView)findViewById(R.id.pos1)).getText().toString());
+		// short in2 = Short.decode(((TextView)findViewById(R.id.pos2)).getText().toString());
 		short in3 = Short.decode(((TextView) findViewById(R.id.pos3)).getText().toString());
 		short in4 = Short.decode(((TextView) findViewById(R.id.pos4)).getText().toString());
 
@@ -169,11 +152,10 @@ public class RemoteActivity extends Activity {
 
 		// WORKAROUND for some keys
 		if (key == 0) {
-			if (keyId == 67 ) key = 8; // Backspace
-			
+			if (keyId == 67) key = 8; // Backspace
 		}
-		
-		// FIXME: Some key are not working, e.g. öäü (extended ASCII)...
+
+		// TODO: Some key are not working, e.g. öäü (extended ASCII). Maybe show textfield to get all characters.
 		// Send Character
 		if (key != 0) {
 			keyCode = 0xf9;
