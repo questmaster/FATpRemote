@@ -27,9 +27,8 @@
 	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView16" android:onClick="getKeyCode" android:tag="info" android:src="@drawable/info" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout5">
-	            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button10" android:layout_weight="44" android:text="Button"></Button>
-	            <ImageView android:id="@+id/imageView13" android:onClick="getKeyCode" android:tag="text" android:src="@drawable/text" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
-	            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button26" android:layout_weight="44" android:text="Button"></Button>
+	            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/enterText" android:layout_weight="22" android:layout_gravity="center" android:gravity="center" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:visibility="gone"></EditText>
+	            <ImageView android:onClick="getKeyCode" android:tag="text" android:src="@drawable/text" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent" android:padding="11dp" android:id="@+id/textButton" android:visibility="visible"></ImageView>
 	        </LinearLayout>
 	    </LinearLayout>
 	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:layout_weight="1">  

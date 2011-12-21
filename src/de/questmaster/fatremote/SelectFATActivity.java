@@ -1,32 +1,53 @@
 package de.questmaster.fatremote;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.ConnectException;
+import java.util.Vector;
 
-import de.questmaster.fatremote.FatRemoteSettings.Settings;
 import android.app.Activity;
-import android.app.ListActivity;
+import android.app.ExpandableListActivity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
+import android.widget.SimpleCursorTreeAdapter;
 import android.widget.Toast;
+import de.questmaster.fatremote.datastructures.FATDevice;
 
-public class SelectFATActivity extends ListActivity {
+public class SelectFATActivity extends ExpandableListActivity {
 
-	private String[] ips = null;
-	private String[] ipnames = null;
+	public class CustomCursorTreeAdapter extends SimpleCursorTreeAdapter {
+
+		public CustomCursorTreeAdapter(Context context, Cursor cursor, int groupLayout, String[] groupFrom, int[] groupTo, int childLayout, String[] childFrom, int[] childTo) {
+			super(context, cursor, groupLayout, groupFrom, groupTo, childLayout, childFrom, childTo);
+		}
+
+		@Override
+		protected Cursor getChildrenCursor(Cursor groupCursor) {
+			Cursor c = null;
+
+			if (groupCursor.getCount() > 0) {
+				boolean autodetected = groupCursor.getInt(groupCursor.getColumnIndex(FatDevicesDbAdapter.KEY_AUTODETECTED)) == 1;
+
+				c = mDbHelper.fetchFatDeviceOfGroupDetection(autodetected);
+				startManagingCursor(c);
+			}
+
+			return c;
+		}
+		
+	}
+	
 	private Activity c = this;
-	private Settings mSettings = new FatRemoteSettings.Settings();
 	private ProgressDialog mDialog;
+	private FatDevicesDbAdapter mDbHelper;
 
 	/**
 	 * @see android.app.Activity#onCreate(Bundle)
@@ -36,74 +57,115 @@ public class SelectFATActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.selectfat);
 
+		// Init Database
+		mDbHelper = new FatDevicesDbAdapter(this);
+		try {
+			mDbHelper.open();
+		} catch (SQLiteException e) {
+			// TODO: fixme
+			e.printStackTrace();
+		}
+
 		// setup list
-		ListView lv = getListView();
-		lv.setTextFilterEnabled(true);
+		initExpandableListView();
+	}
 
-		// set click action
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	@Override
+	public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
 
-				// save ip in settings
-				mSettings.setFatIp(c, ips[(int) id]);
+		// save fat as active
+		FATDevice fd = mDbHelper.fetchFatDeviceTyp(id);
+		NetworkProxy.getInstance(c).setFat(fd);
 
-				// When clicked, show a toast with the TextView text
-				setResult(Activity.RESULT_OK, new Intent().putExtra(StartActivity.INTENT_FAT_IP, ips[(int) id]));
-				finish();
-			}
-		});
+		// When clicked, show a toast with the TextView text
+		
+		Intent operateFAT = new Intent(this, RemoteActivity.class);
+		operateFAT.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		this.startActivity(operateFAT);
 
-		getAvailableIps();
+		finish();
+		
+		return true;
+	}
+
+	protected void onResume() {
+		super.onResume();
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+	}
+
+	protected void onRestart() {
+		super.onRestart();
+		if (!mDbHelper.isOpen())
+			mDbHelper.open();
+	}
+
+	protected void onPause() {
+		super.onPause();
+		if (mDbHelper.isOpen())
+			mDbHelper.close();
 	}
 
 	/**
 	 * 
 	 */
 	private void getAvailableIps() {
+
 		// show progress dialog
 		mDialog = ProgressDialog.show(this, "", getResources().getString(R.string.dialog_wait_searching), true);
 
 		// get data
 		new Thread(new Runnable() {
 			public void run() {
+				Vector<FATDevice> dev = null;
+
 				// grab available ip's
-				ips = NetworkUtil.getInstance(c).discoverFAT();
-				ipnames = new String[ips.length];
-
-				// resolve host names
 				try {
-					for (int i = 0; i < ips.length; i++) {
-						ipnames[i] = InetAddress.getByName(ips[i]).getHostName() + " (" + ips[i] + ")";
-					}
-				} catch (UnknownHostException e) {
-					e.printStackTrace();
-				}
+					dev = NetworkProxy.getInstance(c).discoverFAT();
 
-				if (ips.length == 0) {
-					c.runOnUiThread(new Runnable() {
-						public void run() {
-							Toast.makeText(c, R.string.app_err_wifioff, Toast.LENGTH_LONG).show();
+					// enter dev's into database
+					for (FATDevice f : dev) {
+						long rowId = -1;
+						if ((rowId = mDbHelper.fetchFatDeviceId(f.getIp())) < 0) {
+							mDbHelper.createFatDevice(f.getName(), f.getIp(), f.getPort(), f.isAutoDetected());
+						} else {
+							mDbHelper.updateFatDevice(rowId, f.getName(), f.getIp(), f.getPort(), f.isAutoDetected());
 						}
-					});
-					setResult(Activity.RESULT_CANCELED);
-					finish();
-				} else {
-					c.runOnUiThread(new Runnable() {
-						public void run() {
-							setListAdapter(new ArrayAdapter<String>(c, R.layout.fatlist_item, R.id.textIP, ipnames));
-						}
-					});
+					}
+
+					// // resolve host names
+					// try {
+					// for (int i = 0; i < ips.length; i++) {
+					// ipnames[i] = InetAddress.getByName(ips[i]).getHostName()
+					// + " (" + ips[i] + ")";
+					// }
+					// } catch (UnknownHostException e) {
+					// e.printStackTrace();
+					// }
+
+					if (dev.size() == 0) { // TODO: This may not be correct if manual dev are entered
+						c.runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(c, R.string.app_err_wifioff, Toast.LENGTH_LONG).show();
+							}
+						});
+						setResult(Activity.RESULT_CANCELED);
+						finish();
+					} else {
+						c.runOnUiThread(new Runnable() {
+							public void run() {
+								initExpandableListView();
+							}
+						});
+					}
+				} catch (ConnectException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 
 				// close progress dialog
 				mDialog.dismiss();
 			}
 		}).start();
-	}
-
-	public void onResume() {
-		super.onResume();
-		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	/**
@@ -131,8 +193,45 @@ public class SelectFATActivity extends ListActivity {
 			break;
 		default:
 			// should not happen
+			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public void onGroupCollapse(int groupPosition) {
+		// keep the Groups expanded
+		getExpandableListView().expandGroup(groupPosition);
+	}
+
+	/**
+	 * 
+	 */
+	private void initExpandableListView() {
+		// Get all of the notes from the database and create the item list
+		Cursor cursor = mDbHelper.fetchAllFatDevices();
+		startManagingCursor(cursor);
+
+		CustomCursorTreeAdapter fatDevices;
+
+		String[] group_from = new String[] { FatDevicesDbAdapter.KEY_AUTODETECTED };
+		int[] group_to = new int[] { R.id.textCategory };
+
+		String[] child_from = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP };
+		int[] child_to = new int[] { R.id.textName, R.id.textIP };
+
+		fatDevices = new CustomCursorTreeAdapter(c, cursor, R.layout.simple_expandable_list_item_1, group_from, group_to, R.layout.simple_expandable_list_item_2, child_from,
+				child_to);
+
+		setListAdapter(fatDevices);
+		
+		// expand all items
+		Cursor c = mDbHelper.fetchGroupsOfDetection();
+		startManagingCursor(c);
+		for (int i = 0; i < c.getCount(); i++) {
+			getExpandableListView().expandGroup(i);
+		}
+
 	}
 
 }

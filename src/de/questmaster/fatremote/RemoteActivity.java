@@ -3,20 +3,22 @@ package de.questmaster.fatremote;
 import java.net.ConnectException;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,20 +50,76 @@ public class RemoteActivity extends Activity {
 		audioManager.loadSoundEffects();
 
 		/* read IP */
-		mSettings.ReadSettings(this);
+		mSettings.readSettings(this);
+
+		/* setup key listener */
+		EditText text = (EditText) findViewById(R.id.enterText);
+		text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+	        @Override
+	        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+	            if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
+	        		EditText text = (EditText) findViewById(R.id.enterText);
+	            	
+	        		// clear entered Text
+	        		text.setText("");
+	        		
+	        		// hide keyboard
+	            	InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	            	mgr.hideSoftInputFromWindow(text.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+	            	
+	        		// show button again
+	        		ImageView button = (ImageView) findViewById(R.id.textButton);
+	        		button.setVisibility(View.VISIBLE);
+	        		text.setVisibility(View.GONE);
+	            }
+	            return false;
+	        }
+	    });
+//		text.setOnKeyListener( new OnKeyListener() {
+//
+//			@Override
+//			public boolean onKey(View v, int keyCode, KeyEvent event) {
+//				// TODO Send key data
+//				if (event.getAction() == KeyEvent.ACTION_DOWN)
+//					onTextEditKeyDown(keyCode, event);
+//				
+//				return false;
+//			}
+//			
+//		});
+		text.addTextChangedListener(new TextWatcher()
+        {
+                public void  afterTextChanged (Editable s){ 
+                } 
+
+                public void  beforeTextChanged  (CharSequence s, int start, int 
+                        count, int after)
+                { 
+                } 
+                
+                public void  onTextChanged  (CharSequence s, int start, int before, 
+                        int count) 
+                { 
+                	if (before == 0)
+                		onTextEditKeyDown(Character.codePointAt(s, start), null);
+                	else
+                		onTextEditKeyDown(8, null); // backspace
+                }
+        });
+		text.setFocusable(true);
 
 		// check if WIFI available
-		if (!NetworkUtil.getInstance(this).isWifiEnabled()) {
+		if (!NetworkProxy.getInstance(this).isWifiEnabled()) {
 			Toast.makeText(this, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
 		}
 
-		if (mSettings.m_sFatIP.equals("")) {
-			AlertDialog.Builder notification = new Builder(this);
-			notification.setIcon(android.R.drawable.ic_menu_manage);
-			notification.setTitle(R.string.dialog_noip_title);
-			notification.setMessage(R.string.dialog_noip_text);
-			notification.show();
-		}
+//TODO		
+//			AlertDialog.Builder notification = new Builder(this);
+//			notification.setIcon(android.R.drawable.ic_menu_manage);
+//			notification.setTitle(R.string.dialog_noip_title);
+//			notification.setMessage(R.string.dialog_noip_text);
+//			notification.show();
+//		
 	}
 
 	/**
@@ -74,7 +132,7 @@ public class RemoteActivity extends Activity {
 		inflater.inflate(R.menu.options_menu, menu);
 
 		// For testing purpose
-		if (StartActivity.onEmulator) {
+		if (StartActivity.ON_EMULATOR) {
 			MenuItem mi = menu.findItem(R.id.MENU_ITEM_DEBUG);
 			mi.setVisible(true);
 		}
@@ -89,42 +147,50 @@ public class RemoteActivity extends Activity {
 	 */
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.MENU_ITEM_SELECTFAT:
+		case R.id.MENU_ITEM_SELECTFAT: {
 			Intent selectFAT = new Intent(Intent.ACTION_PICK);
 			selectFAT.setClass(this, SelectFATActivity.class);
 			startActivityForResult(selectFAT, INTENT_SELECT_FAT);
 
 			break;
-		case R.id.MENU_ITEM_SETTINGS:
+		}
+		case R.id.MENU_ITEM_SETTINGS: {
 			Intent iSettings = new Intent();
 			iSettings.setClass(this, FatRemoteSettings.class);
 			startActivityForResult(iSettings, ON_SETTINGS_CHANGE);
 
 			break;
-		case R.id.MENU_ITEM_DEBUG:
+		}
+		case R.id.MENU_ITEM_DEBUG: {
 			if (showDebugView) {
 				setContentView(R.layout.main);
-			} else
+			} else {
 				setContentView(R.layout.debug);
+			}
 			break;
+		}
 		default:
 			// should not happen
+			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-		case INTENT_SELECT_FAT: {
+//		case INTENT_SELECT_FAT: {
 //			if (resultCode == Activity.RESULT_OK) {
-				mSettings.ReadSettings(this);
 //			}
-			break;
-		}
+//			break;
+//		}
+		case INTENT_SELECT_FAT:
 		case ON_SETTINGS_CHANGE: {
-			mSettings.ReadSettings(this);
+			mSettings.readSettings(this);
 			break;
 		}
+		default:
+			// should not happen
+			break;
 		}
 	}
 
@@ -141,19 +207,23 @@ public class RemoteActivity extends Activity {
 		invokeSend();
 	}
 
-	public boolean onKeyDown(int keyId, KeyEvent event) {
+	// TODO: grab keys from 'enterText' view
+	public boolean onTextEditKeyDown(int keyId, KeyEvent event) {
 		short key = 0;
 		int unicode = 0;
 
 		// get key
-		unicode = event.getUnicodeChar();
-		key = (short) unicode;
+		if (event == null) {
+			key = (short) keyId;
+ 		} else {
+//		unicode = event.getUnicodeChar();
+//		key = (short) unicode;
+ 			key = (short) event.getUnicodeChar(event.getMetaState());
+ 		}
 		Log.i(StartActivity.LOG_TAG, "KeyEvent: " + keyId + ", unicode: " + unicode);
 
 		// WORKAROUND for some keys
-		if (key == 0) {
-			if (keyId == 67) key = 8; // Backspace
-		}
+		if (key == 0 && keyId == 67) { key = 0x7f; } // delete //8; // Backspace
 
 		// TODO: Some key are not working, e.g. öäü (extended ASCII). Maybe show textfield to get all characters.
 		// Send Character
@@ -164,67 +234,94 @@ public class RemoteActivity extends Activity {
 			// send keyCode
 			invokeSend();
 			return true;
-		} else
+		} /*else {
 			return super.onKeyDown(keyId, event);
+		}*/
+		return false;
 	}
 
 	private void showKeyboard() {
-		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		mgr.toggleSoftInput(0, 0);
+		// show keyboard
+//		InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//		mgr.toggleSoftInput(0, 0);
+		
+		// show edittext and give it focus
+		ImageView button = (ImageView) findViewById(R.id.textButton);
+		EditText text = (EditText) findViewById(R.id.enterText);
+		button.setVisibility(View.GONE);
+		text.setVisibility(View.VISIBLE);
+		text.requestFocus();
 	}
 
 	public void getKeyCode(View v) {
 
+		// show button again
+		EditText text = (EditText) findViewById(R.id.enterText);
+		if (text.getVisibility() == View.VISIBLE) {
+			ImageView button = (ImageView) findViewById(R.id.textButton);
+			button.setVisibility(View.VISIBLE);
+			text.setVisibility(View.GONE);
+			
+    		// clear entered Text
+    		text.setText("");
+
+    		// hide keyboard
+        	InputMethodManager mgr = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        	mgr.hideSoftInputFromWindow(text.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+		}
+		
 		// solve to code
 		if (v instanceof ImageView) {
 			ImageView bv = (ImageView) v;
 			String t = (String) bv.getTag();
 
-			if (t.equals("power"))
+			if (t.equals("power")) {
 				keyCode = 0x38;
-			else if (t.equals("home"))
+			} else if (t.equals("home")) {
 				keyCode = 0x39;
-			else if (t.equals("up"))
+			} else if (t.equals("up")) {
 				keyCode = 0x40;
-			else if (t.equals("left"))
+			} else if (t.equals("left")) {
 				keyCode = 0x07;
-			else if (t.equals("ok"))
+			} else if (t.equals("ok")) {
 				keyCode = 0x0E;
-			else if (t.equals("right"))
+			} else if (t.equals("right")) {
 				keyCode = 0x06;
-			else if (t.equals("back"))
+			} else if (t.equals("back")) {
 				keyCode = 0x1B;
-			else if (t.equals("down"))
+			} else if (t.equals("down")) {
 				keyCode = 0x41;
-			else if (t.equals("info"))
+			} else if (t.equals("info")) {
 				keyCode = 0x47;
-			else if (t.equals("text")) {
+			} else if (t.equals("text")) {
 				showKeyboard();
 				return;
-			} else if (t.equals("rew"))
+			} else if (t.equals("rew")) {
 				keyCode = 0x52;
-			else if (t.equals("menu"))
+			} else if (t.equals("menu")) {
 				keyCode = 0x1A;
-			else if (t.equals("ff"))
+			} else if (t.equals("ff")) {
 				keyCode = 0x51;
-			else if (t.equals("prev"))
+			} else if (t.equals("prev")) {
 				keyCode = 0x31;
-			else if (t.equals("playpause"))
+			} else if (t.equals("playpause")) {
 				keyCode = 0x4F;
-			else if (t.equals("next"))
+			} else if (t.equals("next")) {
 				keyCode = 0x30;
-			else if (t.equals("volup"))
+			} else if (t.equals("volup")) {
 				keyCode = 0x32;
-			else if (t.equals("stop"))
+			} else if (t.equals("stop")) {
 				keyCode = 0x54;
-			else if (t.equals("zoomin"))
+			} else if (t.equals("zoomin")) {
 				keyCode = 0x35;
-			else if (t.equals("voldown"))
+			} else if (t.equals("voldown")) {
 				keyCode = 0x33;
-			else if (t.equals("mute"))
+			} else if (t.equals("mute")) {
 				keyCode = 0x59;
-			else if (t.equals("zoomout"))
+			} else if (t.equals("zoomout")) {
 				keyCode = 0x08;
+			}
 		}
 		keyModifier = 0x00;
 
@@ -234,11 +331,11 @@ public class RemoteActivity extends Activity {
 
 	private void invokeSend() {
 		// ring / vibrate
-		if ((!mSettings.m_bOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) || (mSettings.m_bOverride && mSettings.m_bTone)) {
+		if ((!mSettings.mOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) || (mSettings.mOverride && mSettings.mTone)) {
 			audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 		}
 
-		if (mSettings.m_bVibrate) {
+		if (mSettings.mVibrate) {
 			Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 			vibrator.vibrate(25);
 		}
@@ -252,7 +349,7 @@ public class RemoteActivity extends Activity {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					NetworkUtil.getInstance(c).sendCode(mSettings.m_sFatIP, new short[] { 0x48, 0x12, keyCode, keyModifier });
+					NetworkProxy.getInstance(c).sendCode(new short[] { 0x48, 0x12, keyCode, keyModifier });
 				} catch (final ConnectException e) {
 					c.runOnUiThread(new Runnable() {
 						public void run() {

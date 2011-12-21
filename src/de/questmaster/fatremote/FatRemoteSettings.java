@@ -18,8 +18,6 @@ package de.questmaster.fatremote;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -33,7 +31,7 @@ public class FatRemoteSettings extends PreferenceActivity {
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		// Read settings
-		mSettings.ReadSettings(this);
+		mSettings.readSettings(this);
 
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.fat_preferences);
@@ -43,33 +41,21 @@ public class FatRemoteSettings extends PreferenceActivity {
 	public static class Settings
 	{
 		// default values
-		public String m_sFatIP = "";
-		public boolean m_bOverride = false;
-		public boolean m_bTone = true;
-		public boolean m_bVibrate = true;
+		public boolean mOverride = false;
+		public boolean mTone = true;
+		public boolean mVibrate = true;
 
 
-		public void ReadSettings(Context p_oContext)
+		public void readSettings(Context pContext)
 		{
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(p_oContext);
-			Resources res = p_oContext.getResources();
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+//			Resources res = pContext.getResources();
 
 			if (sharedPref != null) {
 				
-				m_sFatIP = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT_IP), m_sFatIP);
+//				mFatIP = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT_IP), mFatIP);
 
 			}
 		}
-		
-		public void setFatIp(Context p_oContext, String fat_ip) {
-			Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(p_oContext).edit();
-			Resources res = p_oContext.getResources();
-			
-			m_sFatIP = fat_ip;
-			sharedPref.putString(res.getString(R.string.PREF_KEY_FAT_IP), m_sFatIP);
-			
-			sharedPref.commit();
-		}
-
 	}
 }
