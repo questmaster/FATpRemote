@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
     <ImageView android:scaleType="fitXY" android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/remotePic" android:src="@drawable/background"></ImageView>
-    <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:orientation="horizontal">
-	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:layout_weight="1">
+    <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:orientation="horizontal" android:baselineAligned="false">
+	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout11" android:layout_width="wrap_content" android:layout_weight="1" android:baselineAligned="false">
 	        <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout10" android:layout_height="wrap_content" android:layout_weight="0.5">
 	            <ImageView android:id="@+id/sendLED" android:src="@drawable/light_normal" android:layout_width="fill_parent" android:scaleType="centerInside" android:layout_height="match_parent"></ImageView>
 	        </LinearLayout>
@@ -15,11 +15,11 @@
 	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView19" android:onClick="getKeyCode" android:tag="home" android:src="@drawable/home" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout3">
-	            <Button android:layout_height="wrap_content" android:tag="invis" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button4" android:layout_weight="22" android:text="Button"></Button>
-	            <ImageView android:id="@+id/imageView20" android:onClick="getKeyCode" android:tag="left" android:src="@drawable/left" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <Button android:layout_height="wrap_content" android:tag="invis" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button4" android:layout_weight="33"></Button>
+	            <ImageView android:id="@+id/imageView20" android:onClick="getKeyCode" android:tag="left" android:src="@drawable/left" android:layout_weight="11" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
 	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView21" android:src="@drawable/ok" android:onClick="getKeyCode" android:tag="ok" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
-	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView22" android:onClick="getKeyCode" android:tag="right" android:src="@drawable/right" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
-	            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button14" android:layout_weight="22" android:text="Button"></Button>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView22" android:onClick="getKeyCode" android:tag="right" android:src="@drawable/right" android:layout_weight="11" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button14" android:layout_weight="33"></Button>
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout4">
 	            <ImageView android:id="@+id/imageView14" android:onClick="getKeyCode" android:tag="back" android:src="@drawable/back" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
@@ -27,11 +27,11 @@
 	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView16" android:onClick="getKeyCode" android:tag="info" android:src="@drawable/info" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
 	        </LinearLayout>
 	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout5">
-	            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/enterText" android:layout_weight="22" android:layout_gravity="center" android:gravity="center" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:visibility="gone"></EditText>
+	            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/enterText" android:layout_weight="22" android:layout_gravity="center" android:gravity="center" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:visibility="gone" android:inputType="textNoSuggestions"></EditText>
 	            <ImageView android:onClick="getKeyCode" android:tag="text" android:src="@drawable/text" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent" android:padding="11dp" android:id="@+id/textButton" android:visibility="visible"></ImageView>
 	        </LinearLayout>
 	    </LinearLayout>
-	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout1" android:layout_width="wrap_content" android:layout_weight="1">  
+	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout12" android:layout_width="wrap_content" android:layout_weight="1" android:baselineAligned="false">  
 	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout6">
 	            <ImageView android:id="@+id/imageView3" android:onClick="getKeyCode" android:tag="rew" android:src="@drawable/rew" android:layout_weight="33" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
 	            <ImageView android:layout_width="wrap_content" android:id="@+id/imageView1" android:src="@drawable/menu" android:onClick="getKeyCode" android:tag="menu" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
@@ -54,4 +54,4 @@
 	        </LinearLayout>
 	    </LinearLayout>
     </LinearLayout>
-</FrameLayout>
+</merge>

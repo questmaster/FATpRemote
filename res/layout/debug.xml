@@ -4,10 +4,10 @@
   android:layout_width="fill_parent"
   android:layout_height="fill_parent" android:orientation="vertical">
     <LinearLayout android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:layout_height="wrap_content">
-        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/pos1" android:text="0x48"></EditText>
-        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="0x12" android:id="@+id/pos2"></EditText>
-        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="0x00" android:id="@+id/pos3"></EditText>
-        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="0x00" android:id="@+id/pos4"></EditText>
+        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/pos1" android:text="0x48" android:inputType="text"></EditText>
+        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="0x12" android:id="@+id/pos2" android:inputType="text"></EditText>
+        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="0x00" android:id="@+id/pos3" android:inputType="text"></EditText>
+        <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1" android:text="0x00" android:id="@+id/pos4" android:inputType="text"></EditText>
     </LinearLayout>
     <Button android:id="@+id/button1" android:layout_height="wrap_content" android:layout_width="fill_parent" android:onClick="onDebugButton" android:text="@string/layout_debug_send"></Button>
 </LinearLayout>

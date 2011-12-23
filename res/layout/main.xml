@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <ImageView android:scaleType="fitXY" android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/remotePic" android:src="@drawable/splash"></ImageView>
-</FrameLayout>
+    <ImageView android:scaleType="fitXY" android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/remotePic" android:src="@drawable/splash" android:contentDescription="@string/img_desc_background"></ImageView>
+</merge>
