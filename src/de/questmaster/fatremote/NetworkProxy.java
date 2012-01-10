@@ -94,7 +94,7 @@ public class NetworkProxy {
 					entry += msgData;
 
 					if (entry.contains("\n")) {
-						entry.trim();
+						entry = entry.trim();
 					}
 				}
 				data.put(adr, entry);

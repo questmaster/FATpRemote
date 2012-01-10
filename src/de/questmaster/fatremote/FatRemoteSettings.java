@@ -48,14 +48,12 @@ public class FatRemoteSettings extends PreferenceActivity {
 
 		public void readSettings(Context pContext)
 		{
-			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+//			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
 //			Resources res = pContext.getResources();
-
-			if (sharedPref != null) {
-				
+//
+//			if (sharedPref != null) {
 //				mFatIP = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT_IP), mFatIP);
-
-			}
+//			}
 		}
 	}
 }

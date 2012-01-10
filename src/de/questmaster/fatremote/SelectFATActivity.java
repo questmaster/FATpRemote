@@ -31,16 +31,16 @@ public class SelectFATActivity extends ExpandableListActivity {
 
 		@Override
 		protected Cursor getChildrenCursor(Cursor groupCursor) {
-			Cursor c = null;
+			Cursor cur = null;
 
 			if (groupCursor.getCount() > 0) {
 				boolean autodetected = groupCursor.getInt(groupCursor.getColumnIndex(FatDevicesDbAdapter.KEY_AUTODETECTED)) == 1;
 
-				c = mDbHelper.fetchFatDeviceOfGroupDetection(autodetected);
-				startManagingCursor(c);
+				cur = mDbHelper.fetchFatDeviceOfGroupDetection(autodetected);
+				startManagingCursor(cur);
 			}
 
-			return c;
+			return cur;
 		}
 		
 	}
@@ -95,14 +95,16 @@ public class SelectFATActivity extends ExpandableListActivity {
 
 	protected void onRestart() {
 		super.onRestart();
-		if (!mDbHelper.isOpen())
+		if (!mDbHelper.isOpen()) {
 			mDbHelper.open();
+		}
 	}
 
 	protected void onPause() {
 		super.onPause();
-		if (mDbHelper.isOpen())
+		if (mDbHelper.isOpen()) {
 			mDbHelper.close();
+		}
 	}
 
 	/**
@@ -124,8 +126,8 @@ public class SelectFATActivity extends ExpandableListActivity {
 
 					// enter dev's into database
 					for (FATDevice f : dev) {
-						long rowId = -1;
-						if ((rowId = mDbHelper.fetchFatDeviceId(f.getIp())) < 0) {
+						long rowId = mDbHelper.fetchFatDeviceId(f.getIp());
+						if (rowId < 0) {
 							mDbHelper.createFatDevice(f.getName(), f.getIp(), f.getPort(), f.isAutoDetected());
 						} else {
 							mDbHelper.updateFatDevice(rowId, f.getName(), f.getIp(), f.getPort(), f.isAutoDetected());
@@ -214,21 +216,21 @@ public class SelectFATActivity extends ExpandableListActivity {
 
 		CustomCursorTreeAdapter fatDevices;
 
-		String[] group_from = new String[] { FatDevicesDbAdapter.KEY_AUTODETECTED };
-		int[] group_to = new int[] { R.id.textCategory };
+		String[] groupFrom = new String[] { FatDevicesDbAdapter.KEY_AUTODETECTED };
+		int[] groupTo = new int[] { R.id.textCategory };
 
-		String[] child_from = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP };
-		int[] child_to = new int[] { R.id.textName, R.id.textIP };
+		String[] childFrom = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP };
+		int[] childTo = new int[] { R.id.textName, R.id.textIP };
 
-		fatDevices = new CustomCursorTreeAdapter(c, cursor, R.layout.simple_expandable_list_item_1, group_from, group_to, R.layout.simple_expandable_list_item_2, child_from,
-				child_to);
+		fatDevices = new CustomCursorTreeAdapter(c, cursor, R.layout.simple_expandable_list_item_1, groupFrom, groupTo, R.layout.simple_expandable_list_item_2, childFrom,
+				childTo);
 
 		setListAdapter(fatDevices);
 		
 		// expand all items
-		Cursor c = mDbHelper.fetchGroupsOfDetection();
-		startManagingCursor(c);
-		for (int i = 0; i < c.getCount(); i++) {
+		Cursor cur = mDbHelper.fetchGroupsOfDetection();
+		startManagingCursor(cur);
+		for (int i = 0; i < cur.getCount(); i++) {
 			getExpandableListView().expandGroup(i);
 		}
 

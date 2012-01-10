@@ -54,7 +54,6 @@ public class RemoteActivity extends Activity {
 		/* setup key listener */
 		EditText text = (EditText) findViewById(R.id.enterText);
 		text.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-	        @Override
 	        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 	            if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 	        		EditText text = (EditText) findViewById(R.id.enterText);
@@ -99,10 +98,11 @@ public class RemoteActivity extends Activity {
                 public void  onTextChanged  (CharSequence s, int start, int before, 
                         int count) 
                 { 
-                	if (before == 0)
+                	if (before == 0) {
                 		onTextEditKeyDown(Character.codePointAt(s, start), null);
-                	else
+                	} else {
                 		onTextEditKeyDown(8, null); // backspace
+                	}
                 }
         });
 		text.setFocusable(true);
@@ -275,7 +275,7 @@ public class RemoteActivity extends Activity {
 			ImageView bv = (ImageView) v;
 			String t = (String) bv.getTag();
 
-			if (t.equals("power")) {
+			if (t.equals("power")) { // TODO: replace by LUT
 				keyCode = 0x38;
 			} else if (t.equals("home")) {
 				keyCode = 0x39;
@@ -358,8 +358,7 @@ public class RemoteActivity extends Activity {
 				}
 
 				c.runOnUiThread(new Runnable() {
-					public void run() {
-						// reset send image
+					public void run() { // reset send image
 						ImageView sending = (ImageView) findViewById(R.id.sendLED);
 						sending.setImageResource(R.drawable.light_normal);
 					}
