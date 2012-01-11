@@ -17,10 +17,8 @@
 package de.questmaster.fatremote;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 
 public class FatRemoteSettings extends PreferenceActivity {
 

@@ -1,7 +1,7 @@
 package de.questmaster.fatremote;
 
 import java.net.ConnectException;
-import java.util.Vector;
+import java.util.List;
 
 import android.app.Activity;
 import android.app.ExpandableListActivity;
@@ -41,7 +41,7 @@ public class SelectFATActivity extends ExpandableListActivity {
 			}
 
 			return cur;
-		}
+		}		
 		
 	}
 	
@@ -118,7 +118,7 @@ public class SelectFATActivity extends ExpandableListActivity {
 		// get data
 		new Thread(new Runnable() {
 			public void run() {
-				Vector<FATDevice> dev = null;
+				List<FATDevice> dev = null;
 
 				// grab available ip's
 				try {

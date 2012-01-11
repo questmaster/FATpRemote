@@ -13,8 +13,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.Hashtable;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -43,16 +45,17 @@ public class NetworkProxy {
 	public boolean isWifiEnabled() {
 		WifiManager wifiManager = (WifiManager) context.getSystemService(android.content.Context.WIFI_SERVICE);
 
-		if (!wifiManager.isWifiEnabled() && !StartActivity.ON_EMULATOR)
+		if (!wifiManager.isWifiEnabled() && !StartActivity.ON_EMULATOR) {
 			return false;
+		}
 
 		return true;
 	}
 
-	private Vector<FATDevice> sendDiscoveryMsg() {
-		Hashtable<String, String> data = new Hashtable<String, String>();
-		Vector<DatagramPacket> answers = new Vector<DatagramPacket>();
-		Vector<FATDevice> result = new Vector<FATDevice>();
+	private List<FATDevice> sendDiscoveryMsg() {
+		Map<String, String> data = new HashMap<String, String>();
+		List<DatagramPacket> answers = new ArrayList<DatagramPacket>();
+		List<FATDevice> result = new ArrayList<FATDevice>();
 		DatagramSocket ds = null;
 
 		try {
@@ -107,15 +110,16 @@ public class NetworkProxy {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			if (ds != null)
+			if (ds != null) {
 				ds.close();
+			}
 		}
 
 		// parse received data
 		for (String s : data.values()) {
-			String name = s.substring(s.lastIndexOf(":") + 1);
-			String ip = name.substring(name.indexOf(";") + 1).trim();
-			name = name.substring(0, name.indexOf(";"));
+			String name = s.substring(s.lastIndexOf(':') + 1);
+			String ip = name.substring(name.indexOf(';') + 1).trim();
+			name = name.substring(0, name.indexOf(';'));
 			
 			result.add(new FATDevice(name, ip, true));
 		}
@@ -175,8 +179,8 @@ public class NetworkProxy {
 //		return ips;
 //	}
 
-	public Vector<FATDevice> discoverFAT() throws ConnectException {
-		Vector<FATDevice> adr = new Vector<FATDevice>();
+	public List<FATDevice> discoverFAT() throws ConnectException {
+		List<FATDevice> adr = new ArrayList<FATDevice>();
 
 		// Check wifi availability
 		if (isWifiEnabled()) {
@@ -246,8 +250,9 @@ public class NetworkProxy {
 								// output and skip 4byte identifier
 								fout.write(buf, 4, buf.length - 4);
 							}
-						} else
+						} else {
 							fout.write(buf);
+						}
 
 					}
 					if (read > 4 && fout != null) {
@@ -260,8 +265,9 @@ public class NetworkProxy {
 				bos.close();
 				bis.close();
 				cnx.close();
-			} else
+			} else {
 				throw new ConnectException(context.getResources().getString(R.string.app_err_fatoffline));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new ConnectException(context.getResources().getString(R.string.app_err_noconnection));
