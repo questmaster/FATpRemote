@@ -182,13 +182,16 @@ public class FatDevicesDbAdapter {
 	}
 
 	public FATDevice fetchFatDeviceTyp(long rowId) {
-
+		FATDevice device = null;
+		
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
+			device = new FATDevice(mCursor.getString(1), mCursor.getString(2), mCursor.getInt(4) == 1);
+			mCursor.close();
 		}
-		return new FATDevice(mCursor.getString(1), mCursor.getString(2), mCursor.getInt(4) == 1);
 
+		return device;
 	}
 
 	public Cursor fetchFatDeviceOfGroupDetection(boolean autodetected) {

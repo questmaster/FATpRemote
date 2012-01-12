@@ -1,5 +1,7 @@
-package de.questmaster.fatremote.test;
+package de.questmaster.fatremote;
 
+import de.questmaster.fatremote.test.FATDeviceTest;
+import de.questmaster.fatremote.test.FatDevicesDbAdapterTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 

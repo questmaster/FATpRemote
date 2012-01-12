@@ -10,7 +10,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -32,8 +31,11 @@ public class NetworkProxy {
 
 	public static NetworkProxy getInstance(Context c) {
 		if (singleton == null) {
-			singleton = new NetworkProxy();
-			singleton.context = c;
+			// Initialize proxy
+			NetworkProxy np = new NetworkProxy(); 
+			np.context = c;
+
+			singleton = np;
 		}
 
 		return singleton;
@@ -78,10 +80,9 @@ public class NetworkProxy {
 					answers.add(packet);
 				}
 			} catch (SocketTimeoutException e) {
-				// TODO: Nothing to do
 			}
 
-			// extract data TODO: what about multiple devices answering?! Use FATDevice
+			// extract data TODO:  Use FATDevice
 			String entry = null;
 			for (DatagramPacket d : answers) {
 						
@@ -96,16 +97,20 @@ public class NetworkProxy {
 				if (!entry.contains(msgData)) {
 					entry += msgData;
 
+					// message complete
 					if (entry.contains("\n")) {
 						entry = entry.trim();
+
+						String name = entry.substring(entry.lastIndexOf(':') + 1);
+						String ip = name.substring(name.indexOf(';') + 1).trim();
+						name = name.substring(0, name.indexOf(';'));
+						
+						result.add(new FATDevice(name, ip, true));
 					}
 				}
 				data.put(adr, entry);
 			}
 
-		} catch (SocketException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -115,14 +120,6 @@ public class NetworkProxy {
 			}
 		}
 
-		// parse received data
-		for (String s : data.values()) {
-			String name = s.substring(s.lastIndexOf(':') + 1);
-			String ip = name.substring(name.indexOf(';') + 1).trim();
-			name = name.substring(0, name.indexOf(';'));
-			
-			result.add(new FATDevice(name, ip, true));
-		}
 		
 		return result;
 	}
@@ -180,7 +177,7 @@ public class NetworkProxy {
 //	}
 
 	public List<FATDevice> discoverFAT() throws ConnectException {
-		List<FATDevice> adr = new ArrayList<FATDevice>();
+		List<FATDevice> adr = null;
 
 		// Check wifi availability
 		if (isWifiEnabled()) {
@@ -195,30 +192,27 @@ public class NetworkProxy {
 	}
 
 	public void sendCode(short[] keyCode) throws ConnectException { // TODO: change to private + use events to network proxy
-		InetAddress mFATip = null;
+		InetAddress fatIp = null;
 		Socket cnx = null;
+		FileOutputStream fout = null;
+		BufferedOutputStream bos = null;
+		BufferedInputStream bis = null;
 
 		if (mFat == null) {
 			throw new IllegalStateException(); // TODO: add string with description
 		}
 		
 		try {
-			try {
-				mFATip = InetAddress.getByName(mFat.getIp());
-			} catch (UnknownHostException e) {
-				e.printStackTrace();
-				mFATip = null;
-				throw new ConnectException(context.getResources().getString(R.string.app_err_wrongip));
-			}
+			fatIp = InetAddress.getByName(mFat.getIp());
 
 			// this makes sure wifi is up and running
-			if (mFATip != null && (isWifiEnabled() || StartActivity.ON_EMULATOR)) {
+			if (fatIp != null && (isWifiEnabled() || StartActivity.ON_EMULATOR)) {
 				// Open Socket
-				cnx = new Socket(mFATip, mFat.getPort()); // FIXME: hangs here on emulator if device down -> check if device alive before connecting
+				cnx = new Socket(fatIp, mFat.getPort()); // FIXME: hangs here on emulator if device down -> check if device alive before connecting
 
 				// Open Streams
-				BufferedOutputStream bos = new BufferedOutputStream(cnx.getOutputStream(), 20);
-				BufferedInputStream bis = new BufferedInputStream(cnx.getInputStream(), 4096);
+				bos = new BufferedOutputStream(cnx.getOutputStream(), 20);
+				bis = new BufferedInputStream(cnx.getInputStream(), 4096);
 
 				// send command
 				Log.i(StartActivity.LOG_TAG, "Sending: " + keyCode[0] + ", " + keyCode[1] + ", " + keyCode[2] + ", " + keyCode[3] + ".");
@@ -228,15 +222,10 @@ public class NetworkProxy {
 				bos.flush();
 
 				if (StartActivity.ON_EMULATOR) { // FIXME: include output of incoming data in regular release!
-					try {
-						Thread.sleep(200);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+					Thread.sleep(200);
 
 					int read = 0, in;
 					byte[] buf = new byte[4000];
-					FileOutputStream fout = null;
 					while ((in = bis.read(buf)) > 0) {
 						read += in;
 						if (fout == null) {
@@ -257,20 +246,36 @@ public class NetworkProxy {
 					}
 					if (read > 4 && fout != null) {
 						fout.flush();
-						fout.close();
 					}
 				}
-
-				// close streams
-				bos.close();
-				bis.close();
-				cnx.close();
 			} else {
 				throw new ConnectException(context.getResources().getString(R.string.app_err_fatoffline));
 			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			throw new ConnectException(context.getResources().getString(R.string.app_err_wrongip));
 		} catch (IOException e) {
 			e.printStackTrace();
 			throw new ConnectException(context.getResources().getString(R.string.app_err_noconnection));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				// close streams
+				if (fout != null) {
+					fout.close();
+				}
+				if (fout != null) {
+					bos.close();
+				}
+				if (fout != null) {
+					bis.close();
+				}
+				if (fout != null) {
+					cnx.close();
+				}
+			} catch (Exception e) {
+			}
 		}
 	}
 
