@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference android:key="@string/PREF_KEY_FAT_IP" android:summary="@string/pref_fat_ip_summary" android:title="@string/pref_fat_ip_title"></EditTextPreference>
     <CheckBoxPreference android:key="@string/PREF_KEY_DEFAULT_BEHAVIOR" android:defaultValue="false" android:title="@string/pref_default_behavior_title"></CheckBoxPreference>
     <CheckBoxPreference android:dependency="@string/PREF_KEY_DEFAULT_BEHAVIOR" android:key="@string/PREF_KEY_TONE" android:defaultValue="true" android:title="@string/pref_tone_title"></CheckBoxPreference>
     <CheckBoxPreference android:key="@string/PREF_KEY_VIBRATE" android:defaultValue="true" android:title="@string/pref_vibrate_title"></CheckBoxPreference>

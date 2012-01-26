@@ -25,6 +25,8 @@ import de.questmaster.fatremote.datastructures.FATDevice;
 
 public class NetworkProxy {
 
+	private static final String LOG_TAG = "NetworkProxy";
+
 	private static NetworkProxy singleton = null;
 	private FATDevice mFat = null;
 	private Context context;
@@ -47,7 +49,7 @@ public class NetworkProxy {
 	public boolean isWifiEnabled() {
 		WifiManager wifiManager = (WifiManager) context.getSystemService(android.content.Context.WIFI_SERVICE);
 
-		if (!wifiManager.isWifiEnabled() && !StartActivity.ON_EMULATOR) {
+		if (!DebugHelper.ON_EMULATOR && !wifiManager.isWifiEnabled()) {
 			return false;
 		}
 
@@ -112,8 +114,7 @@ public class NetworkProxy {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e(LOG_TAG, e.getMessage());
 		} finally {
 			if (ds != null) {
 				ds.close();
@@ -206,7 +207,7 @@ public class NetworkProxy {
 			fatIp = InetAddress.getByName(mFat.getIp());
 
 			// this makes sure wifi is up and running
-			if (fatIp != null && (isWifiEnabled() || StartActivity.ON_EMULATOR)) {
+			if (fatIp != null && (isWifiEnabled() || DebugHelper.ON_EMULATOR)) {
 				// Open Socket
 				cnx = new Socket(fatIp, mFat.getPort()); // FIXME: hangs here on emulator if device down -> check if device alive before connecting
 
@@ -215,13 +216,13 @@ public class NetworkProxy {
 				bis = new BufferedInputStream(cnx.getInputStream(), 4096);
 
 				// send command
-				Log.i(StartActivity.LOG_TAG, "Sending: " + keyCode[0] + ", " + keyCode[1] + ", " + keyCode[2] + ", " + keyCode[3] + ".");
+				Log.i(LOG_TAG, "Sending: " + keyCode[0] + ", " + keyCode[1] + ", " + keyCode[2] + ", " + keyCode[3] + ".");
 				for (int i = 0; i < keyCode.length; i++) {
 					bos.write(keyCode[i]);
 				}
 				bos.flush();
 
-				if (StartActivity.ON_EMULATOR) { // FIXME: include output of incoming data in regular release!
+				if (DebugHelper.ON_EMULATOR) { // FIXME: include output of incoming data in regular release!
 					Thread.sleep(200);
 
 					int read = 0, in;
@@ -229,7 +230,7 @@ public class NetworkProxy {
 					while ((in = bis.read(buf)) > 0) {
 						read += in;
 						if (fout == null) {
-							Log.i(StartActivity.LOG_TAG, "Recived data from FAT: " + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ". Buffersize: " + in);
+							Log.i(LOG_TAG, "Recived data from FAT: " + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ". Buffersize: " + in);
 
 							if (read > 4) {
 								File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sqlite.out");
@@ -252,13 +253,13 @@ public class NetworkProxy {
 				throw new ConnectException(context.getResources().getString(R.string.app_err_fatoffline));
 			}
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			Log.e(LOG_TAG, e.getMessage(), e);
 			throw new ConnectException(context.getResources().getString(R.string.app_err_wrongip));
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e(LOG_TAG, e.getMessage(), e);
 			throw new ConnectException(context.getResources().getString(R.string.app_err_noconnection));
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			Log.e(LOG_TAG, e.getMessage(), e);
 		} finally {
 			try {
 				// close streams
@@ -274,7 +275,8 @@ public class NetworkProxy {
 				if (fout != null) {
 					cnx.close();
 				}
-			} catch (Exception e) {
+			} catch (IOException e) {
+				Log.e(LOG_TAG, e.getMessage(), e);
 			}
 		}
 	}

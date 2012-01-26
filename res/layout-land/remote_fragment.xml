@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <ImageView android:scaleType="fitXY" android:layout_height="fill_parent" android:layout_width="fill_parent" android:id="@+id/remotePic" android:src="@drawable/background"></ImageView>
+    <LinearLayout android:layout_height="fill_parent" android:id="@+id/linearLayout1" android:layout_width="fill_parent" android:orientation="horizontal" android:baselineAligned="false">
+	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout11" android:layout_width="wrap_content" android:layout_weight="1" android:baselineAligned="false">
+	        <LinearLayout android:layout_width="match_parent" android:id="@+id/linearLayout10" android:layout_height="wrap_content" android:layout_weight="0.5">
+	            <ImageView android:id="@+id/sendLED" android:src="@drawable/light_normal" android:layout_width="fill_parent" android:scaleType="centerInside" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout2">
+	            <ImageView android:id="@+id/remote_button_power" android:tag="@integer/remote_power" android:src="@drawable/power" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_up" android:src="@drawable/up" android:tag="@integer/remote_up" android:layout_weight="66" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_home" android:tag="@integer/remote_home" android:src="@drawable/home" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout3">
+	            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button4" android:layout_weight="33"></Button>
+	            <ImageView android:id="@+id/remote_button_left" android:tag="@integer/remote_left" android:src="@drawable/left" android:layout_weight="11" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_ok" android:src="@drawable/ok" android:tag="@integer/remote_ok" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_right" android:tag="@integer/remote_right" android:src="@drawable/right" android:layout_weight="11" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <Button android:layout_height="wrap_content" android:visibility="invisible" android:layout_width="wrap_content" android:id="@+id/button14" android:layout_weight="33"></Button>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout4">
+	            <ImageView android:id="@+id/remote_button_back" android:tag="@integer/remote_back" android:src="@drawable/back" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_down" android:src="@drawable/down" android:tag="@integer/remote_down" android:layout_weight="66" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_info" android:tag="@integer/remote_info" android:src="@drawable/info" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout5">
+	            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/enterText" android:layout_weight="22" android:layout_gravity="center" android:gravity="center" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:visibility="gone" android:inputType="textNoSuggestions"></EditText>
+	            <ImageView android:tag="text" android:src="@drawable/text" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent" android:padding="11dp" android:id="@+id/textButton" android:visibility="visible"></ImageView>
+	        </LinearLayout>
+	    </LinearLayout>
+	    <LinearLayout android:layout_height="fill_parent" android:orientation="vertical" android:id="@+id/linearLayout12" android:layout_width="wrap_content" android:layout_weight="1" android:baselineAligned="false">  
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout6">
+	            <ImageView android:id="@+id/remote_button_rew" android:tag="@integer/remote_rew" android:src="@drawable/rew" android:layout_weight="33" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_menu" android:src="@drawable/menu" android:tag="@integer/remote_menu" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_fwd" android:tag="@integer/remote_ff" android:src="@drawable/fwd" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout7">
+	            <ImageView android:id="@+id/remote_button_prev" android:tag="@integer/remote_prev" android:src="@drawable/prev" android:layout_weight="33" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_play" android:src="@drawable/play" android:tag="@integer/remote_playpause" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_next" android:tag="@integer/remote_next" android:src="@drawable/next" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout8">
+	            <ImageView android:id="@+id/remote_button_volup" android:tag="@integer/remote_volup" android:src="@drawable/volup" android:layout_weight="33" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_stop" android:src="@drawable/stop" android:tag="@integer/remote_stop" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_zoomup" android:tag="@integer/remote_zoomin" android:src="@drawable/zoomup" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	        <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout9">
+	            <ImageView android:id="@+id/remote_button_voldown" android:tag="@integer/remote_voldown" android:src="@drawable/voldown" android:layout_weight="33" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_mute" android:src="@drawable/mute" android:tag="@integer/remote_mute" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	            <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_zoomdown" android:tag="@integer/remote_zoomout" android:src="@drawable/zoomdown" android:layout_weight="33" android:scaleType="center" android:layout_height="match_parent"></ImageView>
+	        </LinearLayout>
+	    </LinearLayout>
+    </LinearLayout>
+</FrameLayout>

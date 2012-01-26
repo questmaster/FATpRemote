@@ -171,16 +171,6 @@ public class FatDevicesDbAdapter {
 	 * @throws SQLException
 	 *             if note could not be found/retrieved
 	 */
-	public Cursor fetchFatDevice(long rowId) {
-
-		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}
-		return mCursor;
-
-	}
-
 	public FATDevice fetchFatDeviceTyp(long rowId) {
 		FATDevice device = null;
 		
@@ -192,27 +182,6 @@ public class FatDevicesDbAdapter {
 		}
 
 		return device;
-	}
-
-	public Cursor fetchFatDeviceOfGroupDetection(boolean autodetected) {
-
-		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_AUTODETECTED + "=\"" + (autodetected ? 1 : 0) + "\"", null,
-				null, null, null, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}
-		return mCursor;
-
-	}
-
-	public Cursor fetchGroupsOfDetection() {
-
-		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_AUTODETECTED }, null, null, KEY_AUTODETECTED, null, null, null);
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}
-		return mCursor;
-
 	}
 
 	public long fetchFatDeviceId(String ip) {

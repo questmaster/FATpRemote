@@ -1,5 +1,6 @@
 package de.questmaster.fatremote.test;
 
+import junit.framework.Assert;
 import android.test.AndroidTestCase;
 
 public class FatDevicesDbAdapterTest extends AndroidTestCase {
@@ -26,7 +27,7 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 	 * Check for correct setup.
 	 */
 	public void testAndroidTestCaseSetupProperly() {
-		
+		Assert.fail("Test not implemented.");
 	}
 	
 }

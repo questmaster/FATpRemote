@@ -40,7 +40,7 @@ public class FatRemoteSettings extends PreferenceActivity {
 	{
 		// default values
 		public boolean mOverride = false;
-		public boolean mTone = true;
+		public boolean mTone = false;
 		public boolean mVibrate = true;
 
 

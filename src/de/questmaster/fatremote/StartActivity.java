@@ -3,15 +3,9 @@ package de.questmaster.fatremote;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 
 public class StartActivity extends Activity {
-
-	protected static final String LOG_TAG = "FATremote";
-
-	protected static final boolean ON_EMULATOR = Build.PRODUCT.contains("sdk");
-
 
 	/** Called when the activity is first created. */
 	@Override
