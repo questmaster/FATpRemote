@@ -43,12 +43,11 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	private Settings mSettings = new FatRemoteSettings.Settings();
 	private AudioManager audioManager;
 
-	private boolean showDebugView = false;
 	private Activity c = null;
 	private short keyCode;
 	private short keyModifier;
 
-	// TODO Listener interface
+	// TODO Listener interface?
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

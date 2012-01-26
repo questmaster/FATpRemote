@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
-    <string name="app_name">FreeAgent Theater+ Remote</string>
+    <string name="app_name">FreeAgent Remote</string>
     <string name="PREF_KEY_FAT_IP">fat_ip</string>
     <string name="PREF_KEY_DEFAULT_BEHAVIOR">key_def_beh</string>
     <string name="PREF_KEY_TONE">key_tone</string>

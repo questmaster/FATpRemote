@@ -25,7 +25,7 @@ import de.questmaster.fatremote.NetworkProxy;
 import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.datastructures.FATDevice;
 
-// TODO: set marker on autodetected entries, e.g. icon
+// TODO: set marker on auto detected entries, e.g. icon
 
 public class SelectFATFragment extends ListFragment {
 

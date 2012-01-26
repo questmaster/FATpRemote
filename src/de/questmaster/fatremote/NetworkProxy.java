@@ -84,7 +84,7 @@ public class NetworkProxy {
 			} catch (SocketTimeoutException e) {
 			}
 
-			// extract data TODO:  Use FATDevice
+			// extract data
 			String entry = null;
 			for (DatagramPacket d : answers) {
 						
@@ -200,7 +200,7 @@ public class NetworkProxy {
 		BufferedInputStream bis = null;
 
 		if (mFat == null) {
-			throw new IllegalStateException(); // TODO: add string with description
+			throw new IllegalStateException("FAT device not configured before using sendCode().");
 		}
 		
 		try {
