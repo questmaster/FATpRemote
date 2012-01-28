@@ -212,7 +212,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 //			}
 //			break;
 //		}
-		case INTENT_SELECT_FAT:
 		case ON_SETTINGS_CHANGE: {
 			mSettings.readSettings(c);
 			break;

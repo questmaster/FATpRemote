@@ -196,6 +196,18 @@ public class FatDevicesDbAdapter {
 		}
 		return result;
 	}
+	
+	public int getAllFatDevicesCount() {
+		int cnt = 0;
+		
+		Cursor cur = fetchAllFatDevices();
+		if (cur != null) {
+			cnt = cur.getCount();
+			cur.close();
+		}
+			
+		return cnt;
+	}
 
 	/**
 	 * Update the note using the details provided. The note to be updated is

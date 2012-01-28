@@ -144,16 +144,12 @@ public class SelectFATFragment extends ListFragment {
 						}
 					}
 
-					if (dev.size() == 0) { // TODO: This may not be correct if manual devs are entered
+					if (mDbHelper.getAllFatDevicesCount() == 0) {
 						c.runOnUiThread(new Runnable() {
 							public void run() {
 								Toast.makeText(c, R.string.app_err_wifioff, Toast.LENGTH_LONG).show();
 							}
 						});
-						
-						// TODO use callback to activity?
-//						setResult(Activity.RESULT_CANCELED);
-//						finish();
 					} else {
 						c.runOnUiThread(new Runnable() {
 							public void run() {

@@ -12,18 +12,18 @@
     <string name="pref_vibrate_title">Vibrate on button press</string>
     <string name="layout_debug_send">Send to FAT+</string>
     <string name="pref_fat_ip_title">Enter FAT+ IP</string>
-    <string name="pref_fat_ip_summary">Enter the name or IP address of your FreeAgent Theater+</string>
+    <string name="pref_fat_ip_summary">Enter the name or IP address of your FreeAgent Device</string>
     <string name="dialog_noip_title">Missing Settings</string>
-    <string name="dialog_noip_text">The IP or DNS name of your FreeAgent Theater+ is not set. Please go to the Settings to do so.</string>
-    <string name="app_err_wrongip">FreeAgent Theater+ IP address is not set correct.</string>
+    <string name="dialog_noip_text">The IP or DNS name of your FreeAgent Device is not set. Please go to the Settings to do so.</string>
+    <string name="app_err_wrongip">FreeAgent Device IP address is not set correct.</string>
     <string name="app_err_wifioff">Wifi not enabled or not connected.</string>
     <string name="app_err_enwifi">Wifi has to be enabled to use the remote.</string>
     <string name="app_err_buttonoffline">Button is not functional, yet.</string>
-    <string name="app_err_fatoffline">FreeAgent Theater+ not configured or offline.</string>
-    <string name="app_err_noconnection">Could not connect to FreeAgent Theater+. Either Wifi or FAT+ are offline.</string>
+    <string name="app_err_fatoffline">FreeAgent Device not configured or offline.</string>
+    <string name="app_err_noconnection">Could not connect to FreeAgent Device. Either Wifi or FAT+ are offline.</string>
     <string name="menu_refresh">Refresh</string>
     <string name="dialog_wait_searching">Please wait. Searching for devices.</string>
     <string name="menu_settings">Settings</string>
-    <string name="app_title_selectFAT">Please select your FreeAgent Theather+</string>
+    <string name="app_title_selectFAT">Please select your FreeAgent Device</string>
     <string name="img_desc_background">Background</string>
 </resources>
