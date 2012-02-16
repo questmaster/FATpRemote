@@ -1,6 +1,7 @@
 package de.questmaster.fatremote.fragments;
 
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.util.List;
 
 import android.app.Activity;
@@ -8,14 +9,18 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
@@ -65,7 +70,6 @@ public class SelectFATFragment extends ListFragment {
 		} catch (SQLiteException e) {
 			Log.e(LOG_TAG, "Database failed to initialize.", e);
 		}
-
 	}
 	
 	@Override
@@ -84,7 +88,10 @@ public class SelectFATFragment extends ListFragment {
         }
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.selectfat_fragment, container, false);
+        View root = inflater.inflate(R.layout.selectfat_fragment, container, false);
+		registerForContextMenu(root.findViewById(android.R.id.list));
+
+        return root;
 	}
 		
 	@Override
@@ -136,26 +143,7 @@ public class SelectFATFragment extends ListFragment {
 
 					// enter dev's into database
 					for (FATDevice f : dev) {
-						long rowId = mDbHelper.fetchFatDeviceId(f.getIp());
-						if (rowId < 0) {
-							mDbHelper.createFatDevice(f.getName(), f.getIp(), f.getPort(), f.isAutoDetected());
-						} else {
-							mDbHelper.updateFatDevice(rowId, f.getName(), f.getIp(), f.getPort(), f.isAutoDetected());
-						}
-					}
-
-					if (mDbHelper.getAllFatDevicesCount() == 0) {
-						c.runOnUiThread(new Runnable() {
-							public void run() {
-								Toast.makeText(c, R.string.app_err_wifioff, Toast.LENGTH_LONG).show();
-							}
-						});
-					} else {
-						c.runOnUiThread(new Runnable() {
-							public void run() {
-								updateListView();
-							}
-						});
+						addFATDeviceToDatabase(f);
 					}
 				} catch (ConnectException e) {
 					Log.e(LOG_TAG, e.getMessage(), e);
@@ -187,6 +175,10 @@ public class SelectFATFragment extends ListFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.MENU_ADD:
+			showAddDeviceDialog();
+			
+			break;
 		case R.id.MENU_REFRESH:
 			getAvailableIps();
 
@@ -198,6 +190,36 @@ public class SelectFATFragment extends ListFragment {
 		return super.onOptionsItemSelected(item);
 	}
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        MenuInflater inflater = getActivity().getMenuInflater();
+        inflater.inflate(R.menu.contextmenu_select_fat, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+    	AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) item.getMenuInfo();
+    	
+    	
+        switch (item.getItemId()) {
+            case R.id.cm_delete:
+                mDbHelper.deleteFatDevice(menuInfo.id);
+            	updateListView();
+                
+                return true;
+            case R.id.cm_delete_all:
+                mDbHelper.deleteAllFatDevices();
+            	updateListView();
+                
+                return true;
+            default:
+                Log.e(LOG_TAG, "Should not happen: default case of switch reached.");
+        }
+        return super.onContextItemSelected(item);
+    }
+    
 	/**
 	 * 
 	 */
@@ -214,6 +236,66 @@ public class SelectFATFragment extends ListFragment {
 		fatDevices = new SimpleCursorAdapter(c, R.layout.selectfat_list_item, cursor, childFrom, childTo);
 
 		setListAdapter(fatDevices);
+	}
+
+	/**
+	 * @param dev
+	 */
+	private void addFATDeviceToDatabase(FATDevice dev) {
+		long rowId = mDbHelper.fetchFatDeviceId(dev.getIp());
+		if (rowId < 0) {
+			mDbHelper.createFatDevice(dev.getName(), dev.getIp(), dev.getPort(), dev.isAutoDetected());
+		} else {
+			mDbHelper.updateFatDevice(rowId, dev.getName(), dev.getIp(), dev.getPort(), dev.isAutoDetected());
+		}
+
+		if (mDbHelper.getAllFatDevicesCount() == 0) {
+			c.runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(c, R.string.app_err_wifioff, Toast.LENGTH_LONG).show();
+				}
+			});
+		} else {
+			c.runOnUiThread(new Runnable() {
+				public void run() {
+					updateListView();
+				}
+			});
+		}
+
+	}
+
+	private void showAddDeviceDialog() {
+		DialogFragment addDialog = AddDeviceDialogFragment.newInstance(R.string.dialog_adddev_title);
+		addDialog.setTargetFragment(this, 0);
+		addDialog.show(getFragmentManager(), "dialog");
+	}
+
+	public void doPositiveClick(String name, String ip) {
+		InetAddress ia = null;
+		boolean errOccured = false;
+		
+		// check ip: 1. Match against regex, 2. check if ip correct
+		try {
+			if (ip.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")) {
+				ia = InetAddress.getByName(ip);
+			} else {
+				throw new Exception("Bad Format");
+			}
+		} catch (Exception e) {
+			c.runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(c, R.string.app_err_wrongip, Toast.LENGTH_LONG).show();
+				}
+			});
+			errOccured = true;
+		}
+		
+		// set
+		if (!errOccured) {
+			FATDevice dev = new FATDevice(name, ia, false);
+			addFATDeviceToDatabase(dev);
+		}
 	}
 
 }

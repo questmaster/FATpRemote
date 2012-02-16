@@ -14,6 +14,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,7 @@ import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.Log;
 import de.questmaster.fatremote.datastructures.FATDevice;
+import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
 public class NetworkProxy {
 
@@ -30,9 +32,15 @@ public class NetworkProxy {
 	private static NetworkProxy singleton = null;
 	private FATDevice mFat = null;
 	private Context context;
+	private LinkedList<FATRemoteEvent> mEventList = new LinkedList<FATRemoteEvent>();
 
 	public static NetworkProxy getInstance(Context c) {
 		if (singleton == null) {
+			
+			if (c == null) {
+				throw new IllegalArgumentException("Context was null");
+			}
+			
 			// Initialize proxy
 			NetworkProxy np = new NetworkProxy(); 
 			np.context = c;
@@ -192,15 +200,38 @@ public class NetworkProxy {
 		return adr;
 	}
 
-	public void sendCode(short[] keyCode) throws ConnectException { // TODO: change to private + use events to network proxy
+	public void addRemoteEvent (FATRemoteEvent event) throws ConnectException {
+		if (event == null) {
+			throw new IllegalArgumentException("null event.");
+		}
+		
+		synchronized (mEventList) {
+			mEventList.add(event);
+		}
+				
+		while(!mEventList.isEmpty()) {
+			sendCode();
+		}
+	}
+	
+	private void sendCode() throws ConnectException {
 		InetAddress fatIp = null;
 		Socket cnx = null;
 		FileOutputStream fout = null;
 		BufferedOutputStream bos = null;
 		BufferedInputStream bis = null;
+		short[] keyCode = null;
 
 		if (mFat == null) {
 			throw new IllegalStateException("FAT device not configured before using sendCode().");
+		}
+		
+		assert !mEventList.isEmpty();
+		
+		// get event to send
+		synchronized (mEventList) {
+			FATRemoteEvent event = mEventList.poll();
+			keyCode = event.getRemoteCode();
 		}
 		
 		try {
@@ -284,15 +315,15 @@ public class NetworkProxy {
 	/**
 	 * @return the mFat
 	 */
-	public FATDevice getFat() {
+	public FATDevice getCurrentFat() {
 		return mFat;
 	}
 
 	/**
 	 * @param mFat the mFat to set
 	 */
-	public void setFat(FATDevice mFat) {
-		this.mFat = mFat;
+	public void setCurrentFat(FATDevice device) {
+		this.mFat = device;
 	}
 
 }

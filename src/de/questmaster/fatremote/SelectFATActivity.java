@@ -36,14 +36,14 @@ public class SelectFATActivity extends FragmentActivity implements SelectFATFrag
 
 	@Override
 	public void onFATSelected(FATDevice dev) {
-		NetworkProxy.getInstance(this).setFat(dev);
+		NetworkProxy.getInstance(this).setCurrentFat(dev);
 
 		// When clicked, show a toast with the TextView text
 		Intent operateFAT = new Intent(this, RemoteActivity.class);
 		operateFAT.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		this.startActivity(operateFAT);
 
-		//finish();
+		finish();
 	}
 
 

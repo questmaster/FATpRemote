@@ -5,15 +5,11 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import de.questmaster.fatremote.R;
 
 public class AddDeviceDialogFragment extends DialogFragment {
-
-	
-	LayoutInflater mInflater = null;
 	
 	public static AddDeviceDialogFragment newInstance(int title) {
         AddDeviceDialogFragment frag = new AddDeviceDialogFragment();
@@ -36,8 +32,8 @@ public class AddDeviceDialogFragment extends DialogFragment {
                 .setPositiveButton(android.R.string.ok,
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
-                        	String name = (String) ((TextView) dialogLayout.findViewById(R.id.dialog_adddev_name_edit)).getText().toString();
-                        	String ip = (String) ((TextView) dialogLayout.findViewById(R.id.dialog_adddev_ip_edit)).getText().toString();
+                        	String name = (String) ((TextView) dialogLayout.findViewById(R.id.dialog_adddev_name_edit)).getText().toString().trim();
+                        	String ip = (String) ((TextView) dialogLayout.findViewById(R.id.dialog_adddev_ip_edit)).getText().toString().trim();
                         	
                             ((SelectFATFragment)getTargetFragment()).doPositiveClick(name, ip);
                         }

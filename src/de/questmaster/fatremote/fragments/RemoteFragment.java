@@ -8,10 +8,12 @@ import de.questmaster.fatremote.NetworkProxy;
 import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.SelectFATActivity;
 import de.questmaster.fatremote.FatRemoteSettings.Settings;
+import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -162,6 +164,12 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 
 		inflater.inflate(R.menu.options_menu, menu);
 
+		// For Honeycomb and up
+		if (Build.VERSION.SDK_INT >= 11) {
+			MenuItem mi = menu.findItem(R.id.MENU_ITEM_SELECTFAT);
+			mi.setVisible(false);
+		}
+		
 		// For testing purpose
 		if (DebugHelper.SHOW_DEBUG_SCREEN) {
 			MenuItem mi = menu.findItem(R.id.MENU_ITEM_DEBUG);
@@ -177,9 +185,11 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
 		case R.id.MENU_ITEM_SELECTFAT: {
 			Intent selectFAT = new Intent(Intent.ACTION_PICK);
 			selectFAT.setClass(c, SelectFATActivity.class);
+			selectFAT.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivityForResult(selectFAT, INTENT_SELECT_FAT);
 
 			break;
@@ -344,7 +354,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		new Thread(new Runnable() {
 			public void run() {
 				try {
-					NetworkProxy.getInstance(c).sendCode(new short[] { 0x48, 0x12, keyCode, keyModifier });
+					NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
 				} catch (final ConnectException e) {
 					c.runOnUiThread(new Runnable() {
 						public void run() {

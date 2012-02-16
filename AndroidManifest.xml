@@ -17,8 +17,7 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:theme="@android:style/Theme.NoTitleBar"
-			android:name="RemoteActivity"></activity>
+		<activity android:name="RemoteActivity"></activity>
 		<activity android:name="FatRemoteSettings" android:label="@string/app_name"></activity>
         
         <activity android:name="SelectFATActivity" android:configChanges="orientation"></activity>

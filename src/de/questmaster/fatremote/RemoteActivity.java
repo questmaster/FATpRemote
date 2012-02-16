@@ -1,5 +1,7 @@
 package de.questmaster.fatremote;
 
+import android.app.ActionBar;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import de.questmaster.fatremote.fragments.RemoteFragment;
@@ -12,6 +14,18 @@ public class RemoteActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 //		setContentView(R.layout.remote_activity);
 
+		// used in Honeycomb and up
+		if (Build.VERSION.SDK_INT >= 11) {
+			ActionBar ac = this.getActionBar();
+			ac.setDisplayHomeAsUpEnabled(true);
+			
+			if (Build.VERSION.SDK_INT >= 14) {
+				ac.setHomeButtonEnabled(true);
+			}
+		}
+
+		setTitle(getString(R.string.app_title_remote, NetworkProxy.getInstance(this).getCurrentFat().getIp()));
+		
 		if (savedInstanceState == null) {
             // During initial setup, plug in the details fragment.
             RemoteFragment details = new RemoteFragment();
