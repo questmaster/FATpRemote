@@ -11,6 +11,13 @@ import de.questmaster.fatremote.R;
 
 public class AddDeviceDialogFragment extends DialogFragment {
 	
+	private static class CancelListener implements DialogInterface.OnClickListener {
+        public void onClick(DialogInterface dialog, int whichButton) {
+            dialog.cancel();
+        }
+
+	}
+	
 	public static AddDeviceDialogFragment newInstance(int title) {
         AddDeviceDialogFragment frag = new AddDeviceDialogFragment();
         Bundle args = new Bundle();
@@ -40,11 +47,7 @@ public class AddDeviceDialogFragment extends DialogFragment {
                     }
                 )
                 .setNegativeButton(android.R.string.cancel,
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            dialog.cancel();
-                        }
-                    }
+                	new CancelListener()
                 )
                 .create();
     }}

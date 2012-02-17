@@ -28,11 +28,11 @@ public class FATRemoteEvent {
 	}
 
 	public short[] getRemoteCode() {
-		return mCommand;
+		return mCommand.clone();
 	}
 	
 	public short[] getCodePayload() {
-		return mPayload;
+		return mPayload.clone();
 	}
 	
 }

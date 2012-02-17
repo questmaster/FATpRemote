@@ -37,13 +37,14 @@ public class SelectFATFragment extends ListFragment {
 	private static final String LOG_TAG = "SelectFATFragment";
 	
 	private Activity c = null;
-	private ProgressDialog mDialog;
-	private FatDevicesDbAdapter mDbHelper;
-	private FATSelectedListener mListener;
+	private ProgressDialog mDialog = null;
+	private FatDevicesDbAdapter mDbHelper = null;
+	private FATSelectedListener mListener = null;
+	
 	
 	// Container Activity must implement this interface
     public interface FATSelectedListener {
-        public void onFATSelected(FATDevice dev);
+        void onFATSelected(FATDevice dev);
     }
     
 	@Override
@@ -57,11 +58,11 @@ public class SelectFATFragment extends ListFragment {
 		c = this.getActivity();
 		
 		// set Listener callback
-		try {
+//		try {
 			mListener = (FATSelectedListener) this.getActivity();
-		} catch (ClassCastException e) {
-			throw new ClassCastException("Activity has to implement FATSelecteListener.");
-		}
+//		} catch (ClassCastException e) {
+//			throw new ClassCastException("Activity has to implement FATSelecteListener.", e);
+//		}
 		
 		// Init Database
 		mDbHelper = new FatDevicesDbAdapter(c);

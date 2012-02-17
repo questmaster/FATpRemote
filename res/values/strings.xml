@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <resources>
     <string name="app_name">FreeAgent Remote</string>
-    <string name="PREF_KEY_FAT_IP">fat_ip</string>
     <string name="PREF_KEY_DEFAULT_BEHAVIOR">key_def_beh</string>
     <string name="PREF_KEY_TONE">key_tone</string>
     <string name="PREF_KEY_VIBRATE">key_vibrate</string>
@@ -11,14 +10,9 @@
     <string name="pref_tone_title">Tone on button press</string>
     <string name="pref_vibrate_title">Vibrate on button press</string>
     <string name="layout_debug_send">Send to FAT+</string>
-    <string name="pref_fat_ip_title">Enter FAT+ IP</string>
-    <string name="pref_fat_ip_summary">Enter the name or IP address of your FreeAgent Device</string>
-    <string name="dialog_noip_title">Missing Settings</string>
-    <string name="dialog_noip_text">The IP or DNS name of your FreeAgent Device is not set. Please go to the Settings to do so.</string>
     <string name="app_err_wrongip">FreeAgent Device IP address is not set correct.</string>
     <string name="app_err_wifioff">Wifi not enabled or not connected.</string>
     <string name="app_err_enwifi">Wifi has to be enabled to use the remote.</string>
-    <string name="app_err_buttonoffline">Button is not functional, yet.</string>
     <string name="app_err_fatoffline">FreeAgent Device not configured or offline.</string>
     <string name="app_err_noconnection">Could not connect to FreeAgent Device. Either Wifi or FAT+ are offline.</string>
     <string name="menu_refresh">Search for Devices</string>

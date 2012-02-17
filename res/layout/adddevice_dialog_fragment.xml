@@ -13,7 +13,7 @@
     <EditText
         android:id="@+id/dialog_adddev_name_edit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" android:inputType="text">
 
         <requestFocus />
     </EditText>
@@ -27,6 +27,6 @@
     <EditText
         android:id="@+id/dialog_adddev_ip_edit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" android:inputType="textNoSuggestions"/>
 
 </LinearLayout>

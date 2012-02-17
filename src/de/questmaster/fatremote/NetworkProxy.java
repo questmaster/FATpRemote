@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -32,7 +33,7 @@ public class NetworkProxy {
 	private static NetworkProxy singleton = null;
 	private FATDevice mFat = null;
 	private Context context;
-	private LinkedList<FATRemoteEvent> mEventList = new LinkedList<FATRemoteEvent>();
+	private Queue<FATRemoteEvent> mEventList = new LinkedList<FATRemoteEvent>();
 
 	public static NetworkProxy getInstance(Context c) {
 		if (singleton == null) {
@@ -200,33 +201,30 @@ public class NetworkProxy {
 		return adr;
 	}
 
-	public void addRemoteEvent (FATRemoteEvent event) throws ConnectException {
+	public void addRemoteEvent (FATRemoteEvent event) throws IOException {
 		if (event == null) {
 			throw new IllegalArgumentException("null event.");
 		}
-		
+		if (mFat == null) {
+			throw new IllegalStateException("FAT device not configured before using sendCode().");
+		}
+				
 		synchronized (mEventList) {
 			mEventList.add(event);
 		}
-				
+		
 		while(!mEventList.isEmpty()) {
 			sendCode();
 		}
 	}
 	
-	private void sendCode() throws ConnectException {
-		InetAddress fatIp = null;
+	private void sendCode() throws IOException {
 		Socket cnx = null;
-		FileOutputStream fout = null;
 		BufferedOutputStream bos = null;
 		BufferedInputStream bis = null;
-		short[] keyCode = null;
+		short[] keyCode;
 
-		if (mFat == null) {
-			throw new IllegalStateException("FAT device not configured before using sendCode().");
-		}
-		
-		assert !mEventList.isEmpty();
+		assert mFat != null && !mEventList.isEmpty();
 		
 		// get event to send
 		synchronized (mEventList) {
@@ -235,12 +233,10 @@ public class NetworkProxy {
 		}
 		
 		try {
-			fatIp = InetAddress.getByName(mFat.getIp());
-
 			// this makes sure wifi is up and running
-			if (fatIp != null && (isWifiEnabled() || DebugHelper.ON_EMULATOR)) {
+			if (isWifiEnabled() || DebugHelper.ON_EMULATOR) {
 				// Open Socket
-				cnx = new Socket(fatIp, mFat.getPort()); // FIXME: hangs here on emulator if device down -> check if device alive before connecting
+				cnx = new Socket(mFat.getInetAddress(), mFat.getPort()); 
 
 				// Open Streams
 				bos = new BufferedOutputStream(cnx.getOutputStream(), 20);
@@ -254,60 +250,70 @@ public class NetworkProxy {
 				bos.flush();
 
 				if (DebugHelper.ON_EMULATOR) { // FIXME: include output of incoming data in regular release!
-					Thread.sleep(200);
-
-					int read = 0, in;
-					byte[] buf = new byte[4000];
-					while ((in = bis.read(buf)) > 0) {
-						read += in;
-						if (fout == null) {
-							Log.i(LOG_TAG, "Recived data from FAT: " + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ". Buffersize: " + in);
-
-							if (read > 4) {
-								File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sqlite.out");
-								f.createNewFile();
-								fout = new FileOutputStream(f);
-
-								// output and skip 4byte identifier
-								fout.write(buf, 4, buf.length - 4);
-							}
-						} else {
-							fout.write(buf);
-						}
-
-					}
-					if (read > 4 && fout != null) {
-						fout.flush();
-					}
+					writeIncomingData(bis);
 				}
 			} else {
-				throw new ConnectException(context.getResources().getString(R.string.app_err_fatoffline));
+				throw new IOException(context.getResources().getString(R.string.app_err_fatoffline));
 			}
 		} catch (UnknownHostException e) {
 			Log.e(LOG_TAG, e.getMessage(), e);
-			throw new ConnectException(context.getResources().getString(R.string.app_err_wrongip));
+			throw new IOException(context.getResources().getString(R.string.app_err_wrongip), e);
 		} catch (IOException e) {
 			Log.e(LOG_TAG, e.getMessage(), e);
-			throw new ConnectException(context.getResources().getString(R.string.app_err_noconnection));
-		} catch (InterruptedException e) {
-			Log.e(LOG_TAG, e.getMessage(), e);
+			throw new IOException(context.getResources().getString(R.string.app_err_noconnection), e);
 		} finally {
 			try {
 				// close streams
-				if (fout != null) {
-					fout.close();
-				}
-				if (fout != null) {
-					bos.close();
-				}
-				if (fout != null) {
-					bis.close();
-				}
-				if (fout != null) {
-					cnx.close();
-				}
-			} catch (IOException e) {
+				bos.close();
+				bis.close();
+				cnx.close();
+			} catch (Exception e) {
 				Log.e(LOG_TAG, e.getMessage(), e);
+			}
+		}
+	}
+
+	/**
+	 * @param fout
+	 * @param bis
+	 * @throws InterruptedException
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private void writeIncomingData(BufferedInputStream bis) throws IOException {
+		FileOutputStream fout = null;
+		try {
+		Thread.sleep(200);
+
+		int read = 0, in;
+		byte[] buf = new byte[4000];
+		while ((in = bis.read(buf)) > 0) {
+			read += in;
+			if (fout == null) {
+				Log.i(LOG_TAG, "Recived data from FAT: " + buf[0] + ", " + buf[1] + ", " + buf[2] + ", " + buf[3] + ". Buffersize: " + in);
+
+				if (read > 4) {
+					File f = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/sqlite.out");
+					if (f.createNewFile()) {
+						fout = new FileOutputStream(f);
+
+						// output and skip 4byte identifier
+						fout.write(buf, 4, buf.length - 4);
+					}
+				}
+			} else {
+				fout.write(buf);
+			}
+
+		}
+		if (read > 4 && fout != null) {
+			fout.flush();
+		}
+		} catch (InterruptedException e) {
+			Log.e(LOG_TAG, e.getMessage(), e);
+		} finally {
+			if (fout != null) {
+				fout.close();
 			}
 		}
 	}

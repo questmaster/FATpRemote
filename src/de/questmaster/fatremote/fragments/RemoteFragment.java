@@ -1,14 +1,7 @@
 package de.questmaster.fatremote.fragments;
 
-import java.net.ConnectException;
+import java.io.IOException;
 
-import de.questmaster.fatremote.DebugHelper;
-import de.questmaster.fatremote.FatRemoteSettings;
-import de.questmaster.fatremote.NetworkProxy;
-import de.questmaster.fatremote.R;
-import de.questmaster.fatremote.SelectFATActivity;
-import de.questmaster.fatremote.FatRemoteSettings.Settings;
-import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +25,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import de.questmaster.fatremote.DebugHelper;
+import de.questmaster.fatremote.FatRemoteSettings;
+import de.questmaster.fatremote.FatRemoteSettings.Settings;
+import de.questmaster.fatremote.NetworkProxy;
+import de.questmaster.fatremote.R;
+import de.questmaster.fatremote.SelectFATActivity;
+import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
 public class RemoteFragment extends Fragment implements View.OnClickListener {
 
@@ -43,7 +43,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	public static final int ON_SETTINGS_CHANGE = 1;
 
 	private Settings mSettings = new FatRemoteSettings.Settings();
-	private AudioManager audioManager;
+	private AudioManager audioManager = null;
 
 	private Activity c = null;
 	private short keyCode;
@@ -336,11 +336,11 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 
 	private void invokeSend() {
 		// ring / vibrate
-		if ((!mSettings.mOverride && audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0) || (mSettings.mOverride && mSettings.mTone)) {
+		if (audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0 || (mSettings.isOverride() && mSettings.isTone())) {
 			audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 		}
 
-		if (mSettings.mVibrate) {
+		if (mSettings.isVibrate()) {
 			Vibrator vibrator = (Vibrator) c.getSystemService(Context.VIBRATOR_SERVICE);
 			vibrator.vibrate(25);
 		}
@@ -355,7 +355,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 			public void run() {
 				try {
 					NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
-				} catch (final ConnectException e) {
+				} catch (final IOException e) {
 					c.runOnUiThread(new Runnable() {
 						public void run() {
 							Toast.makeText(c, e.getMessage(), Toast.LENGTH_LONG).show();
