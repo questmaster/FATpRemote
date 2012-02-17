@@ -145,7 +145,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
                 		if (before == 0) {
                 			onTextEditKeyDown(Character.codePointAt(s, start), null);
                 		} else {
-                			onTextEditKeyDown(8, null); // backspace
+                			onTextEditKeyDown(0x7f, null); // backspace
                 		}
                 	}
                 }
@@ -245,7 +245,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		invokeSend();
 	}
 
-	// TODO: grab keys from 'enterText' view
+	// FIXME: grab keys from 'enterText' view
 	public boolean onTextEditKeyDown(int keyId, KeyEvent event) {
 		short key = 0;
 		int unicode = 0;
@@ -263,7 +263,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		// WORKAROUND for some keys
 		if (key == 0 && keyId == 67) { key = 0x7f; } // delete //8; // Backspace
 
-		// TODO: Some key are not working, e.g. öäü (extended ASCII). Maybe show textfield to get all characters.
+		// FIXME: Some key are not working, e.g. öäü (extended ASCII).
 		// Send Character
 		if (key != 0) {
 			keyCode = 0xf9;
@@ -272,9 +272,8 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 			// send keyCode
 			invokeSend();
 			return true;
-		} /*else {
-			return super.onKeyDown(keyId, event);
-		}*/
+		} 
+
 		return false;
 	}
 
