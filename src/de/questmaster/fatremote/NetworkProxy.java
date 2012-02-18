@@ -3,6 +3,7 @@ package de.questmaster.fatremote;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -14,15 +15,17 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
-import android.content.Context;
+import android.app.Activity;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
@@ -32,10 +35,11 @@ public class NetworkProxy {
 
 	private static NetworkProxy singleton = null;
 	private FATDevice mFat = null;
-	private Context context;
-	private Queue<FATRemoteEvent> mEventList = new LinkedList<FATRemoteEvent>();
-
-	public static NetworkProxy getInstance(Context c) {
+	private Activity context = null;
+	private BlockingQueue<FATRemoteEvent> mEventList = new ArrayBlockingQueue<FATRemoteEvent>(20, true);
+	private Thread mSendingThread = null;
+	
+	public static NetworkProxy getInstance(Activity c) {
 		if (singleton == null) {
 			
 			if (c == null) {
@@ -44,10 +48,10 @@ public class NetworkProxy {
 			
 			// Initialize proxy
 			NetworkProxy np = new NetworkProxy(); 
-			np.context = c;
 
 			singleton = np;
 		}
+		singleton.context = c;
 
 		return singleton;
 	}
@@ -201,7 +205,7 @@ public class NetworkProxy {
 		return adr;
 	}
 
-	public void addRemoteEvent (FATRemoteEvent event) throws IOException {
+	public void addRemoteEvent (FATRemoteEvent event) {
 		if (event == null) {
 			throw new IllegalArgumentException("null event.");
 		}
@@ -209,12 +213,34 @@ public class NetworkProxy {
 			throw new IllegalStateException("FAT device not configured before using sendCode().");
 		}
 				
-		synchronized (mEventList) {
-			mEventList.add(event);
-		}
+			try {
+				mEventList.put(event);
+			} catch (InterruptedException e) {
+				Log.e(LOG_TAG, "Event not in queue (keyId): " + event.getRemoteCode()[3], e);
+			}
 		
-		while(!mEventList.isEmpty()) {
-			sendCode();
+		if (mSendingThread == null) {
+			mSendingThread = new Thread(new Runnable() {
+				public void run() {
+					while (true) {
+						try {
+							sendCode();
+						} catch (final IOException e) {
+							context.runOnUiThread(new Runnable() {
+								public void run() {
+									Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+							}});
+						}
+	
+						context.runOnUiThread(new Runnable() {
+							public void run() { // reset send image
+								ImageView sending = (ImageView) context.findViewById(R.id.sendLED);
+								sending.setImageResource(R.drawable.light_normal);
+						}});
+					}
+				}
+			});
+			mSendingThread.start();
 		}
 	}
 	
@@ -224,13 +250,17 @@ public class NetworkProxy {
 		BufferedInputStream bis = null;
 		short[] keyCode;
 
-		assert mFat != null && !mEventList.isEmpty();
+		assert mFat != null;
 		
 		// get event to send
-		synchronized (mEventList) {
-			FATRemoteEvent event = mEventList.poll();
-			keyCode = event.getRemoteCode();
-		}
+			FATRemoteEvent event;
+			try {
+				event = mEventList.take();
+				keyCode = event.getRemoteCode();
+			} catch (InterruptedException e) {
+				Log.e(LOG_TAG, e.getLocalizedMessage(), e);
+				throw new IOException(e);
+			}
 		
 		try {
 			// this makes sure wifi is up and running

@@ -1,7 +1,5 @@
 package de.questmaster.fatremote.fragments;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +10,6 @@ import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,15 +32,14 @@ import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
 public class RemoteFragment extends Fragment implements View.OnClickListener {
 
-	private static final String LOG_TAG = "RemoteFragment";
+//	private static final String LOG_TAG = "RemoteFragment";
 	
 	protected static final String INTENT_ALLFATS = "de.questmaster.fatremote.fats";
 
-	private static final int INTENT_SELECT_FAT = 0;
-	public static final int ON_SETTINGS_CHANGE = 1;
+	public static final int ON_SETTINGS_CHANGE = 0;
 
 	private Settings mSettings = new FatRemoteSettings.Settings();
-	private AudioManager audioManager = null;
+	private AudioManager mAudioManager = null;
 
 	private Activity c = null;
 	private short keyCode;
@@ -87,8 +83,8 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		super.onActivityCreated(savedInstanceState);
 		
 		/* start audio */
-		audioManager = (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
-		audioManager.loadSoundEffects();
+		mAudioManager = (AudioManager) c.getSystemService(Context.AUDIO_SERVICE);
+		mAudioManager.loadSoundEffects();
 
 		/* read Settings */
 		mSettings.readSettings(c);
@@ -133,20 +129,22 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	    });
 		text.addTextChangedListener(new TextWatcher()
         {
-                public void  afterTextChanged (Editable s) { 
-                } 
-
-                public void  beforeTextChanged  (CharSequence s, int start, int count, int after) { 
-                } 
+                public void  afterTextChanged (Editable s) { } 
+                public void  beforeTextChanged  (CharSequence s, int start, int count, int after) { } 
                 
                 public void  onTextChanged  (CharSequence s, int start, int before, int count) 
                 { 
-                	if (s.length() > 0) {
+                	if (s.length() > 0 || before != 0) {
+                		// Send Character
+                		keyCode = 0xf9;
                 		if (before == 0) {
-                			onTextEditKeyDown(Character.codePointAt(s, start), null);
+                			keyModifier = (short) Character.codePointAt(s, start);
                 		} else {
-                			onTextEditKeyDown(0x7f, null); // backspace
+                			keyModifier = (short) 0x7f; // backspace
                 		}
+
+                		// send keyCode
+                		invokeSend();
                 	}
                 }
         });
@@ -190,8 +188,10 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 			Intent selectFAT = new Intent(Intent.ACTION_PICK);
 			selectFAT.setClass(c, SelectFATActivity.class);
 			selectFAT.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-			startActivityForResult(selectFAT, INTENT_SELECT_FAT);
-
+			startActivity(selectFAT);
+			
+			getActivity().finish();
+			
 			break;
 		}
 		case R.id.MENU_ITEM_SETTINGS: {
@@ -217,11 +217,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
-//		case INTENT_SELECT_FAT: {
-//			if (resultCode == Activity.RESULT_OK) {
-//			}
-//			break;
-//		}
 		case ON_SETTINGS_CHANGE: {
 			mSettings.readSettings(c);
 			break;
@@ -231,52 +226,14 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 			break;
 		}
 	}
-
-	public void onDebugButton(View v) {
-		// short in1 = Short.decode(((TextView)findViewById(R.id.pos1)).getText().toString());
-		// short in2 = Short.decode(((TextView)findViewById(R.id.pos2)).getText().toString());
-		short in3 = Short.decode(((TextView) c.findViewById(R.id.pos3)).getText().toString());
-		short in4 = Short.decode(((TextView) c.findViewById(R.id.pos4)).getText().toString());
-
-		keyCode = in3;
-		keyModifier = in4;
-
-		// send keyCode
-		invokeSend();
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		
+		getActivity().finish();
 	}
-
-	// FIXME: grab keys from 'enterText' view
-	public boolean onTextEditKeyDown(int keyId, KeyEvent event) {
-		short key = 0;
-		int unicode = 0;
-
-		// get key
-		if (event == null) {
-			key = (short) keyId;
- 		} else {
-//		unicode = event.getUnicodeChar();
-//		key = (short) unicode;
- 			key = (short) event.getUnicodeChar(event.getMetaState());
- 		}
-		Log.i(LOG_TAG, "KeyEvent: " + keyId + ", unicode: " + unicode);
-
-		// WORKAROUND for some keys
-		if (key == 0 && keyId == 67) { key = 0x7f; } // delete //8; // Backspace
-
-		// FIXME: Some key are not working, e.g. öäü (extended ASCII).
-		// Send Character
-		if (key != 0) {
-			keyCode = 0xf9;
-			keyModifier = key;
-
-			// send keyCode
-			invokeSend();
-			return true;
-		} 
-
-		return false;
-	}
-
+	
 	private void showKeyboard() {
 		// show edittext and give it focus
 		ImageView button = (ImageView) c.findViewById(R.id.textButton);
@@ -304,6 +261,19 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		// hide keyboard
     	InputMethodManager mgr = (InputMethodManager) c.getSystemService(Context.INPUT_METHOD_SERVICE);
     	mgr.hideSoftInputFromWindow(text.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+	}
+
+	public void onDebugButton(View v) {
+		// short in1 = Short.decode(((TextView)findViewById(R.id.pos1)).getText().toString());
+		// short in2 = Short.decode(((TextView)findViewById(R.id.pos2)).getText().toString());
+		short in3 = Short.decode(((TextView) c.findViewById(R.id.pos3)).getText().toString());
+		short in4 = Short.decode(((TextView) c.findViewById(R.id.pos4)).getText().toString());
+
+		keyCode = in3;
+		keyModifier = in4;
+
+		// send keyCode
+		invokeSend();
 	}
 
 	@Override
@@ -335,8 +305,8 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 
 	private void invokeSend() {
 		// ring / vibrate
-		if (audioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0 || (mSettings.isOverride() && mSettings.isTone())) {
-			audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+		if (mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0 || (mSettings.isOverride() && mSettings.isTone())) {
+			mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 		}
 
 		if (mSettings.isVibrate()) {
@@ -350,25 +320,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		sending.invalidate();
 
 		// start sending in new thread
-		new Thread(new Runnable() {
-			public void run() {
-				try {
-					NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
-				} catch (final IOException e) {
-					c.runOnUiThread(new Runnable() {
-						public void run() {
-							Toast.makeText(c, e.getMessage(), Toast.LENGTH_LONG).show();
-						}
-					});
-				}
-
-				c.runOnUiThread(new Runnable() {
-					public void run() { // reset send image
-						ImageView sending = (ImageView) c.findViewById(R.id.sendLED);
-						sending.setImageResource(R.drawable.light_normal);
-					}
-				});
-			}
-		}).start();
+		NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
 	}
 }
