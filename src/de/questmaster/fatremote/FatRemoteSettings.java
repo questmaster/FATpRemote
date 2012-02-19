@@ -23,7 +23,7 @@ import android.preference.PreferenceActivity;
 public class FatRemoteSettings extends PreferenceActivity {
 
 	
-	private FatRemoteSettings.Settings mSettings = new FatRemoteSettings.Settings();
+	private FatRemoteSettings.AppSettings mSettings = new FatRemoteSettings.AppSettings();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -36,7 +36,7 @@ public class FatRemoteSettings extends PreferenceActivity {
 	}
 
 
-	public static class Settings
+	public static class AppSettings
 	{
 		// default values
 		private boolean mOverride = false;

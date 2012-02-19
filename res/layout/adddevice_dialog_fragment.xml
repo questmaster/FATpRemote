@@ -8,7 +8,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_adddev_name" />
+        android:text="@string/dialog_adddev_name" android:paddingTop="8dp"/>
 
     <EditText
         android:id="@+id/dialog_adddev_name_edit"
@@ -22,11 +22,17 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/dialog_adddev_ip" />
+        android:text="@string/dialog_adddev_ip" android:paddingTop="8dp"/>
 
     <EditText
         android:id="@+id/dialog_adddev_ip_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:inputType="textNoSuggestions"/>
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dialog_adddev_note" android:padding="8dp"/>
 
 </LinearLayout>

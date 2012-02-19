@@ -26,7 +26,7 @@
             <ImageView android:layout_width="wrap_content" android:id="@+id/remote_button_info" android:tag="@integer/remote_info" android:src="@drawable/info" android:layout_weight="22" android:scaleType="center" android:layout_height="match_parent"></ImageView>
         </LinearLayout>
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout5">
-            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:layout_weight="22" android:id="@+id/enterText" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:lines="1" android:visibility="gone" android:inputType="textNoSuggestions"></EditText>
+            <EditText android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:gravity="center" android:layout_weight="22" android:id="@+id/enterText" android:layout_marginLeft="15dp" android:layout_marginRight="15dp" android:lines="1" android:visibility="gone" android:inputType="textNoSuggestions" android:imeOptions="actionNone"></EditText>
             <ImageView android:tag="text" android:src="@drawable/text" android:layout_weight="22" android:layout_width="wrap_content" android:scaleType="center" android:layout_height="match_parent" android:padding="11dp" android:id="@+id/textButton" android:visibility="visible"></ImageView>
         </LinearLayout>
         <LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="1" android:id="@+id/linearLayout6">

@@ -3,10 +3,12 @@ package de.questmaster.fatremote.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -24,7 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import de.questmaster.fatremote.DebugHelper;
 import de.questmaster.fatremote.FatRemoteSettings;
-import de.questmaster.fatremote.FatRemoteSettings.Settings;
+import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.NetworkProxy;
 import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.SelectFATActivity;
@@ -38,7 +40,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 
 	public static final int ON_SETTINGS_CHANGE = 0;
 
-	private Settings mSettings = new FatRemoteSettings.Settings();
+	private AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	private AudioManager mAudioManager = null;
 
 	private Activity c = null;
@@ -121,39 +123,75 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 	            if (event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
 	            	hideKeyboard();
-	        		
-	        		return true;
+	            	
+            		return true;
 	            }
 	            return false;
 	        }
 	    });
-		text.addTextChangedListener(new TextWatcher()
-        {
-                public void  afterTextChanged (Editable s) { } 
-                public void  beforeTextChanged  (CharSequence s, int start, int count, int after) { } 
-                
-                public void  onTextChanged  (CharSequence s, int start, int before, int count) 
-                { 
-                	if (s.length() > 0 || before != 0) {
-                		// Send Character
-                		keyCode = 0xf9;
-                		if (before == 0) {
-                			keyModifier = (short) Character.codePointAt(s, start);
-                		} else {
-                			keyModifier = (short) 0x7f; // backspace
-                		}
-
-                		// send keyCode
-                		invokeSend();
-                	}
-                }
-        });
+		text.addTextChangedListener(determineKeyboardTextChangedListener());
 		text.setFocusable(true);
 
 		// check if WIFI available
 		if (!NetworkProxy.getInstance(c).isWifiEnabled()) {
 			Toast.makeText(c, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
 		}
+	}
+	
+	private TextWatcher determineKeyboardTextChangedListener() {
+		TextWatcher tw = null;
+
+    	//check for bad keyboards
+    	boolean hwKeyboardShown = getActivity().getResources().getConfiguration().hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO;
+    	String swKeyboardName = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.DEFAULT_INPUT_METHOD);
+    	
+    	if (!hwKeyboardShown && swKeyboardName.contains("nuance.xt9")) { // ASUS Transformer Prime SoftKeyboard
+    		tw = new TextWatcher() {
+                public void  afterTextChanged (Editable s) { } 
+                public void  beforeTextChanged  (CharSequence s, int start, int count, int after) { } 
+                
+                public void  onTextChanged  (CharSequence s, int start, int before, int count) { 
+                	int diff = count - before;
+                	
+                	if (s.length() > 0) {
+                		// Send Character
+                		keyCode = 0xf9;
+                		if (diff > 0) { // +1
+                			keyModifier = (short) Character.codePointAt(s, before);
+                		} else if (diff < 0) { // -1
+                			keyModifier = (short) 0x7f; // backspace
+                		} else {
+                			keyModifier = (short) 0x0a; // enter
+                		}
+	
+                		// send keyCode
+                		invokeSend();
+                	}
+                }};
+    	} else {	// Android Default Behaviour             	
+    		tw = new TextWatcher() {
+                public void  afterTextChanged (Editable s) { } 
+                public void  beforeTextChanged  (CharSequence s, int start, int count, int after) { } 
+                
+                public void  onTextChanged  (CharSequence s, int start, int before, int count) { 
+                	if (s.length() > 0 || before != 0) {
+                		// Send Character
+                		keyCode = 0xf9;
+                		if (before == 0) {
+                			keyModifier = (short) Character.codePointAt(s, start);
+                		} else if (start == 0) {
+                			keyModifier = 0x0a; // enter
+                		} else {
+                			keyModifier = (short) 0x7f; // backspace
+                		}
+	
+                		// send keyCode
+                		invokeSend();
+                	}
+                }};
+        }
+    	
+    	return tw;
 	}
 	
 	@Override

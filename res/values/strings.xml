@@ -21,10 +21,11 @@
     <string name="app_title_selectFAT">Please select your FreeAgent Device</string>
     <string name="img_desc_background">Background</string>
     <string name="menu_add">Add Device</string>
-    <string name="dialog_adddev_name">Name:</string>
-    <string name="dialog_adddev_ip">IP Address:</string>
+    <string name="dialog_adddev_name">Name of your player:</string>
+    <string name="dialog_adddev_ip">Enter IP Address:</string>
     <string name="dialog_adddev_title">Add a New Device</string>
     <string name="context_delete">Delete</string>
     <string name="context_delete_all">Clear all</string>
     <string name="app_title_remote">Connected to %s</string>
+    <string name="dialog_adddev_note">To find the IP address of your player go to Menu>Settings>System>IP Address.</string>
 </resources>

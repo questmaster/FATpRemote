@@ -294,9 +294,9 @@ public class NetworkProxy {
 		} finally {
 			try {
 				// close streams
-				bos.close();
-				bis.close();
-				cnx.close();
+				if (bos != null) bos.close();
+				if (bis != null) bis.close();
+				if (cnx != null) cnx.close();
 			} catch (Exception e) {
 				Log.e(LOG_TAG, e.getMessage(), e);
 			}
