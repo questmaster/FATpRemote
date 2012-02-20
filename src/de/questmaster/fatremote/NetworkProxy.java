@@ -26,6 +26,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
@@ -34,7 +35,7 @@ public class NetworkProxy {
 	private static final String LOG_TAG = "NetworkProxy";
 
 	private volatile static NetworkProxy singleton = null;
-	private FATDevice mFat = null;
+	private static FATDevice mFat = null;
 	private Activity context = null;
 	private BlockingQueue<FATRemoteEvent> mEventList = new ArrayBlockingQueue<FATRemoteEvent>(20, true);
 	private Thread mSendingThread = null;
@@ -48,6 +49,10 @@ public class NetworkProxy {
 			
 			// Initialize proxy
 			NetworkProxy np = new NetworkProxy(); 
+			
+			AppSettings settings = new FatRemoteSettings.AppSettings();
+			settings.readSettings(c);
+			mFat = settings.getFat();
 
 			singleton = np;
 		}
@@ -235,7 +240,9 @@ public class NetworkProxy {
 						context.runOnUiThread(new Runnable() {
 							public void run() { // reset send image
 								ImageView sending = (ImageView) context.findViewById(R.id.sendLED);
-								sending.setImageResource(R.drawable.light_normal);
+								if (sending != null) {
+									sending.setImageResource(R.drawable.light_normal);
+								}
 						}});
 					}
 				}
@@ -347,19 +354,4 @@ public class NetworkProxy {
 			}
 		}
 	}
-
-	/**
-	 * @return the mFat
-	 */
-	public FATDevice getCurrentFat() {
-		return mFat;
-	}
-
-	/**
-	 * @param mFat the mFat to set
-	 */
-	public void setCurrentFat(FATDevice device) {
-		this.mFat = device;
-	}
-
 }

@@ -195,6 +195,7 @@ public final class R {
     }
     public static final class string {
         public static final int PREF_KEY_DEFAULT_BEHAVIOR=0x7f060001;
+        public static final int PREF_KEY_FAT=0x7f06001c;
         public static final int PREF_KEY_TONE=0x7f060002;
         public static final int PREF_KEY_VIBRATE=0x7f060003;
         public static final int app_err_enwifi=0x7f06000c;

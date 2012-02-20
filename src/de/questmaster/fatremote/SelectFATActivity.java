@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.fragments.SelectFATFragment;
 
 
 public class SelectFATActivity extends FragmentActivity implements SelectFATFragment.FATSelectedListener {
 		
+	AppSettings mSettings = new FatRemoteSettings.AppSettings();
+	
 	/**
 	 * @see android.app.Activity#onCreate(Bundle)
 	 */
@@ -25,6 +28,7 @@ public class SelectFATActivity extends FragmentActivity implements SelectFATFrag
             getSupportFragmentManager().beginTransaction().add(android.R.id.content, details).commit();
         }
 
+		mSettings.readSettings(this);
 	}
 
 
@@ -36,7 +40,7 @@ public class SelectFATActivity extends FragmentActivity implements SelectFATFrag
 
 	@Override
 	public void onFATSelected(FATDevice dev) {
-		NetworkProxy.getInstance(this).setCurrentFat(dev);
+		mSettings.setFat(this, dev);
 
 		// When clicked, show a toast with the TextView text
 		Intent operateFAT = new Intent(this, RemoteActivity.class);

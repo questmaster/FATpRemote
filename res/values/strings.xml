@@ -27,5 +27,6 @@
     <string name="context_delete">Delete</string>
     <string name="context_delete_all">Clear all</string>
     <string name="app_title_remote">Connected to %s</string>
-    <string name="dialog_adddev_note">To find the IP address of your player go to Menu>Settings>System>IP Address.</string>
+    <string name="dialog_adddev_note">To find the IP address of your player go to Menu&amp;gt;Settings&amp;gt;System&amp;gt;IP Address.</string>
+    <string name="PREF_KEY_FAT">key_fat</string>
 </resources>

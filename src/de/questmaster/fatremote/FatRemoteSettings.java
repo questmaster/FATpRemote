@@ -16,11 +16,16 @@
 
 package de.questmaster.fatremote;
 
+import de.questmaster.fatremote.datastructures.FATDevice;
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 
 public class FatRemoteSettings extends PreferenceActivity {
@@ -72,6 +77,12 @@ public class FatRemoteSettings extends PreferenceActivity {
 		private boolean mOverride = false;
 		private boolean mTone = false;
 		private boolean mVibrate = true;
+		private FATDevice mFat = null;
+
+		public FATDevice getFat() {
+			return mFat;
+		}
+
 
 		public boolean isOverride() {
 			return mOverride;
@@ -89,12 +100,28 @@ public class FatRemoteSettings extends PreferenceActivity {
 
 		public void readSettings(Context pContext)
 		{
-//			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
-//			Resources res = pContext.getResources();
-//
-//			if (sharedPref != null) {
-//				mFatIP = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT_IP), mFatIP);
-//			}
+			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
+			Resources res = pContext.getResources();
+
+			if (sharedPref != null) {
+				mOverride = sharedPref.getBoolean(res.getString(R.string.PREF_KEY_DEFAULT_BEHAVIOR), mOverride);
+				mTone = sharedPref.getBoolean(res.getString(R.string.PREF_KEY_TONE), mTone);
+				mVibrate = sharedPref.getBoolean(res.getString(R.string.PREF_KEY_VIBRATE), mVibrate);
+
+				String fatIp = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT), "");
+				mFat = new FATDevice("", fatIp, false) ;
+			}
 		}
+		
+		public void setFat(Context p_oContext, FATDevice dev) {
+			Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(p_oContext).edit();
+			Resources res = p_oContext.getResources();
+			
+			mFat = dev;
+			sharedPref.putString(res.getString(R.string.PREF_KEY_FAT), mFat.getIp());
+			
+			sharedPref.commit();
+		}
+
 	}
 }
