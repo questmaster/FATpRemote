@@ -24,8 +24,6 @@ public class RemoteActivity extends FragmentActivity {
 			}
 		}
 
-		setTitle(getString(R.string.app_title_remote, NetworkProxy.getInstance(this).getCurrentFat().getIp()));
-		
 		if (savedInstanceState == null) {
             // During initial setup, plug in the details fragment.
             RemoteFragment details = new RemoteFragment();
@@ -34,5 +32,10 @@ public class RemoteActivity extends FragmentActivity {
         }
 	}
 
-
+	@Override
+	public void onResume() {
+		super.onResume();
+		
+		setTitle(getString(R.string.app_title_remote, NetworkProxy.getInstance(this).getCurrentFat().getIp()));
+	}
 }

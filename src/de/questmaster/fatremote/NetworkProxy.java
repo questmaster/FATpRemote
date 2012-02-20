@@ -33,7 +33,7 @@ public class NetworkProxy {
 
 	private static final String LOG_TAG = "NetworkProxy";
 
-	private static NetworkProxy singleton = null;
+	private volatile static NetworkProxy singleton = null;
 	private FATDevice mFat = null;
 	private Activity context = null;
 	private BlockingQueue<FATRemoteEvent> mEventList = new ArrayBlockingQueue<FATRemoteEvent>(20, true);

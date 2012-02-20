@@ -227,9 +227,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 			selectFAT.setClass(c, SelectFATActivity.class);
 			selectFAT.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 			startActivity(selectFAT);
-			
-			getActivity().finish();
-			
+						
 			break;
 		}
 		case R.id.MENU_ITEM_SETTINGS: {
@@ -263,13 +261,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 			// should not happen
 			break;
 		}
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		
-		getActivity().finish();
 	}
 	
 	private void showKeyboard() {

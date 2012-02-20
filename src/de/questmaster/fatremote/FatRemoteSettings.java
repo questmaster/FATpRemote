@@ -16,9 +16,12 @@
 
 package de.questmaster.fatremote;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
+import android.view.MenuItem;
 
 public class FatRemoteSettings extends PreferenceActivity {
 
@@ -33,8 +36,35 @@ public class FatRemoteSettings extends PreferenceActivity {
 
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.fat_preferences);
+		
+		// used in Honeycomb and up
+		if (Build.VERSION.SDK_INT >= 11) {
+			ActionBar ac = this.getActionBar();
+			ac.setDisplayHomeAsUpEnabled(true);
+			
+			if (Build.VERSION.SDK_INT >= 14) {
+				ac.setHomeButtonEnabled(true);
+			}
+		}
 	}
 
+	/**
+	 * Define menu action
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			this.finish(); // simulate back button press
+			break;
+		default:
+			// should not occur
+			break;
+		}			
+		return super.onOptionsItemSelected(item);
+	}
 
 	public static class AppSettings
 	{

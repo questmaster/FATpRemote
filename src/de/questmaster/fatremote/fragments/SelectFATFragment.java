@@ -58,11 +58,7 @@ public class SelectFATFragment extends ListFragment {
 		c = this.getActivity();
 		
 		// set Listener callback
-//		try {
-			mListener = (FATSelectedListener) this.getActivity();
-//		} catch (ClassCastException e) {
-//			throw new ClassCastException("Activity has to implement FATSelecteListener.", e);
-//		}
+		mListener = (FATSelectedListener) this.getActivity();
 		
 		// Init Database
 		mDbHelper = new FatDevicesDbAdapter(c);
@@ -94,6 +90,16 @@ public class SelectFATFragment extends ListFragment {
 
         return root;
 	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		// check if WIFI available
+		if (!NetworkProxy.getInstance(c).isWifiEnabled()) {
+			Toast.makeText(c, R.string.app_err_enwifi, Toast.LENGTH_LONG).show();
+		}
+	}
 		
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
@@ -117,13 +123,13 @@ public class SelectFATFragment extends ListFragment {
 		this.updateListView();
 	}
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		if (mDbHelper.isOpen()) {
-			mDbHelper.close();
-		}
-	}
+//	@Override
+//	public void onPause() {
+//		super.onPause();
+//		if (mDbHelper.isOpen()) {
+//			mDbHelper.close();
+//		}
+//	}
 
 	/**
 	 * 
