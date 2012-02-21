@@ -334,8 +334,8 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 
 	private void invokeSend() {
 		// ring / vibrate
-		if (mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0 || (mSettings.isOverride() && mSettings.isTone())) {
-			mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+		if (!mSettings.isOverride() && mAudioManager.getStreamVolume(AudioManager.STREAM_SYSTEM) != 0 || (mSettings.isOverride() && mSettings.isTone())) {
+			mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK, (float) -1.0);
 		}
 
 		if (mSettings.isVibrate()) {

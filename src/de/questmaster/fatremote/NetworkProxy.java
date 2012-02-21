@@ -50,12 +50,14 @@ public class NetworkProxy {
 			// Initialize proxy
 			NetworkProxy np = new NetworkProxy(); 
 			
-			AppSettings settings = new FatRemoteSettings.AppSettings();
-			settings.readSettings(c);
-			mFat = settings.getFat();
-
 			singleton = np;
 		}
+		
+		// read current Fat data
+		AppSettings settings = new FatRemoteSettings.AppSettings();
+		settings.readSettings(c);
+		mFat = settings.getFat();
+
 		singleton.context = c;
 
 		return singleton;
