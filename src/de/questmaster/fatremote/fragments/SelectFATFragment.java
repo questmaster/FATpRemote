@@ -123,13 +123,13 @@ public class SelectFATFragment extends ListFragment {
 		this.updateListView();
 	}
 
-//	@Override
-//	public void onPause() {
-//		super.onPause();
-//		if (mDbHelper.isOpen()) {
-//			mDbHelper.close();
-//		}
-//	}
+	@Override
+	public void onStop() {
+		super.onStop();
+		if (mDbHelper.isOpen()) {
+			mDbHelper.close();
+		}
+	}
 
 	/**
 	 * 
