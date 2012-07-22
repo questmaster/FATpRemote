@@ -11,7 +11,7 @@ import de.questmaster.fatremote.fragments.SelectFATFragment;
 
 public class SelectFATActivity extends FragmentActivity implements SelectFATFragment.FATSelectedListener {
 		
-	AppSettings mSettings = new FatRemoteSettings.AppSettings();
+	private AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	
 	/**
 	 * @see android.app.Activity#onCreate(Bundle)

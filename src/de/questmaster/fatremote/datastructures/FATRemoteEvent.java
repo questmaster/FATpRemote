@@ -15,7 +15,7 @@ public class FATRemoteEvent {
 //	
 //	private Events mEvent = Events.None;
 	private short[] mCommand = { 0x48, 0x12, 0x00, 0x00 };
-	private short[] mPayload = null;
+//	private short[] mPayload = null;
 	
 	/**
 	 * 
@@ -31,8 +31,8 @@ public class FATRemoteEvent {
 		return mCommand.clone();
 	}
 	
-	public short[] getCodePayload() {
-		return mPayload.clone();
-	}
+//	public short[] getCodePayload() {
+//		return mPayload.clone();
+//	}
 	
 }

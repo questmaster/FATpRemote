@@ -113,9 +113,9 @@ public class FatRemoteSettings extends PreferenceActivity {
 			}
 		}
 		
-		public void setFat(Context p_oContext, FATDevice dev) {
-			Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(p_oContext).edit();
-			Resources res = p_oContext.getResources();
+		public void setFat(Context pContext, FATDevice dev) {
+			Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext).edit();
+			Resources res = pContext.getResources();
 			
 			mFat = dev;
 			sharedPref.putString(res.getString(R.string.PREF_KEY_FAT), mFat.getIp());

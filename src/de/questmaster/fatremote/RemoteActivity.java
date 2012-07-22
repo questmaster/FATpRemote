@@ -9,7 +9,7 @@ import de.questmaster.fatremote.fragments.RemoteFragment;
 
 public class RemoteActivity extends FragmentActivity {
 
-	AppSettings mSettings = new FatRemoteSettings.AppSettings();
+	private AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	
 	/** Called when the activity is first created. */
 	@Override

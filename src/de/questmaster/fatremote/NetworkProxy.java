@@ -3,7 +3,6 @@ package de.questmaster.fatremote;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -34,18 +33,19 @@ public class NetworkProxy {
 
 	private static final String LOG_TAG = "NetworkProxy";
 
-	private volatile static NetworkProxy singleton = null;
+	private static volatile NetworkProxy singleton = null;
 	private static FATDevice mFat = null;
 	private Activity context = null;
 	private BlockingQueue<FATRemoteEvent> mEventList = new ArrayBlockingQueue<FATRemoteEvent>(20, true);
 	private Thread mSendingThread = null;
 	
 	public static NetworkProxy getInstance(Activity c) {
-		if (singleton == null) {
+
+		if (c == null) {
+			throw new IllegalArgumentException("Context was null");
+		}
 			
-			if (c == null) {
-				throw new IllegalArgumentException("Context was null");
-			}
+		if (singleton == null) {
 			
 			// Initialize proxy
 			NetworkProxy np = new NetworkProxy(); 
@@ -229,15 +229,21 @@ public class NetworkProxy {
 		if (mSendingThread == null) {
 			mSendingThread = new Thread(new Runnable() {
 				public void run() {
-					while (true) {
+					boolean goon = true;
+					while (goon) {
 						try {
 							sendCode();
 						} catch (final IOException e) {
-							context.runOnUiThread(new Runnable() {
-								public void run() {
-									Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-							}});
-						}
+							if (e.getCause() instanceof InterruptedException) {
+								goon = false; // FIXME: close thread on closing of remote
+								Log.i(LOG_TAG, "Thread interrupted.");
+							} else {
+								context.runOnUiThread(new Runnable() {
+									public void run() {
+										Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+									}});
+							}
+						} 
 	
 						context.runOnUiThread(new Runnable() {
 							public void run() { // reset send image
@@ -247,9 +253,18 @@ public class NetworkProxy {
 								}
 						}});
 					}
+					Log.i(LOG_TAG, "Thread exited.");
 				}
 			});
 			mSendingThread.start();
+		}
+	}
+	
+	public void dismissRemoteEvents() {
+		mEventList.clear();
+		if (mSendingThread != null) {
+			mSendingThread.interrupt();
+			mSendingThread = null;
 		}
 	}
 	
@@ -268,7 +283,7 @@ public class NetworkProxy {
 				keyCode = event.getRemoteCode();
 			} catch (InterruptedException e) {
 				Log.e(LOG_TAG, e.getLocalizedMessage(), e);
-				throw new IOException(e);
+				throw new IOException("", e); // empty message
 			}
 		
 		try {
@@ -303,9 +318,9 @@ public class NetworkProxy {
 		} finally {
 			try {
 				// close streams
-				if (bos != null) bos.close();
-				if (bis != null) bis.close();
-				if (cnx != null) cnx.close();
+				if (bos != null) { bos.close(); }
+				if (bis != null) { bis.close(); }
+				if (cnx != null) { cnx.close(); }
 			} catch (Exception e) {
 				Log.e(LOG_TAG, e.getMessage(), e);
 			}

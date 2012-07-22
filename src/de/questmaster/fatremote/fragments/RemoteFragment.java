@@ -138,6 +138,13 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		}
 	}
 	
+	@Override
+	public void onStop() {
+		super.onStop();
+		
+		NetworkProxy.getInstance(c).dismissRemoteEvents();
+	}
+	
 	private TextWatcher determineKeyboardTextChangedListener() {
 		TextWatcher tw = null;
 
