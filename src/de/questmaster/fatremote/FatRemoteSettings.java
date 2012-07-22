@@ -32,6 +32,8 @@ public class FatRemoteSettings extends PreferenceActivity {
 
 	
 	private FatRemoteSettings.AppSettings mSettings = new FatRemoteSettings.AppSettings();
+	private static final int ANDROID_V11 = 11;
+	private static final int ANDROID_V14 = 14;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -43,11 +45,11 @@ public class FatRemoteSettings extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.fat_preferences);
 		
 		// used in Honeycomb and up
-		if (Build.VERSION.SDK_INT >= 11) {
+		if (Build.VERSION.SDK_INT >= ANDROID_V11) {
 			ActionBar ac = this.getActionBar();
 			ac.setDisplayHomeAsUpEnabled(true);
 			
-			if (Build.VERSION.SDK_INT >= 14) {
+			if (Build.VERSION.SDK_INT >= ANDROID_V14) {
 				ac.setHomeButtonEnabled(true);
 			}
 		}

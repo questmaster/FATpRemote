@@ -10,6 +10,8 @@ import de.questmaster.fatremote.fragments.RemoteFragment;
 public class RemoteActivity extends FragmentActivity {
 
 	private AppSettings mSettings = new FatRemoteSettings.AppSettings();
+	private static final int ANDROID_V11 = 11;
+	private static final int ANDROID_V14 = 14;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -18,11 +20,11 @@ public class RemoteActivity extends FragmentActivity {
 //		setContentView(R.layout.remote_activity);
 
 		// used in Honeycomb and up
-		if (Build.VERSION.SDK_INT >= 11) {
+		if (Build.VERSION.SDK_INT >= ANDROID_V11) {
 			ActionBar ac = this.getActionBar();
 			ac.setDisplayHomeAsUpEnabled(true);
 			
-			if (Build.VERSION.SDK_INT >= 14) {
+			if (Build.VERSION.SDK_INT >= ANDROID_V14) {
 				ac.setHomeButtonEnabled(true);
 			}
 		}

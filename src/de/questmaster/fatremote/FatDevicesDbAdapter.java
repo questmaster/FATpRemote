@@ -172,12 +172,15 @@ public class FatDevicesDbAdapter {
 	 *             if note could not be found/retrieved
 	 */
 	public FATDevice fetchFatDeviceTyp(long rowId) {
+		final int COLUMN_NAME = 1;
+		final int COLUMN_IP = 2;
+		final int COLUMN_AUTODETECTED = 4;
 		FATDevice device = null;
 		
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
-			device = new FATDevice(mCursor.getString(1), mCursor.getString(2), mCursor.getInt(4) == 1);
+			device = new FATDevice(mCursor.getString(COLUMN_NAME), mCursor.getString(COLUMN_IP), mCursor.getInt(COLUMN_AUTODETECTED) == 1);
 			mCursor.close();
 		}
 
@@ -185,12 +188,13 @@ public class FatDevicesDbAdapter {
 	}
 
 	public long fetchFatDeviceId(String ip) {
+		final int COLUMN_ROWID = 0;
 		long result = -1;
 
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID }, KEY_IP + "=\"" + ip + "\"", null, null, null, null, null);
 		if (mCursor != null) {
 			if (mCursor.moveToFirst()) {
-				result = mCursor.getLong(0);
+				result = mCursor.getLong(COLUMN_ROWID);
 			}
 			mCursor.close();
 		}
