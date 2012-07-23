@@ -16,6 +16,8 @@
 
 package de.questmaster.fatremote;
 
+import java.net.UnknownHostException;
+
 import de.questmaster.fatremote.datastructures.FATDevice;
 import android.app.ActionBar;
 import android.content.Context;
@@ -111,7 +113,11 @@ public class FatRemoteSettings extends PreferenceActivity {
 				mVibrate = sharedPref.getBoolean(res.getString(R.string.PREF_KEY_VIBRATE), mVibrate);
 
 				String fatIp = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT), "");
-				mFat = new FATDevice("", fatIp, false) ;
+				try {
+					mFat = new FATDevice("", fatIp, false) ;
+				} catch (UnknownHostException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		

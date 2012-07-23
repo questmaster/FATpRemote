@@ -17,9 +17,9 @@ public class FATDevice {
 		this.autoDetected = auto;
 	}
 
-	public FATDevice(String name, String ip, boolean auto) {
+	public FATDevice(String name, String ip, boolean auto) throws UnknownHostException {
 		this.name = name;
-		this.ip = ip;
+		this.ip = InetAddress.getByName(ip).getHostAddress();
 		this.autoDetected = auto;
 	}
 
@@ -35,8 +35,10 @@ public class FATDevice {
 		return ip;
 	}
 
-	public void setIp(String ip) {
-		this.ip = ip;
+	public void setIp(String ip) throws UnknownHostException {
+		if (InetAddress.getByName(ip) != null) {
+			this.ip = ip;
+		}
 	}
 
 	public InetAddress getInetAddress() throws UnknownHostException {
@@ -52,7 +54,11 @@ public class FATDevice {
 	}
 
 	public void setPort(int port) {
-		this.port = port;
+		if (port > 0 && port <= 65535) {
+			this.port = port;
+		} else {
+			this.port = 0;
+		}
 	}
 
 	public boolean isAutoDetected() {

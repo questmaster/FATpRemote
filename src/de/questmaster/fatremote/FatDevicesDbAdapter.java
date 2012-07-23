@@ -16,6 +16,8 @@
 
 package de.questmaster.fatremote;
 
+import java.net.UnknownHostException;
+
 import de.questmaster.fatremote.datastructures.FATDevice;
 import android.content.ContentValues;
 import android.content.Context;
@@ -149,7 +151,7 @@ public class FatDevicesDbAdapter {
 	}
 
 	public boolean deleteAllFatDevices() {
-		return mDb.delete(DATABASE_TABLE, null, null) > 0;
+		return mDb.delete(DATABASE_TABLE, "1", null) > 0;
 	}
 
 	/**
@@ -180,7 +182,11 @@ public class FatDevicesDbAdapter {
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
-			device = new FATDevice(mCursor.getString(COLUMN_NAME), mCursor.getString(COLUMN_IP), mCursor.getInt(COLUMN_AUTODETECTED) == 1);
+			try {
+				device = new FATDevice(mCursor.getString(COLUMN_NAME), mCursor.getString(COLUMN_IP), mCursor.getInt(COLUMN_AUTODETECTED) == 1);
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
 			mCursor.close();
 		}
 
