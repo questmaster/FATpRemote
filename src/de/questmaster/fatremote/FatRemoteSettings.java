@@ -28,11 +28,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.MenuItem;
 
 public class FatRemoteSettings extends PreferenceActivity {
 
-	
+	private static final String TAG = "FatRemoteSettings";
 	private FatRemoteSettings.AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	private static final int ANDROID_V11 = 11;
 	private static final int ANDROID_V14 = 14;
@@ -116,7 +117,7 @@ public class FatRemoteSettings extends PreferenceActivity {
 				try {
 					mFat = new FATDevice("", fatIp, false) ;
 				} catch (UnknownHostException e) {
-					e.printStackTrace();
+					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
 			}
 		}

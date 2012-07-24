@@ -46,14 +46,20 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	public void testAndroidTestCaseSetupProperly() {
 		Assert.assertNotNull(mRemoteEvent);
 	}
-	
+		
 	/**
 	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#FATRemoteEvent(short, short)}.
 	 */
 	public void testFATRemoteEvent() {
-		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, expectedPayload);
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth);
 		Assert.assertNotNull(remoteEvent);
-	}
+		Assert.assertNotNull(remoteEvent.getCodePayload());
+
+		short[] code = remoteEvent.getRemoteCode();
+		Assert.assertEquals(expectedCodeLength, code.length);
+		Assert.assertEquals(expectedThird, code[2]);
+		Assert.assertEquals(expectedFourth, code[3]);
+}
 
 	/**
 	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#getRemoteCode()}.

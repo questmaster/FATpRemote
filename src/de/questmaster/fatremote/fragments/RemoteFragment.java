@@ -356,6 +356,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		sending.invalidate();
 
 		// start sending in new thread
-		NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier, new short[0]));
+		NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
 	}
 }
