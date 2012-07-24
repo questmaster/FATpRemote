@@ -30,7 +30,7 @@ public class FATRemoteEvent {
 		mCommand[3] = cmd3;
 		
 		if (payload != null) {
-			mPayload = payload;
+			mPayload = payload.clone();
 		}
 	}
 

@@ -174,16 +174,16 @@ public class FatDevicesDbAdapter {
 	 *             if note could not be found/retrieved
 	 */
 	public FATDevice fetchFatDeviceTyp(long rowId) {
-		int COLUMN_NAME = 1;
-		int COLUMN_IP = 2;
-		int COLUMN_AUTODETECTED = 4;
+		int columnName = 1;
+		int columnIp = 2;
+		int columnAutodetected = 4;
 		FATDevice device = null;
 		
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
 			try {
-				device = new FATDevice(mCursor.getString(COLUMN_NAME), mCursor.getString(COLUMN_IP), mCursor.getInt(COLUMN_AUTODETECTED) == 1);
+				device = new FATDevice(mCursor.getString(columnName), mCursor.getString(columnIp), mCursor.getInt(columnAutodetected) == 1);
 			} catch (UnknownHostException e) {
 				Log.e(TAG, e.getLocalizedMessage(), e);
 			}
@@ -194,13 +194,13 @@ public class FatDevicesDbAdapter {
 	}
 
 	public long fetchFatDeviceId(String ip) {
-		int COLUMN_ROWID = 0;
+		int columnRowid = 0;
 		long result = -1;
 
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID }, KEY_IP + "=\"" + ip + "\"", null, null, null, null, null);
 		if (mCursor != null) {
 			if (mCursor.moveToFirst()) {
-				result = mCursor.getLong(COLUMN_ROWID);
+				result = mCursor.getLong(columnRowid);
 			}
 			mCursor.close();
 		}
