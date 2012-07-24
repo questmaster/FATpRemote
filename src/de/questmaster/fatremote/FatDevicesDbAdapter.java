@@ -27,14 +27,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Simple notes database access helper class. Defines the basic CRUD operations
- * for the notepad example, and gives the ability to list all notes as well as
- * retrieve or modify a specific note.
- * 
- * This has been improved from the first version of this tutorial through the
- * addition of better error handling and also using returning a Cursor instead
- * of using a collection of inner classes (which is less scalable and not
- * recommended).
+ * Simple FAT+ device database access helper class. Defines the basic CRUD operations
+ * for the FAT+ remote, and gives the ability to list all devices as well as
+ * retrieve or modify a specific device.
  */
 public class FatDevicesDbAdapter {
 
@@ -91,7 +86,7 @@ public class FatDevicesDbAdapter {
 	}
 
 	/**
-	 * Open the notes database. If it cannot be opened, try to create a new
+	 * Open the device database. If it cannot be opened, try to create a new
 	 * instance of the database. If it cannot be created, throw an exception to
 	 * signal the failure
 	 * 
@@ -106,6 +101,11 @@ public class FatDevicesDbAdapter {
 		return this;
 	}
 
+	/**
+	 * Checks if the database is opened. 
+	 * 
+	 * @return true - if open, false - otherwise
+	 */
 	public boolean isOpen() {
 		if (mDb != null) {
 			return mDb.isOpen();
@@ -113,19 +113,26 @@ public class FatDevicesDbAdapter {
 		return false;
 	}
 
+	/**
+	 * Closes the database.
+	 */
 	public void close() {
 		mDbHelper.close();
 	}
 
 	/**
-	 * Create a new note using the title and body provided. If the note is
-	 * successfully created return the new rowId for that note, otherwise return
+	 * Create a new device using the parameters provided. If the device is
+	 * successfully created return the new rowId for that device, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param title
-	 *            the title of the note
-	 * @param body
-	 *            the body of the note
+	 * @param name
+	 *            the name of the device
+	 * @param ip
+	 *            the ip of the device
+	 * @param port
+	 *            the port of the device
+	 * @param autodetected
+	 *            the autodetected flag of the device
 	 * @return rowId or -1 if failed
 	 */
 	public long createFatDevice(String name, String ip, int port, boolean autodetected) {
@@ -139,11 +146,11 @@ public class FatDevicesDbAdapter {
 	}
 
 	/**
-	 * Delete the note with the given rowId
+	 * Delete the device with the given rowId.
 	 * 
 	 * @param rowId
-	 *            id of note to delete
-	 * @return true if deleted, false otherwise
+	 *            id of device to delete
+	 * @return true - if deleted, false - otherwise
 	 */
 	public boolean deleteFatDevice(long rowId) {
 
@@ -155,9 +162,9 @@ public class FatDevicesDbAdapter {
 	}
 
 	/**
-	 * Return a Cursor over the list of all notes in the database
+	 * Return a Cursor over the list of all device in the database.
 	 * 
-	 * @return Cursor over all notes
+	 * @return Cursor over all device
 	 */
 	public Cursor fetchAllFatDevices() {
 
@@ -165,13 +172,11 @@ public class FatDevicesDbAdapter {
 	}
 
 	/**
-	 * Return a Cursor positioned at the note that matches the given rowId
+	 * Return the device that matches the given rowId. If none is found null is returned.
 	 * 
 	 * @param rowId
-	 *            id of note to retrieve
-	 * @return Cursor positioned to matching note, if found
-	 * @throws SQLException
-	 *             if note could not be found/retrieved
+	 *            id of device to retrieve
+	 * @return FATDevice matching rowId, null otherwise
 	 */
 	public FATDevice fetchFatDeviceTyp(long rowId) {
 		int columnName = 1;
@@ -193,6 +198,13 @@ public class FatDevicesDbAdapter {
 		return device;
 	}
 
+	/**
+	 * Return the devices rowId that matches the given ip. If none is found a -1 is returned.
+	 * 
+	 * @param ip
+	 *            ip of device to retrieve
+	 * @return rowId matching ip of device, -1 otherwise
+	 */
 	public long fetchFatDeviceId(String ip) {
 		int columnRowid = 0;
 		long result = -1;
@@ -207,6 +219,11 @@ public class FatDevicesDbAdapter {
 		return result;
 	}
 	
+	/**
+	 * Count all devices in database.
+	 * 
+	 * @return Number of devices in database
+	 */
 	public int getAllFatDevicesCount() {
 		int cnt = 0;
 		
@@ -220,17 +237,21 @@ public class FatDevicesDbAdapter {
 	}
 
 	/**
-	 * Update the note using the details provided. The note to be updated is
-	 * specified using the rowId, and it is altered to use the title and body
-	 * values passed in
+	 * Update the device using the details provided. The device to be updated is
+	 * specified using the rowId, and it is altered to use the parameter
+	 * values passed in.
 	 * 
 	 * @param rowId
-	 *            id of note to update
-	 * @param title
-	 *            value to set note title to
-	 * @param body
-	 *            value to set note body to
-	 * @return true if the note was successfully updated, false otherwise
+	 *            id of device to update
+	 * @param name
+	 *            value to set device name to
+	 * @param ip
+	 *            value to set device ip to
+	 * @param port
+	 *            value to set device port to
+	 * @param autodetected
+	 *            value to set device autodetected flag to
+	 * @return true - if the device was successfully updated, false - otherwise
 	 */
 	public boolean updateFatDevice(long rowId, String name, String ip, int port, boolean autodetected) {
 		ContentValues args = new ContentValues();
