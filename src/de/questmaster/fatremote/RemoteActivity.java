@@ -7,13 +7,24 @@ import android.support.v4.app.FragmentActivity;
 import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.fragments.RemoteFragment;
 
+/**
+ * Remote activity. This class is the activity shell of the remote fragment that serves 
+ * the purpose of operating the FAT+ device.
+ * 
+ * @author daniel
+ *
+ */
 public class RemoteActivity extends FragmentActivity {
 
 	private AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	private static final int ANDROID_V11 = 11;
 	private static final int ANDROID_V14 = 14;
 	
-	/** Called when the activity is first created. */
+	/**
+	 * Called when the activity is first created. 
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle) 
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -39,6 +50,11 @@ public class RemoteActivity extends FragmentActivity {
 		mSettings.readSettings(this);
 	}
 
+	/**
+	 * Called in the restart process.
+	 * 
+	 * @see android.app.Activity#onResume() 
+	 */
 	@Override
 	public void onResume() {
 		super.onResume();

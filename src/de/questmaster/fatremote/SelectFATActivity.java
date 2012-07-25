@@ -14,7 +14,9 @@ public class SelectFATActivity extends FragmentActivity implements SelectFATFrag
 	private AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	
 	/**
-	 * @see android.app.Activity#onCreate(Bundle)
+	 * Called when the activity is first created. 
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle) 
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +34,22 @@ public class SelectFATActivity extends FragmentActivity implements SelectFATFrag
 	}
 
 
+	/**
+	 * Called in the restart process.
+	 * 
+	 * @see android.app.Activity#onResume() 
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
-	@Override
+	/**
+	 * Implements FATSelectedListener of SelectFATFragment.
+	 * 
+	 * @see de.questmaster.fatremote.fragments.SelectFATFragment.FATSelectedListener.onFATSelected()
+	 */
 	public void onFATSelected(FATDevice dev) {
 		mSettings.setFat(this, dev);
 
