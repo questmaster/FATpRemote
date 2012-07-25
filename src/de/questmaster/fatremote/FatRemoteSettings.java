@@ -76,6 +76,12 @@ public class FatRemoteSettings extends PreferenceActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * This class stores the settings to be available to the application.
+	 * 
+	 * @author daniel
+	 *
+	 */
 	public static class AppSettings
 	{
 		// default values
@@ -84,25 +90,49 @@ public class FatRemoteSettings extends PreferenceActivity {
 		private boolean mVibrate = true;
 		private FATDevice mFat = null;
 
+		/**
+		 * Get FAT+ device selected last time.
+		 * 
+		 * @return Last FATDevice
+		 */
 		public FATDevice getFat() {
 			return mFat;
 		}
 
-
+		/**
+		 * Checks if override-mode was selected in settings.
+		 * 
+		 * @return true - is selected, false - otherwise.
+		 */
 		public boolean isOverride() {
 			return mOverride;
 		}
 
 
+		/**
+		 * Checks if sound option was selected in settings.
+		 * 
+		 * @return true - is selected, false - otherwise.
+		 */
 		public boolean isTone() {
 			return mTone;
 		}
 
 
+		/**
+		 * Checks if vibration was selected in settings.
+		 * 
+		 * @return true - is selected, false - otherwise.
+		 */
 		public boolean isVibrate() {
 			return mVibrate;
 		}
 
+		/**
+		 * Read the settings into the local variables.
+		 * 
+		 * @param pContext Context of the activity
+		 */
 		public void readSettings(Context pContext)
 		{
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
@@ -122,6 +152,12 @@ public class FatRemoteSettings extends PreferenceActivity {
 			}
 		}
 		
+		/**
+		 * Sets the last selected FAT+ device.
+		 * 
+		 * @param pContext Context of the activity
+		 * @param dev Device to be set
+		 */
 		public void setFat(Context pContext, FATDevice dev) {
 			Editor sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext).edit();
 			Resources res = pContext.getResources();

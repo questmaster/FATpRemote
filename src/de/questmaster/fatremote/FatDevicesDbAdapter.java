@@ -157,6 +157,11 @@ public class FatDevicesDbAdapter {
 		return mDb.delete(DATABASE_TABLE, KEY_ROWID + "=" + rowId, null) > 0;
 	}
 
+	/**
+	 * Deletes all devices from the database.
+	 * 
+	 * @return true - all devices deleted, false - otherwise
+	 */
 	public boolean deleteAllFatDevices() {
 		return mDb.delete(DATABASE_TABLE, "1", null) > 0;
 	}

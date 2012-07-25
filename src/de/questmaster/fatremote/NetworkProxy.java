@@ -29,6 +29,13 @@ import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
+/**
+ * This class handles all network interaction. Therfore it is implemented as a singleton, as only one 
+ * message at a time may be sent or received.
+ * 
+ * @author daniel
+ *
+ */
 public class NetworkProxy {
 
 	private static final String LOG_TAG = "NetworkProxy";
@@ -39,6 +46,12 @@ public class NetworkProxy {
 	private BlockingQueue<FATRemoteEvent> mEventList = new ArrayBlockingQueue<FATRemoteEvent>(20, true);
 	private Thread mSendingThread = null;
 	
+	/**
+	 * Retrieve an instance of this object. If none exists, it is created.
+	 * 
+	 * @param c Context of the activity
+	 * @return Instance of this class
+	 */
 	public static NetworkProxy getInstance(Activity c) {
 
 		if (c == null) {
@@ -64,7 +77,9 @@ public class NetworkProxy {
 	}
 
 	/**
-	 * @throws ConnectException
+	 * Checks if Wifi is enabled and connected to a network.
+	 * 
+	 * @return true - if available, false - otherwise
 	 */
 	public boolean isWifiEnabled() {
 		WifiManager wifiManager = (WifiManager) context.getSystemService(android.content.Context.WIFI_SERVICE);
@@ -76,6 +91,12 @@ public class NetworkProxy {
 		return true;
 	}
 
+	/**
+	 * Sends discovery message to the local Wifi. If a FAT+ device answers this 
+	 * data is returned to the caller.
+	 * 
+	 * @return List of devices that answered to the discovery message
+	 */
 	private List<FATDevice> sendDiscoveryMsg() {
 		Map<String, String> data = new HashMap<String, String>();
 		List<DatagramPacket> answers = new ArrayList<DatagramPacket>();
@@ -197,6 +218,14 @@ public class NetworkProxy {
 //		return ips;
 //	}
 
+	/**
+	 * Sends discovery message to the local Wifi. If a FAT+ device answers this 
+	 * data is returned to the caller. Throws ConnectionException if not connected 
+	 * to Wifi.
+	 * 
+	 * @return List of devices that answered to the discovery message
+	 * @throws ConnectException
+	 */
 	public List<FATDevice> discoverFAT() throws ConnectException {
 		List<FATDevice> adr = null;
 
@@ -212,6 +241,11 @@ public class NetworkProxy {
 		return adr;
 	}
 
+	/**
+	 * Enqueues a remote event to the processing queue. If no sending thread is available one is created.
+	 * 
+	 * @param event Event to be enqueued
+	 */
 	public void addRemoteEvent (FATRemoteEvent event) {
 		if (event == null) {
 			throw new IllegalArgumentException("null event.");
@@ -260,6 +294,9 @@ public class NetworkProxy {
 		}
 	}
 	
+	/**
+	 * Clears the sending queue and stops the sending thread, if one is running.
+	 */
 	public void dismissRemoteEvents() {
 		mEventList.clear();
 		if (mSendingThread != null) {
@@ -327,13 +364,6 @@ public class NetworkProxy {
 		}
 	}
 
-	/**
-	 * @param fout
-	 * @param bis
-	 * @throws InterruptedException
-	 * @throws IOException
-	 * @throws FileNotFoundException
-	 */
 	private void writeIncomingData(BufferedInputStream bis) throws IOException {
 		FileOutputStream fout = null;
 		try {
