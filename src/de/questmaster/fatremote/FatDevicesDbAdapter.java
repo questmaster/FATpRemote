@@ -125,22 +125,16 @@ public class FatDevicesDbAdapter {
 	 * successfully created return the new rowId for that device, otherwise return
 	 * a -1 to indicate failure.
 	 * 
-	 * @param name
-	 *            the name of the device
-	 * @param ip
-	 *            the ip of the device
-	 * @param port
-	 *            the port of the device
-	 * @param autodetected
-	 *            the autodetected flag of the device
+	 * @param device
+	 *            the device to be stored in database
 	 * @return rowId or -1 if failed
 	 */
-	public long createFatDevice(String name, String ip, int port, boolean autodetected) {
+	public long createFatDevice(FATDevice device) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_NAME, name);
-		initialValues.put(KEY_IP, ip);
-		initialValues.put(KEY_PORT, port);
-		initialValues.put(KEY_AUTODETECTED, autodetected ? 1 : 0);
+		initialValues.put(KEY_NAME, device.getName());
+		initialValues.put(KEY_IP, device.getIp());
+		initialValues.put(KEY_PORT, device.getPort());
+		initialValues.put(KEY_AUTODETECTED, device.isAutoDetected() ? 1 : 0);
 
 		return mDb.insert(DATABASE_TABLE, null, initialValues);
 	}
@@ -167,7 +161,8 @@ public class FatDevicesDbAdapter {
 	}
 
 	/**
-	 * Return a Cursor over the list of all device in the database.
+	 * Return a Cursor over the list of all device in the database. 
+	 * The columns are KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED.
 	 * 
 	 * @return Cursor over all device
 	 */
@@ -191,11 +186,12 @@ public class FatDevicesDbAdapter {
 		
 		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
 		if (mCursor != null) {
-			mCursor.moveToFirst();
-			try {
-				device = new FATDevice(mCursor.getString(columnName), mCursor.getString(columnIp), mCursor.getInt(columnAutodetected) == 1);
-			} catch (UnknownHostException e) {
-				Log.e(TAG, e.getLocalizedMessage(), e);
+			if (mCursor.moveToFirst()) {
+				try {
+					device = new FATDevice(mCursor.getString(columnName), mCursor.getString(columnIp), mCursor.getInt(columnAutodetected) == 1);
+				} catch (UnknownHostException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				}
 			}
 			mCursor.close();
 		}
@@ -208,7 +204,7 @@ public class FatDevicesDbAdapter {
 	 * 
 	 * @param ip
 	 *            ip of device to retrieve
-	 * @return rowId matching ip of device, -1 otherwise
+	 * @return rowId of matching ip of device, -1 otherwise
 	 */
 	public long fetchFatDeviceId(String ip) {
 		int columnRowid = 0;
@@ -246,24 +242,16 @@ public class FatDevicesDbAdapter {
 	 * specified using the rowId, and it is altered to use the parameter
 	 * values passed in.
 	 * 
-	 * @param rowId
-	 *            id of device to update
-	 * @param name
-	 *            value to set device name to
-	 * @param ip
-	 *            value to set device ip to
-	 * @param port
-	 *            value to set device port to
-	 * @param autodetected
-	 *            value to set device autodetected flag to
+	 * @param device
+	 *            values to set device to
 	 * @return true - if the device was successfully updated, false - otherwise
 	 */
-	public boolean updateFatDevice(long rowId, String name, String ip, int port, boolean autodetected) {
+	public boolean updateFatDevice(long rowId, FATDevice device) {
 		ContentValues args = new ContentValues();
-		args.put(KEY_NAME, name);
-		args.put(KEY_IP, ip);
-		args.put(KEY_PORT, port);
-		args.put(KEY_AUTODETECTED, autodetected);
+		args.put(KEY_NAME, device.getName());
+		args.put(KEY_IP, device.getIp());
+		args.put(KEY_PORT, device.getPort());
+		args.put(KEY_AUTODETECTED,  device.isAutoDetected() ? 1 : 0);
 
 		return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}

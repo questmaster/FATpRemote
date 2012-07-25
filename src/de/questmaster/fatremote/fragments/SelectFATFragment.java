@@ -267,9 +267,9 @@ public class SelectFATFragment extends ListFragment {
 	private void addFATDeviceToDatabase(FATDevice dev) {
 		long rowId = mDbHelper.fetchFatDeviceId(dev.getIp());
 		if (rowId < 0) {
-			mDbHelper.createFatDevice(dev.getName(), dev.getIp(), dev.getPort(), dev.isAutoDetected());
+			mDbHelper.createFatDevice(dev);
 		} else {
-			mDbHelper.updateFatDevice(rowId, dev.getName(), dev.getIp(), dev.getPort(), dev.isAutoDetected());
+			mDbHelper.updateFatDevice(rowId, dev);
 		}
 
 		if (mDbHelper.getAllFatDevicesCount() == 0) {
