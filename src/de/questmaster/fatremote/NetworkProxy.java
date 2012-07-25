@@ -166,58 +166,6 @@ public class NetworkProxy {
 		return result;
 	}
 
-//	private Vector<String> pingBroadcast() {
-//		Vector<String> ips = new Vector<String>();
-//
-//		try {
-//			// exec broadcast ping
-//			Runtime runtime = Runtime.getRuntime();
-//			Process proc = runtime.exec("/system/bin/ping -c 3 -b 255.255.255.255");
-//			proc.waitFor();
-//
-//			// retrieve results
-//			BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
-//			boolean done = false;
-//
-//			// parse output lines
-//			while (br.ready() && !done) {
-//				String line = br.readLine();
-//
-//				StringTokenizer st = new StringTokenizer(line, " ");
-//				String ip = null;
-//				int i = -1;
-//
-//				// check tokens 3 and 4
-//				while (st.hasMoreTokens()) {
-//					String token = st.nextToken();
-//					i++;
-//
-//					if (i < 3) {
-//						continue;
-//					} else if (i == 3) {
-//						ip = token.substring(0, token.length() - 1);
-//					} else if (i == 4) {
-//						if (token.contains("icmp_seq=1")) {
-//							ips.add(ip);
-//						} else if (token.contains("icmp_seq")) {
-//							done = true;
-//							break;
-//						}
-//					} else if (i > 4)
-//						break;
-//				}
-//			}
-//
-//			br.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//
-//		return ips;
-//	}
-
 	/**
 	 * Sends discovery message to the local Wifi. If a FAT+ device answers this 
 	 * data is returned to the caller. Throws ConnectionException if not connected 
@@ -262,6 +210,7 @@ public class NetworkProxy {
 		
 		if (mSendingThread == null) {
 			mSendingThread = new Thread(new Runnable() {
+				/** Executed by thread */
 				public void run() {
 					boolean goon = true;
 					while (goon) {
@@ -273,6 +222,7 @@ public class NetworkProxy {
 								Log.i(LOG_TAG, "Thread interrupted.");
 							} else {
 								context.runOnUiThread(new Runnable() {
+									/** Executed by thread */
 									public void run() {
 										Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
 									}});
@@ -280,6 +230,7 @@ public class NetworkProxy {
 						} 
 	
 						context.runOnUiThread(new Runnable() {
+							/** Executed by thread */
 							public void run() { // reset send image
 								ImageView sending = (ImageView) context.findViewById(R.id.sendLED);
 								if (sending != null) {

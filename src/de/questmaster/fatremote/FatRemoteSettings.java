@@ -31,6 +31,12 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 
+/**
+ * Settings activity to store the user settings and last selected FAT+ device. 
+ * 
+ * @author daniel
+ *
+ */
 public class FatRemoteSettings extends PreferenceActivity {
 
 	private static final String TAG = "FatRemoteSettings";

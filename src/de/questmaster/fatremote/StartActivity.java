@@ -5,6 +5,12 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
+/**
+ * Main class. This class initiates the whole application process.
+ * 
+ * @author daniel
+ *
+ */
 public class StartActivity extends Activity {
 
 	/**
