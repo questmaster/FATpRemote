@@ -252,7 +252,8 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 		String expectedName3 = "Name3";
 		String expectedIp3 = "3.3.3.3";
 		int expectedPort3 = 9999;
-		boolean expectedAutodetected3 = false;
+		boolean expectedAutodetected3f = false;
+		boolean expectedAutodetected3t = true;
 		int expectedCount = 2;
 		boolean result = false;
 		boolean result2 = true;
@@ -261,9 +262,9 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 				
 		try {
 			// update
-			result = mTestObject.updateFatDevice(id, new FATDevice(expectedName3, expectedIp3, expectedAutodetected3));
+			result = mTestObject.updateFatDevice(id, new FATDevice(expectedName3, expectedIp3, expectedAutodetected3f));
 			// illlegal row id
-			result2 = mTestObject.updateFatDevice(-1, new FATDevice(expectedName3, expectedIp3, expectedAutodetected3));
+			result2 = mTestObject.updateFatDevice(-1, new FATDevice(expectedName3, expectedIp3, expectedAutodetected3t));
 		} catch (UnknownHostException e) {
 			fail(e.getLocalizedMessage());
 		}
@@ -277,7 +278,7 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 		assertTrue(expectedName3.equals(dev.getName()));
 		assertTrue(expectedIp3.equals(dev.getIp()));
 		assertEquals(expectedPort3, dev.getPort());
-		assertEquals(expectedAutodetected3, dev.isAutoDetected());
+		assertEquals(expectedAutodetected3f, dev.isAutoDetected());
 	}
 
 }
