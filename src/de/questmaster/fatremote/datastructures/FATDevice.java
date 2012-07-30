@@ -169,4 +169,34 @@ public class FATDevice {
 	public void setAutoDetected(boolean autoDetected) {
 		this.autoDetected = autoDetected;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getName() + ";" + this.getIp() + ":" + this.getPort();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		
+		if ( other instanceof FATDevice) {
+			FATDevice dev = (FATDevice) other;
+			if ( this.getIp() == dev.getIp()
+				&& this.getName().equals(dev.getName())
+				&& this.getPort() == dev.getPort()) {
+					return true;
+				}
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.getName().hashCode() 
+			+ this.getIp().hashCode()
+			+ Integer.valueOf(this.getPort()).hashCode();
+	}
 }
