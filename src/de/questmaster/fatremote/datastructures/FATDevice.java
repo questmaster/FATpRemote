@@ -170,11 +170,31 @@ public class FATDevice {
 		this.autoDetected = autoDetected;
 	}
 	
+	/**
+	 * Returns a string representation of the object. In general, 
+	 * the {@code toString} method returns a string that "textually represents" 
+	 * this object. The result should be a concise but informative 
+	 * representation that is easy for a person to read.
+     *
+	 * The {@code toString} method for class {@code FATDevice} returns a 
+	 * string consisting of the name of the device entry, its IP and its port.
+	 * In other words, this method returns a string equal to the value of:
+     *
+	 * {@code getName() + ";" + getIp() + ":" + getPort()}
+	 *
+	 * @returns a string representation of the object.
+	 */
 	@Override
 	public String toString() {
 		return this.getName() + ";" + this.getIp() + ":" + this.getPort();
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 *
+     * @param other {@inheritDoc}
+	 * @returns {@inheritDoc}
+	 */
 	@Override
 	public boolean equals(Object other) {
 		if (this == other) {
@@ -193,6 +213,11 @@ public class FATDevice {
 		return false;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @returns {@inheritDoc}
+	 */
 	@Override
 	public int hashCode() {
 		return this.getName().hashCode() 

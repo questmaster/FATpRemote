@@ -16,6 +16,8 @@
 
 package de.questmaster.fatremote.datastructures;
 
+import java.util.Arrays; 
+ 
 /**
  * This Datastructure represents an event send or received from/to the FAT+. 
  * 
@@ -78,6 +80,64 @@ public class FATRemoteEvent {
 	 */
 	public short[] getCodePayload() {
 		return mPayload.clone();
+	}
+	
+	/**
+	 * Returns a string representation of the object. In general, 
+	 * the {@code toString} method returns a string that "textually represents" 
+	 * this object. The result should be a concise but informative 
+	 * representation that is easy for a person to read.
+     *
+	 * The {@code toString} method for class {@code FATRemoteEvent} returns a 
+	 * string consisting of the four RemoteCode entries.
+	 * In other words, this method returns a string equal to the value of:
+     *
+	 * {@code "{" + command[0] + "," + command[1] + "," + command[2] + "," + command[3] + "}"}
+	 *
+	 * @returns a string representation of the object.
+	 */
+	@Override
+	public String toString() {
+		short command[] = this.getRemoteCode();
+		return "{" + command[0] + "," + command[1] + "," + command[2] + "," + command[3] + "}";
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+     * @param other {@inheritDoc}
+	 * @returns {@inheritDoc}
+	 */
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+
+		if ( other instanceof FATRemoteEvent) {
+			FATRemoteEvent evt = (FATRemoteEvent) other;
+			if ( Arrays.equals(this.getCodePayload(), evt.getCodePayload())) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * @returns {@inheritDoc}
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		
+		for (short s: this.getCodePayload()) {
+			hash += Short.valueOf(s).hashCode();	
+		}
+		
+		return hash;
 	}
 	
 }
