@@ -70,9 +70,8 @@ public class FATRemoteEventTest extends AndroidTestCase {
 
 		short[] code = remoteEvent.getRemoteCode();
 		Assert.assertEquals(expectedCodeLength, code.length);
-		Assert.assertEquals(expectedThird, code[2]);
-		Assert.assertEquals(expectedFourth, code[3]);
-}
+		Assert.assertEquals(mRemoteEvent, remoteEvent);
+	}
 
 	/**
 	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#getRemoteCode()}.
