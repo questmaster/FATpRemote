@@ -196,4 +196,44 @@ public class FATDeviceTest extends AndroidTestCase {
 		
 		Assert.assertEquals(expectedNewAuto, dev.isAutoDetected());
 	}
+	
+	public void testFATRemotePort() {
+		int expectedPort = 9999;
+		
+		assertEquals(expectedPort, FATDevice.FAT_REMOTE_PORT);
+	}
+
+	public void testToString() {
+		String expected = expectedName + ";" + expectedAdress + ":" + FATDevice.FAT_REMOTE_PORT;
+		
+		assertEquals(expected, mDev.toString());
+	}
+	
+	public void testEquals() {
+		FATDevice dev = null;
+		try {
+			dev = new FATDevice(expectedName, expectedAdress, expectedAuto);
+		} catch (UnknownHostException e) {
+			Assert.fail(e.getLocalizedMessage());
+		}
+		
+		assertEquals(mDev, mDev);
+		assertEquals(mDev, dev);
+		assertEquals(dev, mDev);
+		
+	    assertFalse(mDev.equals(null));
+	    assertFalse(mDev.equals(new Object()));
+	}
+
+	public void testHashCode() {
+		FATDevice dev = null;
+		try {
+			dev = new FATDevice(expectedName, expectedAdress, expectedAuto);
+		} catch (UnknownHostException e) {
+			Assert.fail(e.getLocalizedMessage());
+		}
+
+		assertTrue(mDev.hashCode() == mDev.hashCode());
+	    assertTrue(mDev.hashCode() == dev.hashCode());
+	}
 }

@@ -17,8 +17,8 @@
 package de.questmaster.fatremote.datastructures.test;
 
 import junit.framework.Assert;
-import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import android.test.AndroidTestCase;
+import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
 /**
  * @author daniel
@@ -98,6 +98,30 @@ public class FATRemoteEventTest extends AndroidTestCase {
 		for (int i = 0; i < payload.length; i++) {
 			Assert.assertEquals(expectedPayload[i], payload[i]);
 		}
+	}
+
+	public void testToString() {
+		String expected = expectedFirst + "," + expectedSecond + "," + expectedThird + "," + expectedFourth;
+		
+		assertEquals(expected, mRemoteEvent.toString());
+	}
+	
+	public void testEquals() {
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, expectedPayload);
+		
+		assertEquals(mRemoteEvent, mRemoteEvent);
+		assertEquals(mRemoteEvent, remoteEvent);
+		assertEquals(remoteEvent, mRemoteEvent);
+		
+	    assertFalse(mRemoteEvent.equals(null));
+	    assertFalse(mRemoteEvent.equals(new Object()));
+	}
+
+	public void testHashCode() {
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, expectedPayload);
+
+		assertTrue(mRemoteEvent.hashCode() == mRemoteEvent.hashCode());
+	    assertTrue(mRemoteEvent.hashCode() == remoteEvent.hashCode());
 	}
 
 }

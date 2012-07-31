@@ -24,6 +24,8 @@ package de.questmaster.fatremote.datastructures;
  */
 public class FATRemoteEvent {
 	
+	// FIXME: add toString and equals() and refactor tests!
+	
 	/**
 	 * Command code used by FAT+.
 	 */

@@ -14,7 +14,7 @@
  * the License.
  */
 
-package de.questmaster.fatremote;
+package de.questmaster.fatremote.test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -24,8 +24,8 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		//$JUnit-BEGIN$
-		suite.addTest(de.questmaster.fatremote.datastructures.test.AllTests.suite());
-		suite.addTest(de.questmaster.fatremote.test.AllTests.suite());
+		suite.addTestSuite(FatDevicesDbAdapterTest.class);
+//		suite.addTestSuite(NetworkProxyTest.class);
 		//$JUnit-END$
 		return suite;
 	}
