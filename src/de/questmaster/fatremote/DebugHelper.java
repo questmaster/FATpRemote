@@ -30,4 +30,7 @@ public final class DebugHelper {
 	
 	public static final boolean SHOW_DEBUG_SCREEN = BuildConfig.DEBUG;
 		
+	private DebugHelper() {
+		throw new AssertionError();
+	}
 }

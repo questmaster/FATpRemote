@@ -100,7 +100,7 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	}
 
 	public void testToString() {
-		String expected = expectedFirst + "," + expectedSecond + "," + expectedThird + "," + expectedFourth;
+		String expected = "{" + expectedFirst + "," + expectedSecond + "," + expectedThird + "," + expectedFourth + "}";
 		
 		assertEquals(expected, mRemoteEvent.toString());
 	}

@@ -116,7 +116,7 @@ public class FATRemoteEvent {
 
 		if ( other instanceof FATRemoteEvent) {
 			FATRemoteEvent evt = (FATRemoteEvent) other;
-			if ( Arrays.equals(this.getCodePayload(), evt.getCodePayload())) {
+			if ( Arrays.equals(this.getRemoteCode(), evt.getRemoteCode())) {
 				return true;
 			}
 		}

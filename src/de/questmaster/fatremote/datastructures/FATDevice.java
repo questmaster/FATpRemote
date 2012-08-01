@@ -203,7 +203,7 @@ public class FATDevice {
 		
 		if ( other instanceof FATDevice) {
 			FATDevice dev = (FATDevice) other;
-			if ( this.getIp() == dev.getIp()
+			if ( this.getIp().equals(dev.getIp())
 				&& this.getName().equals(dev.getName())
 				&& this.getPort() == dev.getPort()) {
 					return true;
