@@ -68,6 +68,13 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 		mTestObject = null;
 	}
 
+	/* (non-Javadoc)
+	 * @see android.test.AndroidTestCase#testAndroidTestCaseSetupProperly()
+	 */
+	public final void testAndroidTestCaseSetupProperly() {
+		//TODO
+	}
+	
 	/**
 	 * Test method for {@link de.questmaster.fatremote.FatDevicesDbAdapter#FatDevicesDbAdapter(android.content.Context)}.
 	 */
@@ -279,6 +286,25 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 		assertTrue(expectedIp3.equals(dev.getIp()));
 		assertEquals(expectedPort3, dev.getPort());
 		assertEquals(expectedAutodetected3f, dev.isAutoDetected());
+	}
+	
+	/**
+	 * Test method for {@link de.questmaster.fatremote.FatDevicesDbAdapter.DatabaseHelper#onCreate(SQLiteDatabase)}.
+	 * Test method for {@link de.questmaster.fatremote.FatDevicesDbAdapter.DatabaseHelper#clear(SQLiteDatabase)}.
+	 */
+	public final void testDatabaseClearCreate() {
+		int expectedCount = 0;
+		
+		// drop db
+		mTestObject.clear();
+		
+		assertFalse(mTestObject.isOpen());
+		
+		// recreate db + table
+		mTestObject.open();
+
+		assertTrue(mTestObject.isOpen());
+		assertEquals(expectedCount, mTestObject.getAllFatDevicesCount());
 	}
 
 }

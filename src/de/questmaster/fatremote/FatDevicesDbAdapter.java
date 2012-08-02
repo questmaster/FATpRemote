@@ -16,6 +16,7 @@
 
 package de.questmaster.fatremote;
 
+import java.io.File;
 import java.net.UnknownHostException;
 
 import de.questmaster.fatremote.datastructures.FATDevice;
@@ -72,6 +73,18 @@ public class FatDevicesDbAdapter {
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TABLE);
 			onCreate(db);
 		}
+		
+		/**
+		 * Drops the table of the provided database.
+		 * @param db The database the table is to be dropped.
+		 */
+		public void clear(SQLiteDatabase db) {
+			File f = new File (db.getPath());
+			if (f.exists()) {
+				f.delete();
+			}
+			db.close();
+		}
 	}
 
 	/**
@@ -120,6 +133,15 @@ public class FatDevicesDbAdapter {
 		mDbHelper.close();
 	}
 
+	/**
+	 * Drop current database.
+	 */
+	public void clear() {
+		if (mDb != null) {
+			mDbHelper.clear(mDb);
+		}
+	}
+	
 	/**
 	 * Create a new device using the parameters provided. If the device is
 	 * successfully created return the new rowId for that device, otherwise return
