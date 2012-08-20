@@ -25,6 +25,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		//$JUnit-BEGIN$
 		suite.addTestSuite(FatDevicesDbAdapterTest.class);
+		suite.addTestSuite(StartActivityTest.class);
 //		suite.addTestSuite(NetworkProxyTest.class);
 		//$JUnit-END$
 		return suite;
