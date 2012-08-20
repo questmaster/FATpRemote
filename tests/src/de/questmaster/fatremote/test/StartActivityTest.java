@@ -6,6 +6,7 @@ package de.questmaster.fatremote.test;
 import junit.framework.Assert;
 import android.app.Instrumentation;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.test.ViewAsserts;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,4 +84,11 @@ public class StartActivityTest extends IntentCatchingActivityUnitTestCase<StartA
 		Assert.assertSame(expectedIntent, mCaughtIntents[0]);
 	}
 	
+	public void testSetRequestedOrientation() {
+		int expected = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+		
+		mInstr.callActivityOnResume(mActivity);
+		
+		Assert.assertEquals(expected, mActivity.getRequestedOrientation());
+	}
 }
