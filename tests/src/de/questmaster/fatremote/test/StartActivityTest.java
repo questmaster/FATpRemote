@@ -78,7 +78,7 @@ public class StartActivityTest extends IntentCatchingActivityUnitTestCase<StartA
 		int expectedNum = 1;
 		
 		mInstr.callActivityOnStart(mActivity);
-		
+				
 		Assert.assertEquals(expectedNum, mCaughtIntents.length);
 		Assert.assertSame(expectedIntent, mCaughtIntents[0]);
 	}
