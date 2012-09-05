@@ -81,7 +81,7 @@ public class FatDevicesDbAdapter {
 		public void clear(SQLiteDatabase db) {
 			File f = new File (db.getPath());
 			if (f.exists()) {
-				f.delete();
+				f.delete(); // NOSONAR
 			}
 			db.close();
 		}

@@ -1,5 +1,6 @@
 package de.questmaster.fatremote.testinfrastructure;
 import junit.framework.Assert;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.ComponentName;
@@ -15,7 +16,8 @@ public class IntentCatchingActivityUnitTestCase<T extends Activity> extends Acti
     protected Intent[] mCaughtIntents;
     protected IntentCatchingContext mContextWrapper;
 
-    protected class IntentCatchingContext extends ContextWrapper {
+    @TargetApi(11)
+	protected class IntentCatchingContext extends ContextWrapper {
         public IntentCatchingContext(Context base) {
             super(base);
         }
@@ -58,6 +60,7 @@ public class IntentCatchingActivityUnitTestCase<T extends Activity> extends Acti
         
         setActivityContext(mContextWrapper);
         startActivity(new Intent(), null, null);
+        setActivityContext(mContextWrapper);
 
         mInst = getInstrumentation();
         Assert.assertNotNull(mInst);

@@ -339,7 +339,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		
 		// solve to code
 		if (v instanceof ImageView) {
-			ImageView bv = (ImageView) v;
+			ImageView bv = (ImageView) v; // NOSONAR
 			String t = (String) bv.getTag();
 
 			if (t.equals("text")) {
