@@ -18,6 +18,8 @@ package de.questmaster.fatremote.test;
 
 import java.net.UnknownHostException;
 
+import junit.framework.Assert;
+
 import android.database.Cursor;
 import android.test.AndroidTestCase;
 import de.questmaster.fatremote.FatDevicesDbAdapter;
@@ -72,7 +74,8 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 	 * @see android.test.AndroidTestCase#testAndroidTestCaseSetupProperly()
 	 */
 	public final void testAndroidTestCaseSetupProperly() {
-		//TODO
+		Assert.assertNotNull(mTestObject);
+		Assert.assertTrue(mTestObject.isOpen());
 	}
 	
 	/**

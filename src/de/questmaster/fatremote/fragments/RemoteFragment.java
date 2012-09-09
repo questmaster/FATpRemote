@@ -62,8 +62,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 	private Activity c = null;
 	private short keyCode;
 	private short keyModifier;
-
-	// TODO Listener interface?
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

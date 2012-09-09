@@ -27,7 +27,7 @@ public class AllTests {
 		suite.addTestSuite(FatDevicesDbAdapterTest.class);
 		suite.addTestSuite(StartActivityTest.class);
 		suite.addTestSuite(FatRemoteSettingsTest.class);
-//		suite.addTestSuite(NetworkProxyTest.class);
+		suite.addTestSuite(NetworkProxyTest.class);
 		//$JUnit-END$
 		return suite;
 	}

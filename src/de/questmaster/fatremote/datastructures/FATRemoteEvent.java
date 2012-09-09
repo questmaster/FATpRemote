@@ -64,6 +64,10 @@ public class FATRemoteEvent {
 		}
 	}
 
+	public FATRemoteEvent() {
+		// nothing to init
+	}
+
 	/**
 	 * Returns the command bytes as array.
 	 * 
@@ -139,5 +143,15 @@ public class FATRemoteEvent {
 		
 		return hash;
 	}
-	
+
+	public void setRemoteCode(byte[] code) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setCodePayload(byte[] code) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

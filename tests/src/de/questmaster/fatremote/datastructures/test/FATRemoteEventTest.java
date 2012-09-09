@@ -123,4 +123,14 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	    assertTrue(mRemoteEvent.hashCode() == remoteEvent.hashCode());
 	}
 
+	public void testSetRemoteCode() {
+		Assert.fail("not implemented");
+		
+	}
+
+	public void testSetCodePayload() {
+		Assert.fail("not implemented");
+		
+	}
+
 }
