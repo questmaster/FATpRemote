@@ -369,7 +369,7 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
 		sending.setImageResource(R.drawable.light_highlight);
 		sending.invalidate();
 
-		// start sending in new thread
+		// start sending
 		NetworkProxy.getInstance(c).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
 	}
 }

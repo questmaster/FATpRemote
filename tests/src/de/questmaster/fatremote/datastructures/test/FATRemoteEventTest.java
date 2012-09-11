@@ -124,13 +124,32 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	}
 
 	public void testSetRemoteCode() {
-		Assert.fail("not implemented");
+		byte actual[] = {(byte) expectedFirst, (byte) expectedSecond, (byte) expectedThird, (byte) expectedFourth};
+		short expected[] = { expectedFirst, expectedSecond, expectedThird, expectedFourth};
+ 		
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, expectedPayload);
+		remoteEvent.setCodePayload(actual);
 		
+		short result[] = remoteEvent.getCodePayload();
+		for (int i = 0; i < 4; i++)
+			assertEquals(expected[i], result[i]);
 	}
 
 	public void testSetCodePayload() {
-		Assert.fail("not implemented");
+		byte actual[] = {0, 1, 2, 3, 4, 5};
+ 		
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, new short[0]);
+		remoteEvent.setCodePayload(actual);
 		
+		short result[] = remoteEvent.getCodePayload();
+		try {
+		for (int i = 0; i < expectedPayload.length; i++)
+			assertEquals(expectedPayload[i], result[i]);
+		} catch (Exception e) {
+			fail("Payload not equal!");
+		}
 	}
 
 }
+
+	

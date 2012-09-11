@@ -144,14 +144,29 @@ public class FATRemoteEvent {
 		return hash;
 	}
 
+	/**
+	 * Set the remote code of this event. This is used to store a received event.
+	 * @param code remote code
+	 */
 	public void setRemoteCode(byte[] code) {
-		// TODO Auto-generated method stub
-		
+		if (code.length == mCommand.length) {
+			for (int i = 0; i < code.length; i++) {
+				mCommand[i] = (short) code[i];
+			}
+		}
 	}
 
+	/**
+	 * Set the payload of this event. This is used to store the received payload.
+	 * @param code payload of event
+	 */
 	public void setCodePayload(byte[] code) {
-		// TODO Auto-generated method stub
-		
+		if (code.length > 0) {
+			mPayload = new short[code.length];
+			for (int i = 0; i < code.length; i++) {
+				mPayload[i] = (short) code[i];
+			}
+		}
 	}
 
 }

@@ -16,6 +16,7 @@
 
 package de.questmaster.fatremote;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class RemoteActivity extends FragmentActivity {
 	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle) 
 	 */
+	@TargetApi(14)
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,10 +51,12 @@ public class RemoteActivity extends FragmentActivity {
 		// used in Honeycomb and up
 		if (Build.VERSION.SDK_INT >= ANDROID_V11) {
 			ActionBar ac = this.getActionBar();
-			ac.setDisplayHomeAsUpEnabled(true);
-			
-			if (Build.VERSION.SDK_INT >= ANDROID_V14) {
-				ac.setHomeButtonEnabled(true);
+			if (ac != null) {
+				ac.setDisplayHomeAsUpEnabled(true);
+				
+				if (Build.VERSION.SDK_INT >= ANDROID_V14) {
+					ac.setHomeButtonEnabled(true);
+				}
 			}
 		}
 

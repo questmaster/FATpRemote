@@ -42,5 +42,5 @@ public interface FatDeviceNetwork {
 	 * Gets the device events are sent to.
 	 * @returns The device.
 	 */
-	public FATDevice setFatDevice();
+	public FATDevice getFatDevice();
 }

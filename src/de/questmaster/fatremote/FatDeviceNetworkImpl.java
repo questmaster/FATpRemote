@@ -165,7 +165,7 @@ public class FatDeviceNetworkImpl implements FatDeviceNetwork {
 	}
 
 	@Override
-	public FATDevice setFatDevice() {
+	public FATDevice getFatDevice() {
 		return mFat;
 	}
 

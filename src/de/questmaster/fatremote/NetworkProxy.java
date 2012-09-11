@@ -22,9 +22,11 @@ import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-import android.content.Context;
+import android.app.Activity;
 import android.net.wifi.WifiManager;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.Toast;
 import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
@@ -42,7 +44,7 @@ public class NetworkProxy {
 
 	private static volatile NetworkProxy singleton = null;
 	private FATDevice mFat = null;
-	private Context mContext = null;
+	private Activity mBaseActivity = null;
 	private BlockingQueue<FATRemoteEvent> mEventList = new ArrayBlockingQueue<FATRemoteEvent>(20, true);
 	private Thread mSendingThread = null;
 	private FatDeviceNetwork mNetworkAccess = null;
@@ -57,27 +59,27 @@ public class NetworkProxy {
 					FATRemoteEvent event = mEventList.take();
 
 					mNetworkAccess.transmitRemoteEvent(event);
-				} catch (IOException e) {
-//						context.runOnUiThread(new Runnable() {
-//							/** Executed by thread */
-//							public void run() {
-//								Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
-//							}
-//						});
+				} catch (final IOException e) {
+					mBaseActivity.runOnUiThread(new Runnable() {
+							/** Executed by thread */
+							public void run() {
+								Toast.makeText(mBaseActivity, e.getMessage(), Toast.LENGTH_LONG).show();
+							}
+						});
 				} catch (InterruptedException e) {
-					goon = false; // FIXME: close thread on closing of remote
+					goon = false; // close thread on closing of remote
 					Log.e(LOG_TAG, e.getLocalizedMessage(), e);
 				}
 
-//				context.runOnUiThread(new Runnable() {
-//					/** Executed by thread */
-//					public void run() { // reset send image
-//						ImageView sending = (ImageView) context.findViewById(R.id.sendLED);
-//						if (sending != null) {
-//							sending.setImageResource(R.drawable.light_normal);
-//						}
-//					}
-//				});
+				mBaseActivity.runOnUiThread(new Runnable() {
+					/** Executed by thread */
+					public void run() { // reset send image
+						ImageView sending = (ImageView) mBaseActivity.findViewById(R.id.sendLED);
+						if (sending != null) {
+							sending.setImageResource(R.drawable.light_normal);
+						}
+					}
+				});
 			}
 			Log.i(LOG_TAG, "Thread exited.");
 		}
@@ -89,7 +91,7 @@ public class NetworkProxy {
 	 * @param c Context of the activity
 	 * @return Instance of this class
 	 */
-	public static NetworkProxy getInstance(Context c) {
+	public static NetworkProxy getInstance(Activity c) {
 
 		if (c == null) {
 			throw new IllegalArgumentException("Context was null");
@@ -102,9 +104,13 @@ public class NetworkProxy {
 			
 			singleton = np;
 			
+		}
+
+		if (singleton.mSendingThread == null) {
 			// Setup sending thread
 			singleton.mSendingThread = singleton.new SendingThread();
 			singleton.mSendingThread.start();
+			
 		}
 		
 		// read current Fat data
@@ -116,7 +122,7 @@ public class NetworkProxy {
 		
 		singleton.mNetworkAccess = new FatDeviceNetworkImpl(singleton.mFat);
 				
-		singleton.mContext = c;
+		singleton.mBaseActivity = c;
 
 		return singleton;
 	}
@@ -127,7 +133,7 @@ public class NetworkProxy {
 	 * @return true - if available, false - otherwise
 	 */
 	public boolean isWifiEnabled() {
-		WifiManager wifiManager = (WifiManager) mContext.getSystemService(android.content.Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager) mBaseActivity.getSystemService(android.content.Context.WIFI_SERVICE);
 
 		if (wifiManager == null || (!DebugHelper.ON_EMULATOR && !wifiManager.isWifiEnabled())) {
 			return false;
@@ -153,7 +159,7 @@ public class NetworkProxy {
 			// get detected fat's
 			adr = mNetworkAccess.getFatNetworkDevices();
 		} else {
-			throw new ConnectException(mContext.getResources().getString(R.string.app_err_enwifi));
+			throw new ConnectException(mBaseActivity.getResources().getString(R.string.app_err_enwifi));
 		}
 
 		return adr;
@@ -179,11 +185,7 @@ public class NetworkProxy {
 			Log.e(LOG_TAG, "Event not in queue (keyId): " + event.getRemoteCode()[3], e);
 		}
 	}
-	
-	public int countRemoteEvents() {
-		return mEventList.size();
-	}
-	
+		
 	/**
 	 * Clears the sending queue and stops the sending thread, if one is running.
 	 */
@@ -191,8 +193,16 @@ public class NetworkProxy {
 		mEventList.clear();
 		if (mSendingThread != null) {
 			mSendingThread.interrupt();
-			mSendingThread = null; // FIXME: Thread is never restarted!!!
+			mSendingThread = null; 
 		}
 	}
 
+	/**
+	 * Sets the FatDeviceNetwork implementation used. This method is mostly used for testing.
+	 * @param impl FatDeviceNetwork implementation
+	 */
+	public void setFatDeviceNetwork(FatDeviceNetwork impl) {
+		mNetworkAccess = impl;
+	}
+	
 }
