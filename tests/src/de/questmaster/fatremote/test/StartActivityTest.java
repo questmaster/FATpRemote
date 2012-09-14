@@ -74,6 +74,7 @@ public class StartActivityTest extends IntentCatchingActivityUnitTestCase<StartA
 	}
 	
 	public void testOnStartIntent() {
+		// TODO: how to fix this?
 		Intent expectedIntent = new Intent(mActivity.getBaseContext(), de.questmaster.fatremote.SelectFATActivity.class)
 				.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		int expectedNum = 1;

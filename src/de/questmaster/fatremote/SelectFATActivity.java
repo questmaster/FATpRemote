@@ -43,7 +43,6 @@ public class SelectFATActivity extends FragmentActivity implements SelectFATFrag
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		this.setContentView(R.layout.selectfat_activity);
 
 		if (savedInstanceState == null) {
             // During initial setup, plug in the details fragment.

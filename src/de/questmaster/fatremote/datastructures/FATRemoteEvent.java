@@ -26,8 +26,6 @@ import java.util.Arrays;
  */
 public class FATRemoteEvent {
 	
-	// FIXME: add toString and equals() and refactor tests!
-	
 	/**
 	 * Command code used by FAT+.
 	 */

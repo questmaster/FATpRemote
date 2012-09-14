@@ -94,7 +94,7 @@ public class NetworkProxy {
 	public static NetworkProxy getInstance(Activity c) {
 
 		if (c == null) {
-			throw new IllegalArgumentException("Context was null");
+			throw new IllegalArgumentException("Activity was null");
 		}
 			
 		if (singleton == null) {

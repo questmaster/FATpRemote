@@ -23,24 +23,24 @@ public interface FatDeviceNetwork {
 	 * 
 	 * @return List of discovered FreeAgent devices.
 	 */
-	public List<FATDevice> getFatNetworkDevices();
+	List<FATDevice> getFatNetworkDevices();
 	
 	/**
 	 * Sends a given RemoteEvent to the current device and returns an optional answer.
 	 * @param event Remote event to be sent.
 	 * @return Answer to sent event.
 	 */
-	public FATRemoteEvent transmitRemoteEvent(FATRemoteEvent event) throws IOException;
+	FATRemoteEvent transmitRemoteEvent(FATRemoteEvent event) throws IOException;
 	
 	/**
 	 * Sets the device events are sent to.
 	 * @param device The device.
 	 */
-	public void setFatDevice(FATDevice device);
+	void setFatDevice(FATDevice device);
 
 	/**
 	 * Gets the device events are sent to.
 	 * @returns The device.
 	 */
-	public FATDevice getFatDevice();
+	FATDevice getFatDevice();
 }

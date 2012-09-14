@@ -25,15 +25,26 @@ import android.view.View;
 import android.widget.TextView;
 import de.questmaster.fatremote.R;
 
+/**
+ * This Fragment offers a dialog to enter data for a new FAT device.
+ * 
+ * @author daniel
+ *
+ */
 public class AddDeviceDialogFragment extends DialogFragment {
 	
 	private static class CancelListener implements DialogInterface.OnClickListener {
         public void onClick(DialogInterface dialog, int whichButton) {
             dialog.cancel();
         }
-
 	}
 	
+	/**
+	 * Creates a new instance of this dialog fragment.
+	 * 
+	 * @param title id of title resource.
+	 * @return instantiated fragment.
+	 */
 	public static AddDeviceDialogFragment newInstance(int title) {
         AddDeviceDialogFragment frag = new AddDeviceDialogFragment();
         Bundle args = new Bundle();
@@ -41,7 +52,12 @@ public class AddDeviceDialogFragment extends DialogFragment {
         frag.setArguments(args);
         return frag;
     }
-	
+
+	/**
+	 * This is called when the dialog is shown on the screen.
+	 * 
+	 * @see android.support.v4.app.DialogFragment#onCreateDialog(android.os.Bundle)
+	 */
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         int title = getArguments().getInt("title");

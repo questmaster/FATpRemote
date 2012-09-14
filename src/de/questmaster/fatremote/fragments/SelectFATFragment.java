@@ -48,6 +48,12 @@ import de.questmaster.fatremote.datastructures.FATDevice;
 
 // TODO: set marker on auto detected entries, e.g. icon
 
+/**
+ * This Fragment is instantiated to search, enter and select FreeAgent devices.
+ * 
+ * @author daniel
+ *
+ */
 public class SelectFATFragment extends ListFragment {
 
 	private static final String LOG_TAG = "SelectFATFragment";
@@ -58,11 +64,26 @@ public class SelectFATFragment extends ListFragment {
 	private FATSelectedListener mListener = null;
 	
 	
-	// Container Activity must implement this interface
+	/**
+	 * To forward data to the parent activity the container activity must implement this interface.
+	 * 
+	 * @author daniel
+	 *
+	 */
     public interface FATSelectedListener {
+    	
+    	/**
+    	 * The selected FAT device is forwarded to the implementing entity.
+    	 * @param dev selected device.
+    	 */
         void onFATSelected(FATDevice dev);
     }
     
+    /**
+	 * Called when the activity is first created. 
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle) 
+     */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,6 +106,11 @@ public class SelectFATFragment extends ListFragment {
 		}
 	}
 	
+	/**
+	 * Instantiates the user interface view
+	 * 
+	 * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
@@ -107,6 +133,11 @@ public class SelectFATFragment extends ListFragment {
         return root;
 	}
 	
+	/**
+	 * This fragments Activity is created and the fragment instantiated.
+	 * 
+	 * @see android.app.Fragment#onActivityCreated(android.os.Bundle)
+	 */
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -117,6 +148,11 @@ public class SelectFATFragment extends ListFragment {
 		}
 	}
 		
+	/**
+	 * Item from the ListView selected.
+	 * 
+	 * @see android.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int, long)
+	 */
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
@@ -128,6 +164,11 @@ public class SelectFATFragment extends ListFragment {
 		
 	}
 
+	/**
+	 * Called in the restart process.
+	 * 
+	 * @see android.app.Activity#onResume() 
+	 */
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -139,6 +180,11 @@ public class SelectFATFragment extends ListFragment {
 		this.updateListView();
 	}
 
+	/**
+	 * Called in the stop process.
+	 * 
+	 * @see android.app.Activity#onStop() 
+	 */
 	@Override
 	public void onStop() {
 		super.onStop();
@@ -148,7 +194,8 @@ public class SelectFATFragment extends ListFragment {
 	}
 
 	/**
-	 * 
+	 * Discovers all FAT devces on the network. The found devices are entered into 
+	 * the database and shown in the List.
 	 */
 	private void getAvailableIps() {
 
@@ -213,6 +260,11 @@ public class SelectFATFragment extends ListFragment {
 		return super.onOptionsItemSelected(item);
 	}
 
+	/**
+	 * Create context menu
+	 * 
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -221,6 +273,11 @@ public class SelectFATFragment extends ListFragment {
         inflater.inflate(R.menu.contextmenu_select_fat, menu);
     }
 
+    /**
+     * An item of the context menu was selected.
+     * 
+     * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+     */
     @Override
     public boolean onContextItemSelected(MenuItem item) {
     	AdapterContextMenuInfo menuInfo = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -244,7 +301,7 @@ public class SelectFATFragment extends ListFragment {
     }
     
 	/**
-	 * 
+	 * Updates the FAT devices displayed in the ListView. Data is extracted from the database.
 	 */
 	private void updateListView() {
 		// Get all of the notes from the database and create the item list
@@ -262,7 +319,9 @@ public class SelectFATFragment extends ListFragment {
 	}
 
 	/**
-	 * @param dev
+	 * Adds a manually entered FAT device to the database.
+	 * 
+	 * @param dev manually entered device.
 	 */
 	private void addFATDeviceToDatabase(FATDevice dev) {
 		long rowId = mDbHelper.fetchFatDeviceId(dev.getIp());
@@ -288,12 +347,21 @@ public class SelectFATFragment extends ListFragment {
 
 	}
 
+	/**
+	 * Shows the add device dialog. Here a device can be entered manually. 
+	 */
 	private void showAddDeviceDialog() {
 		DialogFragment addDialog = AddDeviceDialogFragment.newInstance(R.string.dialog_adddev_title);
 		addDialog.setTargetFragment(this, 0);
 		addDialog.show(getFragmentManager(), "dialog");
 	}
 
+	/**
+	 * Evaluates the result of the add device dialog. Checks entered data and stores it in the database.
+	 * 
+	 * @param name Name of the device.
+	 * @param ip IP of the device.
+	 */
 	public void doPositiveClick(String name, String ip) {
 		InetAddress ia = null;
 		boolean errOccured = false;

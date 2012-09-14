@@ -25,6 +25,7 @@ public class AllTests {
 		TestSuite suite = new TestSuite(AllTests.class.getName());
 		//$JUnit-BEGIN$
 		suite.addTest(de.questmaster.fatremote.datastructures.test.AllTests.suite());
+		suite.addTest(de.questmaster.fatremote.fragments.test.AllTests.suite());
 		suite.addTest(de.questmaster.fatremote.test.AllTests.suite());
 		//$JUnit-END$
 		return suite;

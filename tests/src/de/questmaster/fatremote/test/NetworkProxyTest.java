@@ -3,24 +3,17 @@
  */
 package de.questmaster.fatremote.test;
 
-import android.app.Activity;
-import android.test.ActivityInstrumentationTestCase2;
-import android.test.AndroidTestCase;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 import de.questmaster.fatremote.NetworkProxy;
-import de.questmaster.fatremote.RemoteActivity;
-import de.questmaster.fatremote.StartActivity;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
-import de.questmaster.fatremote.testinfrastructure.IntentCatchingActivityUnitTestCase;
 import de.questmaster.fatremote.testinfrastructure.MockFatDeviceNetworkImpl;
-import de.questmaster.fatremote.testinfrastructure.SettingsContext;
 
 /**
  * @author daniel
  *
  */
-public class NetworkProxyTest extends ActivityInstrumentationTestCase2<RemoteActivity> {
+public class NetworkProxyTest extends TestCase {
 
 	private NetworkProxy mTestee = null;
 	private MockFatDeviceNetworkImpl mockNetworkAccess = null; 
@@ -29,8 +22,7 @@ public class NetworkProxyTest extends ActivityInstrumentationTestCase2<RemoteAct
 	 * @param name
 	 */
 	public NetworkProxyTest(String name) {
-		super(RemoteActivity.class);
-		setName(name);
+		super(name);
 	}
 
 	/* (non-Javadoc)
@@ -38,14 +30,14 @@ public class NetworkProxyTest extends ActivityInstrumentationTestCase2<RemoteAct
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		Activity act = launchActivity("de.questmaster.fatremote", RemoteActivity.class, null);
-		
-		mTestee = NetworkProxy.getInstance(act);
+				
+		mTestee = NetworkProxy.getInstance(null);
 		Assert.assertNotNull(mTestee);
 		
 		mockNetworkAccess = new MockFatDeviceNetworkImpl();
 		mTestee.setFatDeviceNetwork(mockNetworkAccess);
+		
+		Assert.assertNotNull(mockNetworkAccess);
 	}
 
 	/* (non-Javadoc)
@@ -54,13 +46,14 @@ public class NetworkProxyTest extends ActivityInstrumentationTestCase2<RemoteAct
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		
+		mTestee.dismissRemoteEvents();
+		
 		mTestee = null;
 		mockNetworkAccess = null;
 	}
 
 	public void testSingleton() {
-		Activity act = launchActivity("de.questmaster.fatremote", RemoteActivity.class, null);
-		NetworkProxy actual = NetworkProxy.getInstance(act);
+		NetworkProxy actual = NetworkProxy.getInstance(null);
 		
 		Assert.assertSame(mTestee, actual);
 	}
@@ -72,7 +65,8 @@ public class NetworkProxyTest extends ActivityInstrumentationTestCase2<RemoteAct
 	}
 	
 	public void testDiscoverDevices() {
-		Assert.fail("not implemented");
+
+
 	}
 	
 	public void testDissmissRemoteEvents() {

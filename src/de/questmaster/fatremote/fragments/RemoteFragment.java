@@ -49,8 +49,6 @@ import de.questmaster.fatremote.SelectFATActivity;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
 public class RemoteFragment extends Fragment implements View.OnClickListener {
-
-//	private static final String LOG_TAG = "RemoteFragment";
 	
 	protected static final String INTENT_ALLFATS = "de.questmaster.fatremote.fats";
 

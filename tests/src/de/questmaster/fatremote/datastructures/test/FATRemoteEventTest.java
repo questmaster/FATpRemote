@@ -128,9 +128,9 @@ public class FATRemoteEventTest extends AndroidTestCase {
 		short expected[] = { expectedFirst, expectedSecond, expectedThird, expectedFourth};
  		
 		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, expectedPayload);
-		remoteEvent.setCodePayload(actual);
+		remoteEvent.setRemoteCode(actual);
 		
-		short result[] = remoteEvent.getCodePayload();
+		short result[] = remoteEvent.getRemoteCode();
 		for (int i = 0; i < 4; i++)
 			assertEquals(expected[i], result[i]);
 	}
