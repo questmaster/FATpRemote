@@ -21,7 +21,10 @@ import android.app.ActionBar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
+import android.widget.TextView;
 import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
+import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import de.questmaster.fatremote.fragments.RemoteFragment;
 
 /**
@@ -81,4 +84,15 @@ public class RemoteActivity extends FragmentActivity {
 		
 		setTitle(getString(R.string.app_title_remote, mSettings.getFat().getIp()));
 	}
+	
+	public void onDebugButton(View v) {
+		// short in1 = Short.decode(((TextView)findViewById(R.id.pos1)).getText().toString());
+		// short in2 = Short.decode(((TextView)findViewById(R.id.pos2)).getText().toString());
+		short keyCode = Short.decode(((TextView) this.findViewById(R.id.pos3)).getText().toString());
+		short keyModifier = Short.decode(((TextView) this.findViewById(R.id.pos4)).getText().toString());
+
+		// send keyCode
+		NetworkProxy.getInstance(this).addRemoteEvent(new FATRemoteEvent(keyCode, keyModifier));
+	}
+
 }

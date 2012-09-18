@@ -71,7 +71,7 @@ public class FATRemoteEvent {
 	 * 
 	 * @return Command-bytes in short array
 	 */
-	public short[] getRemoteCode() {
+	public short[] getCommandCode() {
 		return mCommand.clone();
 	}
 	
@@ -80,7 +80,7 @@ public class FATRemoteEvent {
 	 * 
 	 * @return Payload
 	 */
-	public short[] getCodePayload() {
+	public short[] getPayload() {
 		return mPayload.clone();
 	}
 	
@@ -100,7 +100,7 @@ public class FATRemoteEvent {
 	 */
 	@Override
 	public String toString() {
-		short command[] = this.getRemoteCode();
+		short command[] = this.getCommandCode();
 		return "{" + command[0] + "," + command[1] + "," + command[2] + "," + command[3] + "}";
 	}
 
@@ -118,7 +118,7 @@ public class FATRemoteEvent {
 
 		if ( other instanceof FATRemoteEvent) {
 			FATRemoteEvent evt = (FATRemoteEvent) other;
-			if ( Arrays.equals(this.getRemoteCode(), evt.getRemoteCode())) {
+			if ( Arrays.equals(this.getCommandCode(), evt.getCommandCode())) {
 				return true;
 			}
 		}
@@ -135,7 +135,7 @@ public class FATRemoteEvent {
 	public int hashCode() {
 		int hash = 0;
 		
-		for (short s: this.getCodePayload()) {
+		for (short s: this.getPayload()) {
 			hash += Short.valueOf(s).hashCode();	
 		}
 		
@@ -146,10 +146,10 @@ public class FATRemoteEvent {
 	 * Set the remote code of this event. This is used to store a received event.
 	 * @param code remote code
 	 */
-	public void setRemoteCode(byte[] code) {
+	public void setCommandCode(byte[] code) {
 		if (code.length == mCommand.length) {
 			for (int i = 0; i < code.length; i++) {
-				mCommand[i] = (short) code[i];
+				mCommand[i] = (short) (code[i] < 0 ? 256 + code[i] : code[i]);
 			}
 		}
 	}
@@ -158,13 +158,27 @@ public class FATRemoteEvent {
 	 * Set the payload of this event. This is used to store the received payload.
 	 * @param code payload of event
 	 */
-	public void setCodePayload(byte[] code) {
+	public void setPayload(byte[] code) {
 		if (code.length > 0) {
 			mPayload = new short[code.length];
 			for (int i = 0; i < code.length; i++) {
-				mPayload[i] = (short) code[i];
+				mPayload[i] = (short) (code[i] < 0 ? 256 + code[i] : code[i]);
 			}
 		}
+	}
+
+	/**
+	 * Checks if this event includes payload.
+	 * @return true - if payload exists, false - otherwise
+	 */
+	public boolean hasPayload() {
+		boolean result = false;
+		
+		if (mPayload != null && mPayload.length > 0) {
+			result =  true;
+		}
+		
+		return result;
 	}
 
 }

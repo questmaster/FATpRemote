@@ -16,6 +16,7 @@
 
 package de.questmaster.fatremote;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.concurrent.BlockingQueue;
 
 import android.app.Activity;
 import android.net.wifi.WifiManager;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -161,7 +163,7 @@ public class NetworkProxy {
 		} else {
 			throw new ConnectException(mBaseActivity.getResources().getString(R.string.app_err_enwifi));
 		}
-
+				
 		return adr;
 	}
 
@@ -182,7 +184,7 @@ public class NetworkProxy {
 		try {
 			mEventList.put(event);
 		} catch (InterruptedException e) {
-			Log.e(LOG_TAG, "Event not in queue (keyId): " + event.getRemoteCode()[3], e);
+			Log.e(LOG_TAG, "Event not in queue (keyId): " + event.getCommandCode()[3], e);
 		}
 	}
 		

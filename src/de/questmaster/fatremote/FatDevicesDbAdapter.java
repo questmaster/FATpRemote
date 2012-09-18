@@ -17,6 +17,8 @@
 package de.questmaster.fatremote;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import de.questmaster.fatremote.datastructures.FATDevice;
@@ -38,6 +40,7 @@ public class FatDevicesDbAdapter {
 	public static final String KEY_IP = "ip";
 	public static final String KEY_PORT = "port";
 	public static final String KEY_AUTODETECTED = "auto";
+	public static final String KEY_STORAGE = "storage";
 	public static final String KEY_ROWID = "_id";
 
 	private static final String TAG = "FatDbAdapter";
@@ -47,12 +50,13 @@ public class FatDevicesDbAdapter {
 	/**
 	 * Database creation sql statement
 	 */
-	private static final String DATABASE_CREATE = "create table fatDevices (_id integer primary key autoincrement, " + "name text not null, ip text not null,"
-			+ "port integer DEFAULT 9999, auto integer DEFAULT 0);";
+	private static final String DATABASE_CREATE = "create table fatDevices (_id integer primary key autoincrement, "
+			+ "name text not null, ip text not null,"
+			+ "port integer DEFAULT 9999, auto integer DEFAULT 0, storage text);";
 
 	private static final String DATABASE_NAME = "data";
 	private static final String DATABASE_TABLE = "fatDevices";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 4;
 
 	private final Context mCtx;
 
@@ -157,6 +161,11 @@ public class FatDevicesDbAdapter {
 		initialValues.put(KEY_IP, device.getIp());
 		initialValues.put(KEY_PORT, device.getPort());
 		initialValues.put(KEY_AUTODETECTED, device.isAutoDetected() ? 1 : 0);
+		if (device.getContentStorage() != null) {
+			initialValues.put(KEY_STORAGE, device.getContentStorage().toURI().toString());
+		} else {
+			initialValues.put(KEY_STORAGE, "");
+		}
 
 		return mDb.insert(DATABASE_TABLE, null, initialValues);
 	}
@@ -190,7 +199,7 @@ public class FatDevicesDbAdapter {
 	 */
 	public Cursor fetchAllFatDevices() {
 
-		return mDb.query(DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, null, null, null, null, null);
+		return mDb.query(DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED, KEY_STORAGE }, null, null, null, null, null);
 	}
 
 	/**
@@ -204,14 +213,20 @@ public class FatDevicesDbAdapter {
 		int columnName = 1;
 		int columnIp = 2;
 		int columnAutodetected = 4;
+		int columnStorage = 5;
 		FATDevice device = null;
 		
-		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
+		Cursor mCursor = mDb.query(true, DATABASE_TABLE, new String[] { KEY_ROWID, KEY_NAME, KEY_IP, KEY_PORT, KEY_AUTODETECTED, KEY_STORAGE }, KEY_ROWID + "=" + rowId, null, null, null, null, null);
 		if (mCursor != null) {
 			if (mCursor.moveToFirst()) {
 				try {
 					device = new FATDevice(mCursor.getString(columnName), mCursor.getString(columnIp), mCursor.getInt(columnAutodetected) == 1);
+					if (!mCursor.getString(columnStorage).equals("")) {
+						device.setContentStorage(new File(new URI(mCursor.getString(columnStorage))));
+					}
 				} catch (UnknownHostException e) {
+					Log.e(TAG, e.getLocalizedMessage(), e);
+				} catch (URISyntaxException e) {
 					Log.e(TAG, e.getLocalizedMessage(), e);
 				}
 			}
@@ -274,6 +289,11 @@ public class FatDevicesDbAdapter {
 		args.put(KEY_IP, device.getIp());
 		args.put(KEY_PORT, device.getPort());
 		args.put(KEY_AUTODETECTED,  device.isAutoDetected() ? 1 : 0);
+		if (device.getContentStorage() != null) {
+			args.put(KEY_STORAGE, device.getContentStorage().toURI().toString());
+		} else {
+			args.put(KEY_STORAGE, "");
+		}
 
 		return mDb.update(DATABASE_TABLE, args, KEY_ROWID + "=" + rowId, null) > 0;
 	}

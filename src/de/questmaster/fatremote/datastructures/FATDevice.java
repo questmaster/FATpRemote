@@ -16,8 +16,13 @@
 
 package de.questmaster.fatremote.datastructures;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+
+import android.os.Environment;
+import android.util.Log;
 
 /**
  * This class represents a FAT+ device and its configuration data.
@@ -26,10 +31,17 @@ import java.net.UnknownHostException;
  *
  */
 public class FATDevice {
+
+	private static final String LOG_TAG = "FATDevice";
+
 	/**
 	 * Default port on FAT+ for remote service.
 	 */
 	public static final int FAT_REMOTE_PORT = 9999;
+	/**
+	 * Default port on FAT+ for remote service.
+	 */
+	public static final String FAT_STORAGE_POSTFIX = "-content.sqlite";
 	
 	/**
 	 * Name of this entry
@@ -47,6 +59,10 @@ public class FATDevice {
 	 * Flag if the device was entered manually or discovered by this application.
 	 */
 	private boolean autoDetected = false;
+	/**
+	 * File to store FAT device'S content SQLite db.
+	 */
+	private File mContentStorage = null;
 
 	/**
 	 * Create a new FAT+ device.
@@ -59,6 +75,7 @@ public class FATDevice {
 		this.name = name;
 		this.ip = ip.getHostAddress();
 		this.autoDetected = auto;
+		this.mContentStorage = null;
 	}
 
 	/**
@@ -69,9 +86,7 @@ public class FATDevice {
 	 * @param auto Autodetected flag
 	 */
 	public FATDevice(String name, String ip, boolean auto) throws UnknownHostException {
-		this.name = name;
-		this.ip = InetAddress.getByName(ip).getHostAddress();
-		this.autoDetected = auto;
+		this(name, InetAddress.getByName(ip), auto);
 	}
 
 	/**
@@ -223,5 +238,73 @@ public class FATDevice {
 		return this.getName().hashCode() 
 			+ this.getIp().hashCode()
 			+ Integer.valueOf(this.getPort()).hashCode();
+	}
+
+	/**
+	 * Returns a File object pointing to the content store file of this device.
+	 * 
+	 * @return File for content storage.
+	 */
+	public File getContentStorage() {
+		File result = null;
+		
+		if (hasContentStorage()) {
+			result = mContentStorage;
+		}
+		
+		return result;
+	}
+
+	/**
+	 * Sets the file for storing a devices content SQlite db. It Refuses to set the 
+	 * file if it specifies just a directory. The path specified is created if it 
+	 * does not exist.
+	 * 
+	 * @param file File to be used for content storage.
+	 */
+	public void setContentStorage(File file) {
+		boolean pathExists = true;
+		
+		if (file != null && file.isFile()) {
+			File path = file.getAbsoluteFile();
+			if (!path.exists()) {
+				if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+					pathExists = path.mkdirs();
+				} else {
+					pathExists = false;
+				}
+			}
+			
+			if (pathExists) {
+				File storage = new File(file.getAbsolutePath() + file.getName());
+				try {
+					if (!storage.exists() && !storage.createNewFile()) {
+						Log.e(LOG_TAG, "Could not create storage file.");
+					} else {
+						mContentStorage = storage;
+					}
+				} catch (IOException e) {
+					Log.e(LOG_TAG, e.getMessage(), e);
+				}
+			} else {
+				Log.e(LOG_TAG, "Could not create storage file directory.");
+			}
+		}
+	}
+
+	/**
+	 * Checks whether the specified content file exists.
+	 * 
+	 * @return true - if file exists, false - otherwise
+	 */
+	public boolean hasContentStorage() {
+		boolean result = false;
+		
+		if (mContentStorage != null 
+				&& Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+				&& mContentStorage.exists()) {
+			result = true;
+		}
+		return result;
 	}
 }

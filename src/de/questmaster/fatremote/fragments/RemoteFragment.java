@@ -311,19 +311,6 @@ public class RemoteFragment extends Fragment implements View.OnClickListener {
     	mgr.hideSoftInputFromWindow(text.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 	}
 
-	public void onDebugButton(View v) {
-		// short in1 = Short.decode(((TextView)findViewById(R.id.pos1)).getText().toString());
-		// short in2 = Short.decode(((TextView)findViewById(R.id.pos2)).getText().toString());
-		short in3 = Short.decode(((TextView) c.findViewById(R.id.pos3)).getText().toString());
-		short in4 = Short.decode(((TextView) c.findViewById(R.id.pos4)).getText().toString());
-
-		keyCode = in3;
-		keyModifier = in4;
-
-		// send keyCode
-		invokeSend();
-	}
-
 	@Override
 	public void onClick(View v) {
 

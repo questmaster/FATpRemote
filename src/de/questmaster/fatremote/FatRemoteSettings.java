@@ -18,18 +18,20 @@ package de.questmaster.fatremote;
 
 import java.net.UnknownHostException;
 
-import de.questmaster.fatremote.datastructures.FATDevice;
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
+import android.database.sqlite.SQLiteException;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
+import de.questmaster.fatremote.datastructures.FATDevice;
 
 /**
  * Settings activity to store the user settings and last selected FAT+ device. 
@@ -39,11 +41,12 @@ import android.view.MenuItem;
  */
 public class FatRemoteSettings extends PreferenceActivity {
 
-	private static final String TAG = "FatRemoteSettings";
+	private static final String LOG_TAG = "FatRemoteSettings";
 	private FatRemoteSettings.AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	private static final int ANDROID_V11 = 11;
 	private static final int ANDROID_V14 = 14;
-
+	
+	@TargetApi(14)
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -143,6 +146,14 @@ public class FatRemoteSettings extends PreferenceActivity {
 		{
 			SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(pContext);
 			Resources res = pContext.getResources();
+			
+			FatDevicesDbAdapter mDbHelper = new FatDevicesDbAdapter(pContext);
+			try {
+				mDbHelper.open();
+			} catch (SQLiteException e) {
+				Log.e(LOG_TAG, "Database failed to initialize.", e);
+			}
+
 
 			if (sharedPref != null) {
 				mOverride = sharedPref.getBoolean(res.getString(R.string.PREF_KEY_DEFAULT_BEHAVIOR), mOverride);
@@ -150,12 +161,18 @@ public class FatRemoteSettings extends PreferenceActivity {
 				mVibrate = sharedPref.getBoolean(res.getString(R.string.PREF_KEY_VIBRATE), mVibrate);
 
 				String fatIp = sharedPref.getString(res.getString(R.string.PREF_KEY_FAT), "");
-				try {
-					mFat = new FATDevice("", fatIp, false) ;
-				} catch (UnknownHostException e) {
-					Log.e(TAG, e.getLocalizedMessage(), e);
+				mFat = mDbHelper.fetchFatDeviceTyp(mDbHelper.fetchFatDeviceId(fatIp));
+				
+				// Provide empty default, if last device missing
+				if (mFat == null) {
+					try {
+						mFat = new FATDevice("", "0.0.0.0", false);
+					} catch (UnknownHostException e) {
+						Log.e(LOG_TAG, e.getMessage(), e);
+					}
 				}
 			}
+			mDbHelper.close();
 		}
 		
 		/**

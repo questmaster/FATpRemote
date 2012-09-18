@@ -16,6 +16,7 @@
 
 package de.questmaster.fatremote.fragments;
 
+import java.io.File;
 import java.net.ConnectException;
 import java.net.InetAddress;
 import java.util.List;
@@ -25,6 +26,7 @@ import android.app.ProgressDialog;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
