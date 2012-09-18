@@ -239,8 +239,8 @@ public class FATDeviceTest extends AndroidTestCase {
 		Assert.assertEquals(expectedFile, mDev.getContentStorage().getName());
 		
 		// set dir
-		setfile = new File("/sdcard/");	
-		mDev.setContentStorage(setfile);
+		File filedir = new File("/sdcard/");	
+		mDev.setContentStorage(filedir);
 		Assert.assertEquals(expectedFile, mDev.getContentStorage().getName());
 
 		// set null
