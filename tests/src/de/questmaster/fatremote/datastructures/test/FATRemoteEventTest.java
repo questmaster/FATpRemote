@@ -30,10 +30,10 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	
 	private short expectedFirst = 0x48;
 	private short expectedSecond = 0x12;
-	private short expectedThird = 3;
-	private short expectedFourth = 4;
+	private short expectedThird = 0x80;
+	private short expectedFourth = 0xFF;
 	private int expectedCodeLength = 4;
-	private short[] expectedPayload = new short[] { 0, 1 , 2, 3, 4, 5};
+	private short[] expectedPayload = new short[] { 0, 1 , 2, 128, 255, 127};
 	
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -66,18 +66,18 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	public void testFATRemoteEvent() {
 		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth);
 		Assert.assertNotNull(remoteEvent);
-		Assert.assertNotNull(remoteEvent.getCodePayload());
+		Assert.assertNotNull(remoteEvent.getPayload());
 
-		short[] code = remoteEvent.getRemoteCode();
+		short[] code = remoteEvent.getCommandCode();
 		Assert.assertEquals(expectedCodeLength, code.length);
 		Assert.assertEquals(mRemoteEvent, remoteEvent);
 	}
 
 	/**
-	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#getRemoteCode()}.
+	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#getCommandCode()}.
 	 */
-	public void testGetRemoteCode() {
-		short[] code = mRemoteEvent.getRemoteCode();
+	public void testGetCommandCode() {
+		short[] code = mRemoteEvent.getCommandCode();
 		
 		Assert.assertEquals(expectedCodeLength, code.length);
 		Assert.assertEquals(expectedFirst, code[0]);
@@ -87,10 +87,10 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	}
 
 	/**
-	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#getCodePayload()}.
+	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#getPayload()}.
 	 */
-	public void testGetCodePayload() {
-		short[] payload = mRemoteEvent.getCodePayload();
+	public void testGetPayload() {
+		short[] payload = mRemoteEvent.getPayload();
 		
 		Assert.assertNotNull(payload);
 		Assert.assertEquals(expectedPayload.length, payload.length);
@@ -123,33 +123,89 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	    assertTrue(mRemoteEvent.hashCode() == remoteEvent.hashCode());
 	}
 
-	public void testSetRemoteCode() {
+	public void testSetCommandCode() {
 		byte actual[] = {(byte) expectedFirst, (byte) expectedSecond, (byte) expectedThird, (byte) expectedFourth};
 		short expected[] = { expectedFirst, expectedSecond, expectedThird, expectedFourth};
  		
 		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, expectedPayload);
-		remoteEvent.setRemoteCode(actual);
 		
-		short result[] = remoteEvent.getRemoteCode();
+		// check value
+		remoteEvent.setCommandCode(actual);
+		
+		short result[] = remoteEvent.getCommandCode();
 		for (int i = 0; i < 4; i++)
 			assertEquals(expected[i], result[i]);
+
+		// check null
+		remoteEvent.setCommandCode(null);
+		
+		result = remoteEvent.getCommandCode();
+		for (int i = 0; i < 4; i++)
+			assertEquals(expected[i], result[i]);
+
+		// check empty
+		remoteEvent.setCommandCode(new byte[0]);
+		
+		result = remoteEvent.getCommandCode();
+		for (int i = 0; i < 4; i++)
+			assertEquals(expected[i], result[i]);
+
 	}
 
-	public void testSetCodePayload() {
-		byte actual[] = {0, 1, 2, 3, 4, 5};
+	public void testSetPayload() {
+		byte actual[] = {0, 1, 2, -128, -1, 127};
+		int expectedEmpty = 0;
  		
 		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, new short[0]);
-		remoteEvent.setCodePayload(actual);
+		remoteEvent.setPayload(actual);
 		
-		short result[] = remoteEvent.getCodePayload();
+		// check set value
+		short result[] = remoteEvent.getPayload();
 		try {
 		for (int i = 0; i < expectedPayload.length; i++)
 			assertEquals(expectedPayload[i], result[i]);
 		} catch (Exception e) {
 			fail("Payload not equal!");
 		}
+
+		// check null
+		remoteEvent.setPayload(null);
+		
+		result = remoteEvent.getPayload();
+		try {
+		for (int i = 0; i < expectedPayload.length; i++)
+			assertEquals(expectedPayload[i], result[i]);
+		} catch (Exception e) {
+			fail("Payload not equal!");
+		}
+
+		// check empty
+		remoteEvent.setPayload(new byte[0]);
+		
+		result = remoteEvent.getPayload();
+		assertEquals(expectedEmpty, result.length);
+
 	}
 
+	public void testHasPayload() {
+		boolean expectedWo = false;
+		boolean expectedW = true;
+		byte[] payload = {};
+		
+		// check value
+		Assert.assertEquals(expectedW, mRemoteEvent.hasPayload());
+		
+		// check null
+		mRemoteEvent.setPayload(null);
+
+		Assert.assertEquals(expectedW, mRemoteEvent.hasPayload());
+
+		// check empty
+		mRemoteEvent.setPayload(payload);
+		
+		Assert.assertEquals(expectedWo, mRemoteEvent.hasPayload());
+		
+	}
 }
 
 	

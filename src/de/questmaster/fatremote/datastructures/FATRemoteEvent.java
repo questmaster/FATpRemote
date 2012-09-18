@@ -147,7 +147,7 @@ public class FATRemoteEvent {
 	 * @param code remote code
 	 */
 	public void setCommandCode(byte[] code) {
-		if (code.length == mCommand.length) {
+		if (code != null && code.length == mCommand.length) {
 			for (int i = 0; i < code.length; i++) {
 				mCommand[i] = (short) (code[i] < 0 ? 256 + code[i] : code[i]);
 			}
@@ -159,7 +159,7 @@ public class FATRemoteEvent {
 	 * @param code payload of event
 	 */
 	public void setPayload(byte[] code) {
-		if (code.length > 0) {
+		if (code != null) {
 			mPayload = new short[code.length];
 			for (int i = 0; i < code.length; i++) {
 				mPayload[i] = (short) (code[i] < 0 ? 256 + code[i] : code[i]);

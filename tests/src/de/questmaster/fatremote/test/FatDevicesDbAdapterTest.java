@@ -25,6 +25,8 @@ import android.test.AndroidTestCase;
 import de.questmaster.fatremote.FatDevicesDbAdapter;
 import de.questmaster.fatremote.datastructures.FATDevice;
 
+// TODO: add checks for new contentStorage!
+
 /**
  * @author daniel
  *
@@ -35,7 +37,6 @@ public class FatDevicesDbAdapterTest extends AndroidTestCase {
 	
 	private String mExpectedName1 = "Name1";
 	private String mExpectedIp1 = "1.1.1.1";
-//	private int mExpectedPort1 = FATDevice.FAT_REMOTE_PORT;
 	private boolean mExpectedAutodetected1 = true;
 	private String mExpectedName2 = "Name2";
 	private String mExpectedIp2 = "2.2.2.2";

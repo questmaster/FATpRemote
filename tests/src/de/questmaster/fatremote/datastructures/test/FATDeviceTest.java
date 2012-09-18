@@ -16,14 +16,14 @@
 
 package de.questmaster.fatremote.datastructures.test;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Hashtable;
 
 import junit.framework.Assert;
-
-import de.questmaster.fatremote.datastructures.FATDevice;
 import android.test.AndroidTestCase;
+import de.questmaster.fatremote.datastructures.FATDevice;
 
 public class FATDeviceTest extends AndroidTestCase {
 
@@ -213,4 +213,57 @@ public class FATDeviceTest extends AndroidTestCase {
 		assertTrue(mDev.hashCode() == mDev.hashCode());
 	    assertTrue(mDev.hashCode() == dev.hashCode());
 	}
+	
+	public void testGetContentStorage() {
+		String expectedFile = "10-10-10-10-content.sqlite";
+		File setfile = new File("/sdcard/", expectedFile);
+		
+		// test false
+		Assert.assertTrue(mDev.getContentStorage() == null);
+		
+		// test true
+		mDev.setContentStorage(setfile);
+		Assert.assertTrue(mDev.getContentStorage() != null);
+		Assert.assertEquals(expectedFile, mDev.getContentStorage().getName());
+
+		// clean up
+		setfile.delete();
+	}
+
+	public void testSetContentStorage() {
+		String expectedFile = "10-10-10-11-content.sqlite";
+		File setfile = new File("/sdcard/", expectedFile);
+		
+		// set file
+		mDev.setContentStorage(setfile);		
+		Assert.assertEquals(expectedFile, mDev.getContentStorage().getName());
+		
+		// set dir
+		setfile = new File("/sdcard/");	
+		mDev.setContentStorage(setfile);
+		Assert.assertEquals(expectedFile, mDev.getContentStorage().getName());
+
+		// set null
+		mDev.setContentStorage(null);
+		Assert.assertEquals(expectedFile, mDev.getContentStorage().getName());
+		
+		// clean up
+		setfile.delete();
+	}
+	
+	public void testHasContentStorage() {
+		boolean expectedF = false;
+		boolean expectedT = true;
+		File setfile = new File("/sdcard/", "10-10-10-12-content.sqlite");
+
+		// test false
+		Assert.assertEquals(expectedF, mDev.hasContentStorage());
+
+		// test true
+		mDev.setContentStorage(setfile);
+		Assert.assertEquals(expectedT, mDev.hasContentStorage());
+
+		setfile.delete();
+	}
+	
 }

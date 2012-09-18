@@ -265,10 +265,10 @@ public class FATDevice {
 	public void setContentStorage(File file) {
 		boolean pathExists = true;
 		
-		if (file != null && file.isFile()) {
-			File path = file.getAbsoluteFile();
+		if (file != null) {
+			File path = file.getParentFile();
 			if (!path.exists()) {
-				if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED) {
+				if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 					pathExists = path.mkdirs();
 				} else {
 					pathExists = false;
@@ -276,12 +276,14 @@ public class FATDevice {
 			}
 			
 			if (pathExists) {
-				File storage = new File(file.getAbsolutePath() + file.getName());
+				File storage = new File(path, file.getName());
 				try {
 					if (!storage.exists() && !storage.createNewFile()) {
 						Log.e(LOG_TAG, "Could not create storage file.");
 					} else {
-						mContentStorage = storage;
+						if (storage.isFile()) {
+							mContentStorage = storage;
+						}
 					}
 				} catch (IOException e) {
 					Log.e(LOG_TAG, e.getMessage(), e);
@@ -301,7 +303,7 @@ public class FATDevice {
 		boolean result = false;
 		
 		if (mContentStorage != null 
-				&& Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+				&& Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
 				&& mContentStorage.exists()) {
 			result = true;
 		}
