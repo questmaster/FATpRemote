@@ -39,21 +39,23 @@ public class FATRemoteEvent {
 	/**
 	 * Creates a new event with the two parameters as 3rd and 4th command byte.
 	 * 
-	 * @param cmd2 Command-byte three
-	 * @param cmd3 Command-byte four
+	 * @param pCmd2 Command-byte three
+	 * @param pCmd3 Command-byte four
 	 */
-	public FATRemoteEvent(short cmd2, short cmd3) {
-		this(cmd2, cmd3, null);
+	public FATRemoteEvent(short pCmd2, short pCmd3) {
+		this(pCmd2, pCmd3, null);
 	}
 
 	/**
 	 * Creates a new event with the two parameters as 3rd and 4th command byte and an optional payload.
 	 * 
-	 * @param cmd2 Command-byte three
-	 * @param cmd3 Command-byte four
-	 * @param payload Command payload
+	 * @param pCmd2 Command-byte three
+	 * @param pCmd3 Command-byte four
+	 * @param pPayload Command payload
 	 */
-	public FATRemoteEvent(short cmd2, short cmd3, byte[] payload) {
+	public FATRemoteEvent(short pCmd2, short pCmd3, byte[] pPayload) {
+		short cmd2 = pCmd2;
+		short cmd3 = pCmd3;
 		
 		// filter shorts
 		cmd2 *= cmd2 < 0 ? -1 : 1; // convert negative numbers 
@@ -65,7 +67,7 @@ public class FATRemoteEvent {
 		mCommand[3] = cmd3;
 		
 		
-		setPayload(payload);
+		setPayload(pPayload);
 	}
 
 	public FATRemoteEvent() {
