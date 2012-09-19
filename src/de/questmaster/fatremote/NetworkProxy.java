@@ -16,7 +16,6 @@
 
 package de.questmaster.fatremote;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.concurrent.BlockingQueue;
 
 import android.app.Activity;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
