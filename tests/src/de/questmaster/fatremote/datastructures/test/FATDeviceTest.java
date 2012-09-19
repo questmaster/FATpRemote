@@ -65,6 +65,8 @@ public class FATDeviceTest extends AndroidTestCase {
 
 	public void testFATDeviceConstructor() {
 		try {
+			
+			// test value
 			FATDevice dev = new FATDevice(expectedName, InetAddress.getByName(expectedAdress), expectedAuto);
 			Assert.assertEquals(mDev, dev);
 			Assert.assertEquals(expectedAuto, dev.isAutoDetected());
@@ -73,6 +75,22 @@ public class FATDeviceTest extends AndroidTestCase {
 			Assert.assertEquals(mDev, dev);
 			Assert.assertEquals(expectedAuto, dev.isAutoDetected());
 
+			// test empty
+			dev = new FATDevice("", "", expectedAuto);
+			Assert.assertEquals(FATDevice.FAT_NAME_EMPTY, dev.getName());
+			Assert.assertEquals(FATDevice.FAT_IP_EMPTY, dev.getIp());
+			Assert.assertEquals(expectedAuto, dev.isAutoDetected());
+
+			// test null
+			dev = new FATDevice(null, (String) null, expectedAuto);
+			Assert.assertEquals(FATDevice.FAT_NAME_EMPTY, dev.getName());
+			Assert.assertEquals(FATDevice.FAT_IP_EMPTY, dev.getIp());
+			Assert.assertEquals(expectedAuto, dev.isAutoDetected());
+
+			dev = new FATDevice(null, (InetAddress) null, expectedAuto);
+			Assert.assertEquals(FATDevice.FAT_NAME_EMPTY, dev.getName());
+			Assert.assertEquals(FATDevice.FAT_IP_EMPTY, dev.getIp());
+			Assert.assertEquals(expectedAuto, dev.isAutoDetected());
 		} catch (UnknownHostException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -84,9 +102,19 @@ public class FATDeviceTest extends AndroidTestCase {
 
 	public void testSetName() {
 		String expectedNewName = "NewName";
+		String nameEmpty = "";
+		String nameNull = null;
 		
+		// test value
 		mDev.setName(expectedNewName);
-		
+		Assert.assertEquals(expectedNewName, mDev.getName());
+
+		// test empty
+		mDev.setName(nameEmpty);
+		Assert.assertEquals(expectedNewName, mDev.getName());
+
+		// test null
+		mDev.setName(nameNull);
 		Assert.assertEquals(expectedNewName, mDev.getName());
 	}
 
@@ -114,7 +142,17 @@ public class FATDeviceTest extends AndroidTestCase {
 			exceptionTriggered = true;
 		}
 		Assert.assertTrue(exceptionTriggered);
+		Assert.assertEquals(expectedNewIP, mDev.getIp());
 				
+		// set new loopback IP
+		exceptionTriggered = false;
+		try {
+			mDev.setIp(null);
+		} catch (UnknownHostException e) {
+			exceptionTriggered = true;
+		}
+		Assert.assertFalse(exceptionTriggered);
+		Assert.assertEquals(expectedNewIP, mDev.getIp());
 	}
 
 	public void testGetInetAddress() {
@@ -129,9 +167,18 @@ public class FATDeviceTest extends AndroidTestCase {
 		String expectedNewIP = "10.10.10.11";
 		
 		try {
-			mDev.setInetAdress(InetAddress.getByName(expectedNewIP));
-		
+			// test value
+			mDev.setInetAddress(InetAddress.getByName(expectedNewIP));
 			Assert.assertEquals(expectedNewIP, mDev.getInetAddress().getHostAddress());
+			
+			// test loopback
+			mDev.setInetAddress(InetAddress.getByName(null));
+			Assert.assertEquals(expectedNewIP, mDev.getInetAddress().getHostAddress());
+
+			// test null
+			mDev.setInetAddress(null);
+			Assert.assertEquals(expectedNewIP, mDev.getInetAddress().getHostAddress());
+			
 		} catch (UnknownHostException e) {
 			Assert.fail(e.getMessage());
 		}
@@ -143,10 +190,10 @@ public class FATDeviceTest extends AndroidTestCase {
 
 	public void testSetPort() {
 		Hashtable<Integer, Integer> expectedNewPorts = new Hashtable<Integer, Integer>();
-		expectedNewPorts.put(-1, 0);
-		expectedNewPorts.put(0, 0);
+		expectedNewPorts.put(-1, FATDevice.FAT_REMOTE_PORT);
+		expectedNewPorts.put(0, FATDevice.FAT_REMOTE_PORT);
 		expectedNewPorts.put(65535, 65535);
-		expectedNewPorts.put(65536, 0);		
+		expectedNewPorts.put(65536, FATDevice.FAT_REMOTE_PORT);		
 		
 		for (int port : expectedNewPorts.keySet() ) {
 			mDev.setPort(port);

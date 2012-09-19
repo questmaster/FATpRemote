@@ -33,7 +33,8 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	private short expectedThird = 0x80;
 	private short expectedFourth = 0xFF;
 	private int expectedCodeLength = 4;
-	private short[] expectedPayload = new short[] { 0, 1 , 2, 128, 255, 127};
+	private byte[] tobeexpPayload = new byte[] {  0, 1 , 2, (byte) 128, (byte) 255, 127};
+	private short[] expectedPayload = new short[] {  0, 1 , 2, 128, 255, 127};
 	
 	/* (non-Javadoc)
 	 * @see junit.framework.TestCase#setUp()
@@ -41,7 +42,7 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		mRemoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, expectedPayload);
+		mRemoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, tobeexpPayload);
 	}
 
 	/* (non-Javadoc)
@@ -64,11 +65,33 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	 * Test method for {@link de.questmaster.fatremote.datastructures.FATRemoteEvent#FATRemoteEvent(short, short)}.
 	 */
 	public void testFATRemoteEvent() {
+		// test positive
 		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth);
 		Assert.assertNotNull(remoteEvent);
 		Assert.assertNotNull(remoteEvent.getPayload());
 
 		short[] code = remoteEvent.getCommandCode();
+		Assert.assertNotNull(code);
+		Assert.assertEquals(expectedCodeLength, code.length);
+		Assert.assertEquals(mRemoteEvent, remoteEvent);
+		
+		// test negative
+		remoteEvent = new FATRemoteEvent((short) -expectedThird, (short) -expectedFourth);
+		Assert.assertNotNull(remoteEvent);
+		Assert.assertNotNull(remoteEvent.getPayload());
+
+		code = remoteEvent.getCommandCode();
+		Assert.assertNotNull(code);
+		Assert.assertEquals(expectedCodeLength, code.length);
+		Assert.assertEquals(mRemoteEvent, remoteEvent);
+		
+		// test large
+		remoteEvent = new FATRemoteEvent((short) (expectedThird + 256), (short) (expectedFourth + 256));
+		Assert.assertNotNull(remoteEvent);
+		Assert.assertNotNull(remoteEvent.getPayload());
+
+		code = remoteEvent.getCommandCode();
+		Assert.assertNotNull(code);
 		Assert.assertEquals(expectedCodeLength, code.length);
 		Assert.assertEquals(mRemoteEvent, remoteEvent);
 	}
@@ -106,7 +129,7 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	}
 	
 	public void testEquals() {
-		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, expectedPayload);
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, tobeexpPayload);
 		
 		assertEquals(mRemoteEvent, mRemoteEvent);
 		assertEquals(mRemoteEvent, remoteEvent);
@@ -117,7 +140,7 @@ public class FATRemoteEventTest extends AndroidTestCase {
 	}
 
 	public void testHashCode() {
-		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, expectedPayload);
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedThird, expectedFourth, tobeexpPayload);
 
 		assertTrue(mRemoteEvent.hashCode() == mRemoteEvent.hashCode());
 	    assertTrue(mRemoteEvent.hashCode() == remoteEvent.hashCode());
@@ -127,7 +150,7 @@ public class FATRemoteEventTest extends AndroidTestCase {
 		byte actual[] = {(byte) expectedFirst, (byte) expectedSecond, (byte) expectedThird, (byte) expectedFourth};
 		short expected[] = { expectedFirst, expectedSecond, expectedThird, expectedFourth};
  		
-		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, expectedPayload);
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, tobeexpPayload);
 		
 		// check value
 		remoteEvent.setCommandCode(actual);
@@ -156,7 +179,7 @@ public class FATRemoteEventTest extends AndroidTestCase {
 		byte actual[] = {0, 1, 2, -128, -1, 127};
 		int expectedEmpty = 0;
  		
-		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, new short[0]);
+		FATRemoteEvent remoteEvent = new FATRemoteEvent(expectedFirst, expectedSecond, new byte[0]);
 		remoteEvent.setPayload(actual);
 		
 		// check set value

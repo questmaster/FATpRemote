@@ -53,13 +53,19 @@ public class FATRemoteEvent {
 	 * @param cmd3 Command-byte four
 	 * @param payload Command payload
 	 */
-	public FATRemoteEvent(short cmd2, short cmd3, short[] payload) {
+	public FATRemoteEvent(short cmd2, short cmd3, byte[] payload) {
+		
+		// filter shorts
+		cmd2 *= cmd2 < 0 ? -1 : 1; // convert negative numbers 
+		cmd3 *= cmd3 < 0 ? -1 : 1; 
+		cmd2 %= 256; // shrink large numbers
+		cmd3 %= 256; 
+
 		mCommand[2] = cmd2;
 		mCommand[3] = cmd3;
 		
-		if (payload != null) {
-			mPayload = payload.clone();
-		}
+		
+		setPayload(payload);
 	}
 
 	public FATRemoteEvent() {

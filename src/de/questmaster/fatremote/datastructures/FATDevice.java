@@ -37,6 +37,14 @@ public class FATDevice {
 	/**
 	 * Default port on FAT+ for remote service.
 	 */
+	public static final String FAT_NAME_EMPTY = "<empty>";
+	/**
+	 * Default port on FAT+ for remote service.
+	 */
+	public static final String FAT_IP_EMPTY = "0.0.0.0";
+	/**
+	 * Default port on FAT+ for remote service.
+	 */
 	public static final int FAT_REMOTE_PORT = 9999;
 	/**
 	 * Default port on FAT+ for remote service.
@@ -46,11 +54,11 @@ public class FATDevice {
 	/**
 	 * Name of this entry
 	 */
-	private String name = "";
+	private String name = FAT_NAME_EMPTY;
 	/**
 	 * IP of device
 	 */
-	private String ip = null;
+	private String ip = FAT_IP_EMPTY;
 	/**
 	 * Port of device
 	 */
@@ -72,9 +80,9 @@ public class FATDevice {
 	 * @param auto Autodetected flag
 	 */
 	public FATDevice(String name, InetAddress ip, boolean auto) {
-		this.name = name;
-		this.ip = ip.getHostAddress();
-		this.autoDetected = auto;
+		setName(name);
+		setInetAddress(ip);
+		setAutoDetected(auto);
 		this.mContentStorage = null;
 	}
 
@@ -103,7 +111,9 @@ public class FATDevice {
 	 * @param name Device name
 	 */
 	public void setName(String name) {
-		this.name = name;
+		if (name != null && name.length() > 0) {
+			this.name = name;
+		}
 	}
 
 	/**
@@ -122,7 +132,7 @@ public class FATDevice {
 	 * @throws UnknownHostException
 	 */
 	public void setIp(String ip) throws UnknownHostException {
-		if (InetAddress.getByName(ip) != null) {
+		if (ip != null && InetAddress.getByName(ip) != null) {
 			this.ip = ip;
 		}
 	}
@@ -141,8 +151,10 @@ public class FATDevice {
 	 * 
 	 * @param ip Device IP
 	 */
-	public void setInetAdress(InetAddress ip) {
-		this.ip = ip.getHostAddress();
+	public void setInetAddress(InetAddress ip) {
+		if (ip != null && !ip.isLoopbackAddress()) {
+			this.ip = ip.getHostAddress();
+		}
 	}
 
 	/**
@@ -163,7 +175,7 @@ public class FATDevice {
 		if (port > 0 && port <= 65535) {
 			this.port = port;
 		} else {
-			this.port = 0;
+			this.port = FATDevice.FAT_REMOTE_PORT;
 		}
 	}
 
@@ -212,17 +224,19 @@ public class FATDevice {
 	 */
 	@Override
 	public boolean equals(Object other) {
-		if (this == other) {
-			return true;
-		}
-		
-		if ( other instanceof FATDevice) {
-			FATDevice dev = (FATDevice) other;
-			if ( this.getIp().equals(dev.getIp())
-				&& this.getName().equals(dev.getName())
-				&& this.getPort() == dev.getPort()) {
-					return true;
-				}
+		if (other != null) {
+			if (this == other) {
+				return true;
+			}
+			
+			if ( other instanceof FATDevice) {
+				FATDevice dev = (FATDevice) other;
+				if ( this.getIp().equals(dev.getIp())
+					&& this.getName().equals(dev.getName())
+					&& this.getPort() == dev.getPort()) {
+						return true;
+					}
+			}
 		}
 		
 		return false;
