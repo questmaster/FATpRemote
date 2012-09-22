@@ -18,11 +18,14 @@ package de.questmaster.fatremote;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.DhcpInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.ImageView;
@@ -133,7 +136,7 @@ public class NetworkProxy {
 	 * @return true - if available, false - otherwise
 	 */
 	public boolean isWifiEnabled() {
-		WifiManager wifiManager = (WifiManager) mBaseActivity.getSystemService(android.content.Context.WIFI_SERVICE);
+		WifiManager wifiManager = (WifiManager) mBaseActivity.getSystemService(Context.WIFI_SERVICE);
 
 		if (wifiManager == null || (!DebugHelper.ON_EMULATOR && !wifiManager.isWifiEnabled())) {
 			return false;
@@ -142,6 +145,25 @@ public class NetworkProxy {
 		return true;
 	}
 
+	InetAddress getBroadcastAddress() throws IOException {
+		InetAddress result = null;
+		WifiManager wifi = (WifiManager) mBaseActivity.getSystemService(Context.WIFI_SERVICE);
+
+		if (wifi != null) {
+			DhcpInfo dhcp = wifi.getDhcpInfo();
+
+			if (dhcp != null) {
+				int broadcast = (dhcp.ipAddress & dhcp.netmask) | ~dhcp.netmask;
+				byte[] quads = new byte[4];
+				for (int k = 0; k < 4; k++) {
+					quads[k] = (byte) ((broadcast >> (k * 8)) & 0xFF);
+				}
+				result = InetAddress.getByAddress(quads);
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * Sends discovery message to the local Wifi. If a FAT+ device answers this 
 	 * data is returned to the caller. Throws ConnectionException if not connected 
@@ -150,14 +172,14 @@ public class NetworkProxy {
 	 * @return List of devices that answered to the discovery message
 	 * @throws ConnectException
 	 */
-	public List<FATDevice> discoverFAT() throws ConnectException {
+	public List<FATDevice> discoverFAT() throws IOException {
 		List<FATDevice> adr = null;
 
 		// Check wifi availability
 		if (isWifiEnabled()) {
 
 			// get detected fat's
-			adr = mNetworkAccess.getFatNetworkDevices();
+			adr = mNetworkAccess.getFatNetworkDevices(getBroadcastAddress());
 		} else {
 			throw new ConnectException(mBaseActivity.getResources().getString(R.string.app_err_enwifi));
 		}

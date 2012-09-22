@@ -30,7 +30,7 @@ import android.util.Log;
  * @author daniel
  *
  */
-public class FATDevice {
+public final class FATDevice {
 
 	private static final String LOG_TAG = "FATDevice";
 

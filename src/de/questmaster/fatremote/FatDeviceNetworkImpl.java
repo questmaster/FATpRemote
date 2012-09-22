@@ -49,71 +49,74 @@ public class FatDeviceNetworkImpl implements FatDeviceNetwork {
 	}
 
 	@Override
-	public List<FATDevice> getFatNetworkDevices() {
+	public List<FATDevice> getFatNetworkDevices(InetAddress broadcastAddress) {
 		Map<String, String> data = new HashMap<String, String>();
 		List<DatagramPacket> answers = new ArrayList<DatagramPacket>();
 		List<FATDevice> result = new ArrayList<FATDevice>();
 		DatagramSocket ds = null;
 
-		try {
-			ds = new DatagramSocket();
-			ds.setBroadcast(true);
-			ds.setSoTimeout(3000);
-
-			// Send Theater discovery
-			DatagramPacket dp = new DatagramPacket("Search Venus".getBytes(), 12, InetAddress.getByName("255.255.255.255"), 10000);
-			ds.send(dp);
-
-			// Receive answers
+		if (broadcastAddress != null) {
 			try {
-				while (ds.isBound()) {
-					byte[] buf = new byte[128];
-					DatagramPacket packet = new DatagramPacket(buf, buf.length);
-
-					ds.receive(packet);
-
-					answers.add(packet);
-				}
-			} catch (SocketTimeoutException e) {
-			}
-
-			// extract data
-			String entry = null;
-			for (DatagramPacket d : answers) {
-
-				String adr = d.getAddress().getHostAddress();
-
-				if (!data.containsKey(adr)) {
-					data.put(adr, "");
-				}
-
-				entry = data.get(adr);
-				String msgData = new String(d.getData(), 0, d.getLength());
-				if (!entry.contains(msgData)) {
-					entry += msgData;
-
-					// message complete
-					if (entry.contains("\n")) {
-						entry = entry.trim();
-
-						String name = entry.substring(entry.lastIndexOf(':') + 1);
-						String ip = name.substring(name.indexOf(';') + 1).trim();
-						name = name.substring(0, name.indexOf(';'));
-
-						result.add(new FATDevice(name, ip, true));
+				ds = new DatagramSocket();
+				ds.setBroadcast(true);
+				ds.setSoTimeout(3000);
+	
+				// Send Theater discovery
+				DatagramPacket dp = new DatagramPacket("Search Venus".getBytes(), 12, broadcastAddress, 10000);
+				ds.send(dp);
+	
+				// Receive answers
+				try {
+					while (ds.isBound()) {
+						byte[] buf = new byte[128];
+						DatagramPacket packet = new DatagramPacket(buf, buf.length);
+	
+						ds.receive(packet);
+	
+						answers.add(packet);
 					}
+				} catch (SocketTimeoutException e) {
+					Log.e(LOG_TAG, e.getMessage(), e);
 				}
-				data.put(adr, entry);
-			}
-
-		} catch (IOException e) {
-			Log.e(LOG_TAG, e.getMessage());
-		} finally {
-			if (ds != null) {
-				ds.close();
+			
+				// extract data
+				String entry = null;
+				for (DatagramPacket d : answers) {
+	
+					String adr = d.getAddress().getHostAddress();
+	
+					if (!data.containsKey(adr)) {
+						data.put(adr, "");
+					}
+	
+					entry = data.get(adr);
+					String msgData = new String(d.getData(), 0, d.getLength());
+					if (!entry.contains(msgData)) {
+						entry += msgData;
+	
+						// message complete
+						if (entry.contains("\n")) {
+							entry = entry.trim();
+	
+							String name = entry.substring(entry.lastIndexOf(':') + 1);
+							String ip = name.substring(name.indexOf(';') + 1).trim();
+							name = name.substring(0, name.indexOf(';'));
+	
+							result.add(new FATDevice(name, ip, true));
+						}
+					}
+					data.put(adr, entry);
+				}
+	
+			} catch (IOException e) {
+				Log.e(LOG_TAG, e.getMessage());
+			} finally {
+				if (ds != null) {
+					ds.close();
+				}
 			}
 		}
-
+		
 		return result;
 	}
 

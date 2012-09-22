@@ -4,6 +4,7 @@
 package de.questmaster.fatremote;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 
 import de.questmaster.fatremote.datastructures.FATDevice;
@@ -21,9 +22,10 @@ public interface FatDeviceNetwork {
 	 * discovery message and returns the devices that answered in
 	 * a list.
 	 * 
+	 * @param broadcastAddress Broadcastaddress used to send discovery packet to.
 	 * @return List of discovered FreeAgent devices.
 	 */
-	List<FATDevice> getFatNetworkDevices();
+	List<FATDevice> getFatNetworkDevices(InetAddress broadcastAddress);
 	
 	/**
 	 * Sends a given RemoteEvent to the current device and returns an optional answer.
