@@ -24,7 +24,7 @@ import java.util.Arrays;
  * @author daniel
  *
  */
-public class FATRemoteEvent {
+public final class FATRemoteEvent {
 	
 	/**
 	 * Command code used by FAT+.

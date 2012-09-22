@@ -16,7 +16,7 @@
 
 package de.questmaster.fatremote.fragments;
 
-import java.net.ConnectException;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 
@@ -37,7 +37,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
@@ -62,6 +61,8 @@ public class SelectFATFragment extends ListFragment {
 	private ProgressDialog mDialog = null;
 	private FatDevicesDbAdapter mDbHelper = null;
 	private FATSelectedListener mListener = null;
+
+	private SimpleCursorAdapter mListAdapter;
 	
 	
 	/**
@@ -104,6 +105,17 @@ public class SelectFATFragment extends ListFragment {
 		} catch (SQLiteException e) {
 			Log.e(LOG_TAG, "Database failed to initialize.", e);
 		}
+		
+		// Create the item list
+		Cursor cursor = mDbHelper.fetchAllFatDevices();
+//		getActivity().startManagingCursor(cursor);
+
+		String[] childFrom = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP };
+		int[] childTo = new int[] { R.id.textName, R.id.textIP };
+
+		mListAdapter = new SimpleCursorAdapter(c, R.layout.selectfat_list_item, cursor, childFrom, childTo);
+		setListAdapter(mListAdapter);
+
 	}
 	
 	/**
@@ -172,6 +184,12 @@ public class SelectFATFragment extends ListFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		// check for database connection
+		// maybe canceled due to low memory, etc.
+		if (mDbHelper == null) {
+			mDbHelper = new FatDevicesDbAdapter(c);
+		}
 		if (!mDbHelper.isOpen()) {
 			mDbHelper.open();
 		}
@@ -181,20 +199,25 @@ public class SelectFATFragment extends ListFragment {
 	}
 
 	/**
-	 * Called in the stop process.
+	 * Called in the closing process.
 	 * 
 	 * @see android.app.Activity#onStop() 
 	 */
 	@Override
 	public void onStop() {
 		super.onStop();
+
+		Cursor cursor = mListAdapter.getCursor();
+		if (!cursor.isClosed()) {
+			cursor.close();
+		}
 		if (mDbHelper.isOpen()) {
 			mDbHelper.close();
 		}
 	}
 
 	/**
-	 * Discovers all FAT devces on the network. The found devices are entered into 
+	 * Discovers all FAT devices on the network. The found devices are entered into 
 	 * the database and shown in the List.
 	 */
 	private void getAvailableIps() {
@@ -215,7 +238,7 @@ public class SelectFATFragment extends ListFragment {
 					for (FATDevice f : dev) {
 						addFATDeviceToDatabase(f);
 					}
-				} catch (ConnectException e) {
+				} catch (IOException e) {
 					Log.e(LOG_TAG, e.getMessage(), e);
 				}
 
@@ -304,18 +327,16 @@ public class SelectFATFragment extends ListFragment {
 	 * Updates the FAT devices displayed in the ListView. Data is extracted from the database.
 	 */
 	private void updateListView() {
+		// close old cursor
+		Cursor oldCursor = mListAdapter.getCursor();
+		if (!oldCursor.isClosed()) {
+			oldCursor.close();
+		}
+		
 		// Get all of the notes from the database and create the item list
 		Cursor cursor = mDbHelper.fetchAllFatDevices();
-		getActivity().startManagingCursor(cursor);
 
-		ListAdapter fatDevices;
-
-		String[] childFrom = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP };
-		int[] childTo = new int[] { R.id.textName, R.id.textIP };
-
-		fatDevices = new SimpleCursorAdapter(c, R.layout.selectfat_list_item, cursor, childFrom, childTo);
-
-		setListAdapter(fatDevices);
+		mListAdapter.changeCursor(cursor);
 	}
 
 	/**
