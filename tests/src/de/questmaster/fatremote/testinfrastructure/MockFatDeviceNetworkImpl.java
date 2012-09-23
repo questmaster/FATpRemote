@@ -4,6 +4,7 @@
 package de.questmaster.fatremote.testinfrastructure;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -32,7 +33,7 @@ public class MockFatDeviceNetworkImpl implements FatDeviceNetwork {
 	 * @see de.questmaster.fatremote.FatDeviceNetwork#getFatNetworkDevices()
 	 */
 	@Override
-	public List<FATDevice> getFatNetworkDevices() {
+	public List<FATDevice> getFatNetworkDevices(InetAddress broadcastAddress) {
 		Assert.fail("not implemented");
 		return null;
 	}

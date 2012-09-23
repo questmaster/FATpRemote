@@ -98,7 +98,7 @@ public class SelectFATActivityTest extends ActivityInstrumentationTestCase2<Sele
 
 	public void testHasFullScreenBackgroundImage() {
 		ScaleType expectedType = ScaleType.FIT_XY;
-		int expectedLayout = LayoutParams.FILL_PARENT;
+		int expectedLayout = LayoutParams.MATCH_PARENT;
 		
 		Assert.assertEquals(expectedType, mBackground.getScaleType());
 		Assert.assertEquals(expectedLayout, mBackground.getLayoutParams().height);
@@ -107,7 +107,7 @@ public class SelectFATActivityTest extends ActivityInstrumentationTestCase2<Sele
 
 	public void testHasBottomLogoImage() {
 		ScaleType expectedType = ScaleType.FIT_CENTER;
-		int expectedWidth = LayoutParams.FILL_PARENT;
+		int expectedWidth = LayoutParams.MATCH_PARENT;
 		int expectedHeight = LayoutParams.WRAP_CONTENT;
 		
 		Assert.assertEquals(expectedType, mLogo.getScaleType());
@@ -120,7 +120,7 @@ public class SelectFATActivityTest extends ActivityInstrumentationTestCase2<Sele
 	}
 
 	public void testHasTopTitleText() {
-		int expectedWidth = LayoutParams.FILL_PARENT;
+		int expectedWidth = LayoutParams.MATCH_PARENT;
 		int expectedHeight = LayoutParams.WRAP_CONTENT;
 		
 		Assert.assertEquals(expectedHeight, mTitle.getLayoutParams().height);

@@ -90,23 +90,23 @@ public final class R {
         public static final int zoomup_normal=0x7f02004c;
     }
     public static final class id {
-        public static final int MENU_ADD=0x7f08003d;
-        public static final int MENU_ITEM_DEBUG=0x7f080041;
-        public static final int MENU_ITEM_SELECTFAT=0x7f08003f;
-        public static final int MENU_ITEM_SETTINGS=0x7f080040;
-        public static final int MENU_REFRESH=0x7f08003e;
+        public static final int MENU_ADD=0x7f08003e;
+        public static final int MENU_ITEM_DEBUG=0x7f080042;
+        public static final int MENU_ITEM_SELECTFAT=0x7f080040;
+        public static final int MENU_ITEM_SETTINGS=0x7f080041;
+        public static final int MENU_REFRESH=0x7f08003f;
         public static final int button1=0x7f08000a;
         public static final int button14=0x7f080018;
         public static final int button4=0x7f080014;
-        public static final int cm_delete=0x7f08003b;
-        public static final int cm_delete_all=0x7f08003c;
+        public static final int cm_delete=0x7f08003c;
+        public static final int cm_delete_all=0x7f08003d;
         public static final int dialog_adddev_ip_edit=0x7f080003;
         public static final int dialog_adddev_name_edit=0x7f080001;
         public static final int enterText=0x7f08001e;
         public static final int fat_remote=0x7f08000c;
         public static final int fat_selection=0x7f080032;
         public static final int goflexlogo=0x7f080036;
-        public static final int iconAutodetect=0x7f08003a;
+        public static final int iconAutodetect=0x7f08003b;
         public static final int imageView1=0x7f080034;
         public static final int linearLayout1=0x7f080005;
         public static final int linearLayout10=0x7f08000d;
@@ -149,9 +149,10 @@ public final class R {
         public static final int remote_button_zoomdown=0x7f08002f;
         public static final int remote_button_zoomup=0x7f08002b;
         public static final int sendLED=0x7f08000e;
+        public static final int textBlock=0x7f080038;
         public static final int textButton=0x7f08001f;
-        public static final int textIP=0x7f080039;
-        public static final int textName=0x7f080038;
+        public static final int textIP=0x7f08003a;
+        public static final int textName=0x7f080039;
         public static final int textView1=0x7f080002;
         public static final int textView2=0x7f080000;
         public static final int textView3=0x7f080004;

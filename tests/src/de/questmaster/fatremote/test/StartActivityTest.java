@@ -66,7 +66,7 @@ public class StartActivityTest extends IntentCatchingActivityUnitTestCase<StartA
 	
 	public void testImageFullscreen() {
 		final ScaleType expectedScaleType = ScaleType.FIT_XY;
-		final int expectedFill = ViewGroup.LayoutParams.FILL_PARENT;
+		final int expectedFill = ViewGroup.LayoutParams.MATCH_PARENT;
 		
 		Assert.assertEquals(expectedScaleType, mRemotePic.getScaleType());
 		Assert.assertEquals(expectedFill, mRemotePic.getLayoutParams().height);

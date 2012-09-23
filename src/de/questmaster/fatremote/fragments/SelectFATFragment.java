@@ -108,10 +108,8 @@ public class SelectFATFragment extends ListFragment {
 		
 		// Create the item list
 		Cursor cursor = mDbHelper.fetchAllFatDevices();
-//		getActivity().startManagingCursor(cursor);
-
-		String[] childFrom = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP };
-		int[] childTo = new int[] { R.id.textName, R.id.textIP };
+		String[] childFrom = new String[] { FatDevicesDbAdapter.KEY_NAME, FatDevicesDbAdapter.KEY_IP, FatDevicesDbAdapter.KEY_AUTODETECTED };
+		int[] childTo = new int[] { R.id.textName, R.id.textIP, R.id.iconAutodetect };
 
 		mListAdapter = new SimpleCursorAdapter(c, R.layout.selectfat_list_item, cursor, childFrom, childTo);
 		setListAdapter(mListAdapter);

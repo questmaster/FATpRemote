@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/relativeLayout1" android:layout_height="fill_parent" android:layout_width="fill_parent">
-    <ImageView android:scaleType="fitXY" android:layout_width="fill_parent" android:src="@drawable/background" android:id="@+id/imageView1" android:layout_height="fill_parent"></ImageView>
-    <TextView android:layout_height="wrap_content" android:gravity="center" android:layout_width="fill_parent" android:id="@+id/title" android:layout_alignParentTop="true" android:text="@string/app_title_selectFAT"></TextView>
-    <ListView android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_below="@+id/title" android:layout_above="@+id/goflexlogo" android:id="@id/android:list"></ListView>
-    <ImageView android:scaleType="fitCenter" android:src="@drawable/background_bottom" android:layout_width="fill_parent" android:id="@+id/goflexlogo" android:layout_height="wrap_content" android:layout_alignParentBottom="true"></ImageView>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/relativeLayout1" android:layout_height="match_parent" android:layout_width="match_parent">
+    <ImageView android:scaleType="fitXY" android:layout_width="match_parent" android:src="@drawable/background" android:id="@+id/imageView1" android:layout_height="match_parent"></ImageView>
+    <TextView android:layout_height="wrap_content" android:gravity="center" android:layout_width="match_parent" android:id="@+id/title" android:layout_alignParentTop="true" android:text="@string/app_title_selectFAT"></TextView>
+    <ListView android:layout_height="match_parent" android:layout_width="match_parent" android:layout_below="@+id/title" android:layout_above="@+id/goflexlogo" android:id="@id/android:list"></ListView>
+    <ImageView android:scaleType="fitCenter" android:src="@drawable/background_bottom" android:layout_width="match_parent" android:id="@+id/goflexlogo" android:layout_height="wrap_content" android:layout_alignParentBottom="true"></ImageView>
 </RelativeLayout>
