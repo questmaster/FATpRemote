@@ -5,6 +5,6 @@ before_install:
   - export ANDROID_HOME=~/builds/questmaster/FATpRemote/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
   - android update sdk --filter 1,2,5 --no-ui --force
-  - cd questmaster/FATpRemote/tests
+  - cd tests
   
   
