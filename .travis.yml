@@ -1,8 +1,23 @@
 language: java
 before_install:
-  - wget http://dl.google.com/android/android-sdk_r18-linux.tgz
-  - tar -zxf android-sdk_r18-linux.tgz
+  - wget http://dl.google.com/android/android-sdk_r20.0.3-linux.tgz
+  - tar -zxf android-sdk_r20.0.3-linux.tgz
   - export ANDROID_HOME=~/builds/questmaster/FATpRemote/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-  - android update sdk --filter 1,2,4 --no-ui --force
+#  - android list sdk --all --extended
+  - android -s update sdk --filter tools,platform-tool,android-15,sysimg-15 --no-ui --force
+  - echo no | android create avd --force --sdcard 64M --name "defaultAVD" --target android-15 --abi armeabi-v7a
+  - android -s update project --path ~/builds/questmaster/FATpRemote
+  - android -s update test-project --path ~/builds/questmaster/FATpRemote/tests -m ~/builds/questmaster/FATpRemote
   
+before_script:
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  - sleep 3 # give xvfb some time to start 
+  - emulator -avd defaultAVD -prop persist.sys.language=de -prop persist.sys.country=DE -noaudio -no-boot-anim &
+  - sleep 45
+  
+script: 
+  - cd tests
+  - ant debug
+  - ant test
