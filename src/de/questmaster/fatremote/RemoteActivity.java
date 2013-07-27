@@ -26,6 +26,7 @@ import android.widget.TextView;
 import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import de.questmaster.fatremote.fragments.RemoteFragment;
+import de.questmaster.fatremote.network.NetworkProxy;
 
 /**
  * Remote activity. This class is the activity shell of the remote fragment that serves 

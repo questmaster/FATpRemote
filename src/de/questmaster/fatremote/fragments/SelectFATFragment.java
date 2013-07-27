@@ -41,9 +41,9 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 import de.questmaster.fatremote.FatDevicesDbAdapter;
-import de.questmaster.fatremote.NetworkProxy;
 import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.datastructures.FATDevice;
+import de.questmaster.fatremote.network.NetworkProxy;
 
 // TODO: set marker on auto detected entries, e.g. icon
 

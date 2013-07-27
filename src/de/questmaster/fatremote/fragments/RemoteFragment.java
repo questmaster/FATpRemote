@@ -43,10 +43,10 @@ import android.widget.Toast;
 import de.questmaster.fatremote.DebugHelper;
 import de.questmaster.fatremote.FatRemoteSettings;
 import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
-import de.questmaster.fatremote.NetworkProxy;
 import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.SelectFATActivity;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
+import de.questmaster.fatremote.network.NetworkProxy;
 
 public class RemoteFragment extends Fragment implements View.OnClickListener {
 	
