@@ -3,8 +3,12 @@
  */
 package de.questmaster.fatremote.test;
 
+import android.test.ActivityInstrumentationTestCase2;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import de.questmaster.fatremote.RemoteActivity;
 import de.questmaster.fatremote.network.NetworkProxy;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import de.questmaster.fatremote.testinfrastructure.MockFatDeviceNetworkImpl;
@@ -13,16 +17,16 @@ import de.questmaster.fatremote.testinfrastructure.MockFatDeviceNetworkImpl;
  * @author daniel
  *
  */
-public class NetworkProxyTest extends TestCase {
+public class NetworkProxyTest extends ActivityInstrumentationTestCase2<RemoteActivity> {
 
 	private NetworkProxy mTestee = null;
 	private MockFatDeviceNetworkImpl mockNetworkAccess = null; 
 	
 	/**
-	 * @param name
+	 * @param act
 	 */
-	public NetworkProxyTest(String name) {
-		super(name);
+	public NetworkProxyTest(Class<RemoteActivity> act) {
+		super(act);
 	}
 
 	/* (non-Javadoc)
@@ -30,8 +34,8 @@ public class NetworkProxyTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-				
-		mTestee = NetworkProxy.getInstance(null);
+
+		mTestee = NetworkProxy.getInstance(this.getActivity());
 		Assert.assertNotNull(mTestee);
 		
 		mockNetworkAccess = new MockFatDeviceNetworkImpl();
