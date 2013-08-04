@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="integer" name="remote_power">0x38</item>
+    <item type="integer" name="remote_home">0x39</item>
+    <item type="integer" name="remote_up">0x40</item>
+    <item type="integer" name="remote_left">0x07</item>
+    <item type="integer" name="remote_ok">0x0E</item>
+    <item type="integer" name="remote_right">0x06</item>
+    <item type="integer" name="remote_back">0x1B</item>
+    <item type="integer" name="remote_down">0x41</item>
+    <item type="integer" name="remote_info">0x47</item>
+    <item type="integer" name="remote_rew">0x52</item>
+    <item type="integer" name="remote_menu">0x1A</item>
+    <item type="integer" name="remote_ff">0x51</item>
+    <item type="integer" name="remote_prev">0x31</item>
+    <item type="integer" name="remote_playpause">0x4F</item>
+    <item type="integer" name="remote_next">0x30</item>
+    <item type="integer" name="remote_volup">0x32</item>
+    <item type="integer" name="remote_stop">0x54</item>
+    <item type="integer" name="remote_zoomin">0x35</item>
+    <item type="integer" name="remote_voldown">0x33</item>
+    <item type="integer" name="remote_mute">0x59</item>
+    <item type="integer" name="remote_zoomout">0x08</item>
+                                            
+</resources>
