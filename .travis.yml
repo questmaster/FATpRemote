@@ -3,11 +3,19 @@ before_install:
   - sudo apt-get update -qq
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq libc6:i386 libgcc1:i386 gcc-4.6-base:i386 libstdc++5:i386 libstdc++6:i386 lib32z1 libreadline6-dev:i386 libncurses5-dev:i386; fi
 
+# Gradle
+  - export GRADLE_VER=gradle-1.6
+  - wget http://services.gradle.org/distributions/${GRADLE_VER}-bin.zip
+  - unzip ${GRADLE_VER}-bin.zip
+  - export GRADLE_HOME=$PWD/${GRADLE_VER}
+  - export PATH=$GRADLE_HOME/bin:$PATH
+
+# Android
   - wget http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz
   - tar -zxf android-sdk_*.tgz
   - export ANDROID_HOME=${PWD}/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-  - echo "sdk.dir = ${ANDROID_HOME}" > local.properties
+#  - echo "sdk.dir = ${ANDROID_HOME}" > local.properties
 
 #  - android list sdk --all --extended # can be used to check for filter id's
   - echo y | android update sdk --filter tool,platform-tool,android-15,sysimg-15 --no-ui --force
@@ -19,12 +27,6 @@ before_install:
   - echo no | android create avd --force --sdcard 64M --name "defaultAVD" --target android-15 --abi armeabi-v7a
   - emulator -avd defaultAVD -prop persist.sys.language=de -prop persist.sys.country=DE -noaudio -no-boot-anim -no-skin -no-window &
   - sleep 45
-
-## Gradle
-#  - wget http://services.gradle.org/distributions/gradle-1.6-bin.zip
-#  - unzip gradle-1.6-bin.zip
-#  - export GRADLE_HOME=$PWD/gradle-1.6
-#  - export PATH=$GRADLE_HOME/bin:$PATH
 
 #script:
 #  - cd ${TEST_DIR}
