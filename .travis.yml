@@ -7,19 +7,28 @@ before_install:
   - tar -zxf android-sdk_*.tgz
   - export ANDROID_HOME=${PWD}/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+  - echo "sdk.dir = ${ANDROID_HOME}" > local.properties
 
 #  - android list sdk --all --extended # can be used to check for filter id's
-  - echo y | android -s update sdk --filter tool,platform-tool,android-15,sysimg-15 --no-ui --force
+  - echo y | android update sdk --filter tool,platform-tool,android-15,sysimg-15 --no-ui --force
 
-before_script:
+#before_script:
 #  - export DISPLAY=:99.0
 #  - sh -e /etc/init.d/xvfb start
 #  - sleep 3 # give xvfb some time to start
   - echo no | android create avd --force --sdcard 64M --name "defaultAVD" --target android-15 --abi armeabi-v7a
   - emulator -avd defaultAVD -prop persist.sys.language=de -prop persist.sys.country=DE -noaudio -no-boot-anim -no-skin -no-window &
   - sleep 45
-  
+
+## Gradle
+#  - wget http://services.gradle.org/distributions/gradle-1.6-bin.zip
+#  - unzip gradle-1.6-bin.zip
+#  - export GRADLE_HOME=$PWD/gradle-1.6
+#  - export PATH=$GRADLE_HOME/bin:$PATH
+
 #script:
 #  - cd ${TEST_DIR}
 #  - ant debug
 #  - ant test
+
+script: gradle connectedInstrumentTest
