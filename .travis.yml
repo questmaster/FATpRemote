@@ -1,36 +1,50 @@
 language: java
+jdk: oraclejdk7
+env:
+  matrix:
+    - ANDROID_SDKS=android-15,sysimg-15  ANDROID_TARGET=android-15  ANDROID_ABI=armeabi-v7a
 before_install:
+  # Install base Android SDK
   - sudo apt-get update -qq
-  - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq libc6:i386 libgcc1:i386 gcc-4.6-base:i386 libstdc++5:i386 libstdc++6:i386 lib32z1 libreadline6-dev:i386 libncurses5-dev:i386; fi
+  - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
 
-# Gradle
-  - export GRADLE_VER=gradle-1.6
-  - wget http://services.gradle.org/distributions/${GRADLE_VER}-bin.zip
-  - unzip ${GRADLE_VER}-bin.zip
-  - export GRADLE_HOME=$PWD/${GRADLE_VER}
+  - wget http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz
+  - tar xzf android-sdk_r22.0.5-linux.tgz
+  - export ANDROID_HOME=$PWD/android-sdk-linux
+  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
+
+  # Gradle
+  - wget http://services.gradle.org/distributions/gradle-1.6-bin.zip
+  - unzip gradle-1.6-bin.zip
+  - export GRADLE_HOME=$PWD/gradle-1.6
   - export PATH=$GRADLE_HOME/bin:$PATH
 
-# Android
-  - wget http://dl.google.com/android/android-sdk_r22.0.5-linux.tgz
-  - tar -zxf android-sdk_*.tgz
-  - export ANDROID_HOME=${PWD}/android-sdk-linux
-  - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-#  - echo "sdk.dir = ${ANDROID_HOME}" > local.properties
+  # install android build tools
+  - wget https://dl-ssl.google.com/android/repository/build-tools_r18.0.1-linux.zip
+  - unzip build-tools_r18.0.1-linux.zip -d $ANDROID_HOME
+  - mkdir -p $ANDROID_HOME/build-tools/
+  - mv $ANDROID_HOME/android-4.3 $ANDROID_HOME/build-tools/18.0.1
 
-#  - android list sdk --all --extended # can be used to check for filter id's
-  - echo y | android update sdk --filter tool,platform-tool,android-15,sysimg-15 --no-ui --force
+  # Install required components.
+  # For a full list, run `android list sdk -a --extended`
+  # Note that sysimg-18 downloads the ARM, x86 and MIPS images (we should optimize this).
+  # Other relevant API's
+  - echo yes | android update sdk --filter platform-tools --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter android-18 --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter android-15 --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter sysimg-15 --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter extra-android-support --no-ui --force > /dev/null
+  - echo yes | android update sdk --filter extra-android-m2repository --no-ui --force > /dev/null
 
-#before_script:
-#  - export DISPLAY=:99.0
-#  - sh -e /etc/init.d/xvfb start
-#  - sleep 3 # give xvfb some time to start
-  - echo no | android create avd --force --sdcard 64M --name "defaultAVD" --target android-15 --abi armeabi-v7a
-  - emulator -avd defaultAVD -prop persist.sys.language=de -prop persist.sys.country=DE -noaudio -no-boot-anim -no-skin -no-window &
+  # Create and start emulator
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+
+before_script:
   - sleep 45
+#  - chmod +x ci/wait_for_emulator.sh
+#  - ci/wait_for_emulator.sh
+  - adb shell input keyevent 82
 
-#script:
-#  - cd ${TEST_DIR}
-#  - ant debug
-#  - ant test
-
-script: gradle connectedInstrumentTest
+script:
+  - gradle connectedInstrumentTest
