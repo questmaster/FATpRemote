@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+
+import org.junit.Ignore;
+
 import de.questmaster.fatremote.StartActivity;
 import de.questmaster.fatremote.testinfrastructure.IntentCatchingActivityUnitTestCase;
 
