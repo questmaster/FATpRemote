@@ -4,7 +4,7 @@ before_install:
   - tar -zxf android-sdk_r22.0.5-linux.tgz
 #  - export PROJ_HOME=~/builds/questmaster/FATpRemote
 #  - export TEST_DIR=tests
-  - export ANDROID_HOME=´pwd´/android-sdk-linux
+  - export ANDROID_HOME=${PWD}/android-sdk-linux
   - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
   - android list sdk --all --extended # can be used to check for filter id's
   - android -s update sdk --filter tool,platform-tool,android-15,sysimg-15 --no-ui --force
