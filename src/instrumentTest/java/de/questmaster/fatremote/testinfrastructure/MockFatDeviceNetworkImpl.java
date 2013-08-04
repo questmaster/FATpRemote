@@ -9,7 +9,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import de.questmaster.fatremote.FatDeviceNetwork;
+import de.questmaster.fatremote.network.FatDeviceNetwork;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 

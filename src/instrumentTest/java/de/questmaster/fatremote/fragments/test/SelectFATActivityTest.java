@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.SelectFATActivity;
@@ -32,7 +33,7 @@ public class SelectFATActivityTest extends ActivityInstrumentationTestCase2<Sele
 	private TextView mTitle;
 	private ListView mList;
 	private ImageView mLogo;
-	private LinearLayout mListItem;
+	private RelativeLayout mListItem;
 	
 
 	/**
@@ -67,7 +68,7 @@ public class SelectFATActivityTest extends ActivityInstrumentationTestCase2<Sele
 		Assert.assertNotNull(mList);
 		mLogo = (ImageView) mActivity.findViewById(R.id.goflexlogo);
 		Assert.assertNotNull(mLogo);
-		mListItem = (LinearLayout) mActivity.findViewById(R.id.listItem);
+		mListItem = (RelativeLayout) mActivity.findViewById(R.id.listItem);
 		Assert.assertNotNull(mListItem);
 	}
 

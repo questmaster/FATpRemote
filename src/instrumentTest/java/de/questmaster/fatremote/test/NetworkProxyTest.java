@@ -5,7 +5,7 @@ package de.questmaster.fatremote.test;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import de.questmaster.fatremote.NetworkProxy;
+import de.questmaster.fatremote.network.NetworkProxy;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 import de.questmaster.fatremote.testinfrastructure.MockFatDeviceNetworkImpl;
 
