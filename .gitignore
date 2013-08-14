@@ -1,1 +1,16 @@
-/local.properties
+*.iml
+*.iws
+*.ipr
+.idea/
+.gradle/
+local.properties
+
+build/
+
+*~
+*.swp
+
+img-src/
+gradle/
+release/
+reports/
