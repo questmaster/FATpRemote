@@ -16,13 +16,6 @@
 
 package de.questmaster.fatremote.network;
 
-import java.io.IOException;
-import java.net.ConnectException;
-import java.net.InetAddress;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import android.app.Activity;
 import android.content.Context;
 import android.net.DhcpInfo;
@@ -30,13 +23,18 @@ import android.net.wifi.WifiManager;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.net.ConnectException;
+import java.net.InetAddress;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 import de.questmaster.fatremote.DebugHelper;
 import de.questmaster.fatremote.FatRemoteSettings;
-import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.FatRemoteSettings.AppSettings;
-import de.questmaster.fatremote.R.drawable;
-import de.questmaster.fatremote.R.id;
-import de.questmaster.fatremote.R.string;
+import de.questmaster.fatremote.R;
 import de.questmaster.fatremote.datastructures.FATDevice;
 import de.questmaster.fatremote.datastructures.FATRemoteEvent;
 
@@ -109,9 +107,7 @@ public class NetworkProxy {
 		if (singleton == null) {
 			
 			// Initialize proxy
-			NetworkProxy np = new NetworkProxy(); 
-			
-			singleton = np;
+            singleton = new NetworkProxy();
 			
 		}
 
@@ -144,12 +140,8 @@ public class NetworkProxy {
 	public boolean isWifiEnabled() {
 		WifiManager wifiManager = (WifiManager) mBaseActivity.getSystemService(Context.WIFI_SERVICE);
 
-		if (wifiManager == null || (!DebugHelper.ON_EMULATOR && !wifiManager.isWifiEnabled())) {
-			return false;
-		}
-
-		return true;
-	}
+        return !(wifiManager == null || (!DebugHelper.ON_EMULATOR && !wifiManager.isWifiEnabled()));
+    }
 
 	InetAddress getBroadcastAddress() throws IOException {
 		InetAddress result = null;
@@ -179,7 +171,7 @@ public class NetworkProxy {
 	 * @throws ConnectException
 	 */
 	public List<FATDevice> discoverFAT() throws IOException {
-		List<FATDevice> adr = null;
+		List<FATDevice> adr;
 
 		// Check wifi availability
 		if (isWifiEnabled()) {

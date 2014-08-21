@@ -39,7 +39,7 @@ public final class FATDevice {
 	 */
 	public static final String FAT_NAME_EMPTY = "<empty>";
 	/**
-	 * Default port on FAT+ for remote service.
+	 * Default ip of FAT+ for remote service.
 	 */
 	public static final String FAT_IP_EMPTY = "0.0.0.0";
 	/**
@@ -47,7 +47,7 @@ public final class FATDevice {
 	 */
 	public static final int FAT_REMOTE_PORT = 9999;
 	/**
-	 * Default port on FAT+ for remote service.
+	 * Default postfix of FAT+ content sqlite.
 	 */
 	public static final String FAT_STORAGE_POSTFIX = "-content.sqlite";
 	
@@ -282,13 +282,9 @@ public final class FATDevice {
 		if (file != null) {
 			File path = file.getParentFile();
 			if (!path.exists()) {
-				if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-					pathExists = path.mkdirs();
-				} else {
-					pathExists = false;
-				}
+                pathExists = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) && path.mkdirs();
 			}
-			
+
 			if (pathExists) {
 				File storage = new File(path, file.getName());
 				try {
