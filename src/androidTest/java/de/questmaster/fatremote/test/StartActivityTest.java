@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import org.junit.Ignore;
-
 import de.questmaster.fatremote.StartActivity;
 import de.questmaster.fatremote.testinfrastructure.IntentCatchingActivityUnitTestCase;
 
@@ -41,7 +39,7 @@ public class StartActivityTest extends IntentCatchingActivityUnitTestCase<StartA
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-				
+
 		mActivity = getActivity();
 		Assert.assertNotNull(mActivity);
 		
@@ -76,7 +74,7 @@ public class StartActivityTest extends IntentCatchingActivityUnitTestCase<StartA
 		Assert.assertEquals(expectedFill, mRemotePic.getLayoutParams().width);
 	}
 
-    @Ignore("not ready yet")
+    //@Ignore("not ready yet")
 	public void testOnStartIntent() {
 		// TODO: how to fix this?
 		Intent expectedIntent = new Intent(mActivity.getBaseContext(), de.questmaster.fatremote.SelectFATActivity.class)
