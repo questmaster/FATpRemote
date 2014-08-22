@@ -12,16 +12,16 @@
  */
 package de.questmaster.fatremote.databases;
 
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 
 /**
  * <p>
@@ -50,12 +50,10 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class FatDevicesDbHelper extends SQLiteOpenHelper {
 
-	// Android's default system path for your application's database.
-	private static String DB_PATH = "/data/data/de.questmaster.fatremote/databases/";
-
 	private static String DB_NAME = "FatDevicesDb";
-
 	private final Context myContext;
+    // Android's default system path for your application's database.
+    private String DB_PATH /*= "/data/data/de.questmaster.fatremote/databases/"*/;
 
 	/**
 	 * Constructor Keeps a reference to the passed context in order to access
@@ -68,7 +66,9 @@ public class FatDevicesDbHelper extends SQLiteOpenHelper {
 
 		super(context, DB_NAME, null, 1);
 		this.myContext = context;
-	}
+
+        DB_PATH = context.getFilesDir().getPath() + "/de.questmaster.fatremote/databases/";
+    }
 
 	/**
 	 * This constructor copies the database file if the copyDatabase argument is

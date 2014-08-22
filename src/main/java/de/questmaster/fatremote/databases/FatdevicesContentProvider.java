@@ -12,8 +12,6 @@
  */
 package de.questmaster.fatremote.databases;
 
-import java.util.HashMap;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -25,25 +23,23 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import java.util.HashMap;
+import java.util.Locale;
+
 public class FatdevicesContentProvider extends ContentProvider {
 
-	private FatDevicesDbHelper dbHelper;
-	private static HashMap<String, String> FATDEVICES_PROJECTION_MAP;
-	private static final String TABLE_NAME = "fatdevices";
-	private static final String AUTHORITY = "de.questmaster.fatremote.databases.fatdevicescontentprovider";
-
-	public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-	public static final Uri _ID_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase());
-	public static final Uri NAME_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase() + "/name");
-	public static final Uri IP_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase() + "/ip");
-	public static final Uri PORT_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase() + "/port");
-	public static final Uri AUTO_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase() + "/auto");
-	public static final Uri STORAGE_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase() + "/storage");
-
-	public static final String DEFAULT_SORT_ORDER = "_id ASC";
-
+    public static final String DEFAULT_SORT_ORDER = "_id ASC";
+    // Content values keys (using column names)
+    public static final String _ID = "_id";
+    public static final String NAME = "name";
+    public static final String IP = "ip";
+    public static final String PORT = "port";
+    public static final String AUTO = "auto";
+    public static final String STORAGE = "storage";
+    private static final String TABLE_NAME = "fatdevices";
+    private static final String AUTHORITY = "de.questmaster.fatremote.databases.fatdevicescontentprovider";
+    public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 	private static final UriMatcher URL_MATCHER;
-
 	private static final int FATDEVICES = 1;
 	private static final int FATDEVICES__ID = 2;
 	private static final int FATDEVICES_NAME = 3;
@@ -51,14 +47,15 @@ public class FatdevicesContentProvider extends ContentProvider {
 	private static final int FATDEVICES_PORT = 5;
 	private static final int FATDEVICES_AUTO = 6;
 	private static final int FATDEVICES_STORAGE = 7;
-
-	// Content values keys (using column names)
-	public static final String _ID = "_id";
-	public static final String NAME = "name";
-	public static final String IP = "ip";
-	public static final String PORT = "port";
-	public static final String AUTO = "auto";
-	public static final String STORAGE = "storage";
+    private static Locale currentLocale = Locale.getDefault();
+    public static final Uri _ID_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase(currentLocale));
+    public static final Uri NAME_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase(currentLocale) + "/name");
+    public static final Uri IP_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase(currentLocale) + "/ip");
+    public static final Uri PORT_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase(currentLocale) + "/port");
+    public static final Uri AUTO_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase(currentLocale) + "/auto");
+    public static final Uri STORAGE_FIELD_CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME.toLowerCase(currentLocale) + "/storage");
+    private static HashMap<String, String> FATDEVICES_PROJECTION_MAP;
+    private FatDevicesDbHelper dbHelper;
 
 	public boolean onCreate() {
 		dbHelper = new FatDevicesDbHelper(getContext(), true);
@@ -238,13 +235,13 @@ public class FatdevicesContentProvider extends ContentProvider {
 
 	static {
 		URL_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(), FATDEVICES);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase() + "/#", FATDEVICES__ID);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase() + "/name" + "/*", FATDEVICES_NAME);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase() + "/ip" + "/*", FATDEVICES_IP);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase() + "/port" + "/*", FATDEVICES_PORT);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase() + "/auto" + "/*", FATDEVICES_AUTO);
-		URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase() + "/storage" + "/*", FATDEVICES_STORAGE);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale), FATDEVICES);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale) + "/#", FATDEVICES__ID);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale) + "/name" + "/*", FATDEVICES_NAME);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale) + "/ip" + "/*", FATDEVICES_IP);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale) + "/port" + "/*", FATDEVICES_PORT);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale) + "/auto" + "/*", FATDEVICES_AUTO);
+        URL_MATCHER.addURI(AUTHORITY, TABLE_NAME.toLowerCase(currentLocale) + "/storage" + "/*", FATDEVICES_STORAGE);
 
 		FATDEVICES_PROJECTION_MAP = new HashMap<String, String>();
 		FATDEVICES_PROJECTION_MAP.put(_ID, "_id");

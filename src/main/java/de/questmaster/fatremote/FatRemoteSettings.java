@@ -16,8 +16,6 @@
 
 package de.questmaster.fatremote;
 
-import java.net.UnknownHostException;
-
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.content.Context;
@@ -31,6 +29,9 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
+
+import java.net.UnknownHostException;
+
 import de.questmaster.fatremote.datastructures.FATDevice;
 
 /**
@@ -42,9 +43,9 @@ import de.questmaster.fatremote.datastructures.FATDevice;
 public class FatRemoteSettings extends PreferenceActivity {
 
 	private static final String LOG_TAG = "FatRemoteSettings";
-	private FatRemoteSettings.AppSettings mSettings = new FatRemoteSettings.AppSettings();
-	private static final int ANDROID_V11 = 11;
-	private static final int ANDROID_V14 = 14;
+    private static final int ANDROID_V11 = 11;
+    private static final int ANDROID_V14 = 14;
+    private FatRemoteSettings.AppSettings mSettings = new FatRemoteSettings.AppSettings();
 	
 	@TargetApi(14)
 	@Override
@@ -187,9 +188,9 @@ public class FatRemoteSettings extends PreferenceActivity {
 			
 			mFat = dev;
 			sharedPref.putString(res.getString(R.string.PREF_KEY_FAT), mFat.getIp());
-			
-			sharedPref.commit();
-		}
+
+            sharedPref.apply();
+        }
 
 	}
 }

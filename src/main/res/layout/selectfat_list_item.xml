@@ -3,13 +3,13 @@
     android:id="@+id/listItem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/textBlock"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/textName"
@@ -20,7 +20,7 @@
             android:paddingRight="8dp"
             android:paddingTop="8dp"
             android:text="@android:string/untitled"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
             android:typeface="normal" />
 
@@ -34,7 +34,7 @@
             android:paddingTop="0dp"
             android:text="@android:string/untitled" />
     </LinearLayout>
-
+
     <ImageView
         android:id="@+id/iconAutodetect"
         android:layout_width="wrap_content"

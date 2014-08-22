@@ -2,15 +2,14 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
+    android:orientation="vertical">
+
     <ImageView
         android:id="@+id/remotePic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@string/img_desc_background"
         android:scaleType="fitXY"
-        android:src="@drawable/splash" >
+        android:src="@drawable/splash"></ImageView>
 
-</ImageView>
 </merge>

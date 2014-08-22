@@ -3,17 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-
+    android:orientation="vertical">
 
     <fragment
         android:id="@+id/fat_remote"
         android:name="de.questmaster.fatremote.fragments.RemoteFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/remote_fragment">
-
-</fragment>
+        tools:layout="@layout/remote_fragment"></fragment>
 
 </LinearLayout>
