@@ -31,5 +31,7 @@ before_script:
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 
+  - java -jar FATpTheaterSim/build/FATpTheaterSim_jar/FATpTheaterSim.jar 10000 4321 &
+
 script:
   - gradle build connectedCheck
