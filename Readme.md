@@ -1,0 +1,1 @@
+Buildstatus: [![Build Status](https://travis-ci.org/questmaster/FATpRemote.svg?branch=feature_contentList)](https://travis-ci.org/questmaster/FATpRemote)

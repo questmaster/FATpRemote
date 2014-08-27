@@ -11,6 +11,6 @@ build/
 *.swp
 
 img-src/
-gradle/
+###gradle/
 release/
 reports/
